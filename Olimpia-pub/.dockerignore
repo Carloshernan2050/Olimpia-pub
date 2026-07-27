@@ -1,0 +1,13 @@
+vendor
+node_modules
+npm-debug.log
+package-lock.json
+npm-shrinkwrap.json
+.env
+.env.*
+.git
+.gitignore
+Dockerfile
+docker-compose.yml
+README.md
+bootstrap/cache
