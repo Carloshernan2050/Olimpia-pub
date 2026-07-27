@@ -1,0 +1,2 @@
+@echo off
+docker run --rm --net=host -v ".:/usr/src" sonarsource/sonar-scanner-cli "-Dsonar.projectKey=Olimpia-pub" "-Dsonar.projectName=Olimpia-pub" "-Dsonar.sources=." "-Dsonar.host.url=http://localhost:9000" "-Dsonar.login=sqp_48fcf8297901df170b7752c17ecb8acb065354ea"

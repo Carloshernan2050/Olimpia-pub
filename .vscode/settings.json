@@ -1,0 +1,6 @@
+{
+    "sonarlint.connectedMode.project": {
+        "connectionId": "conexion-olimpia",
+        "projectKey": "Olimpia-pub"
+    }
+}
