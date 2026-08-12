@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Usuario extends Model
+class Usuario extends Authenticatable
 {
     protected $table = 'usuario';
 
@@ -32,6 +32,21 @@ class Usuario extends Model
         return [
             'contrasena' => 'hashed',
         ];
+    }
+
+    public function getAuthIdentifierName(): string
+    {
+        return 'id_usuario';
+    }
+
+    public function getAuthPassword(): string
+    {
+        return (string) $this->contrasena;
+    }
+
+    public function getAuthPasswordName(): string
+    {
+        return 'contrasena';
     }
 
     public function rol(): BelongsTo

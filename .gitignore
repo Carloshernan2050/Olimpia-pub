@@ -1,0 +1,23 @@
+# Dependencias (no versionar)
+**/node_modules/
+**/vendor/
+
+# Entorno y secretos
+**/.env
+**/.env.backup
+**/.env.production
+
+# Cachés y builds
+**/public/build/
+**/public/hot/
+**/bootstrap/cache/*.php
+!**/bootstrap/cache/.gitignore
+**/storage/*.key
+**/storage/pail/
+
+# IDE / SO
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.cursor/
