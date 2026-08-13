@@ -10,11 +10,15 @@ Route::get('/', function () {
 Route::middleware('guest')->group(function () {
     Route::get('/registro', [AutenticacionController::class, 'mostrarRegistro'])
         ->name('registro');
-    Route::post('/registro', [AutenticacionController::class, 'registrar']);
+    Route::post('/registro', [AutenticacionController::class, 'registrar'])
+        ->middleware('throttle:registro')
+        ->name('registro.guardar');
 
     Route::get('/iniciar-sesion', [AutenticacionController::class, 'mostrarInicioSesion'])
         ->name('iniciar-sesion');
-    Route::post('/iniciar-sesion', [AutenticacionController::class, 'iniciarSesion']);
+    Route::post('/iniciar-sesion', [AutenticacionController::class, 'iniciarSesion'])
+        ->middleware('throttle:inicio-sesion')
+        ->name('iniciar-sesion.guardar');
 
     Route::get('/login', [AutenticacionController::class, 'mostrarInicioSesion'])
         ->name('login');

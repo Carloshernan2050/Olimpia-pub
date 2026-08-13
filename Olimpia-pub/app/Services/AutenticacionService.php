@@ -5,11 +5,12 @@ namespace App\Services;
 use App\Contracts\Repositories\RolRepositoryInterface;
 use App\Contracts\Repositories\UsuarioRepositoryInterface;
 use App\Contracts\Services\AutenticacionServiceInterface;
+use App\DTOs\Autenticacion\RegistrarUsuarioDatos;
+use App\DTOs\Autenticacion\UsuarioAutenticadoDatos;
 use App\Exceptions\Autenticacion\CorreoYaRegistradoException;
 use App\Exceptions\Autenticacion\CredencialesInvalidasException;
 use App\Exceptions\Autenticacion\RolNoConfiguradoException;
 use App\Exceptions\Autenticacion\UsuarioInactivoException;
-use App\Models\Usuario;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Contracts\Hashing\Hasher;
 
@@ -19,17 +20,18 @@ class AutenticacionService implements AutenticacionServiceInterface
 
     private const ESTADO_ACTIVO = 'activo';
 
+    private const HASH_FALSO = '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi';
+
     public function __construct(
         private readonly UsuarioRepositoryInterface $usuarioRepository,
         private readonly RolRepositoryInterface $rolRepository,
         private readonly StatefulGuard $guard,
         private readonly Hasher $hasher,
-    ) {
-    }
+    ) {}
 
-    public function registrar(array $datos): Usuario
+    public function registrar(RegistrarUsuarioDatos $datos): UsuarioAutenticadoDatos
     {
-        if ($this->usuarioRepository->findByCorreo($datos['correo']) !== null) {
+        if ($this->usuarioRepository->findByCorreo($datos->correo) !== null) {
             throw new CorreoYaRegistradoException;
         }
 
@@ -42,24 +44,22 @@ class AutenticacionService implements AutenticacionServiceInterface
         }
 
         $usuario = $this->usuarioRepository->create([
-            'nombre' => $datos['nombre'],
-            'apellido' => $datos['apellido'],
-            'correo' => $datos['correo'],
-            'contrasena' => $datos['contrasena'],
+            ...$datos->toPersistence(),
             'estado' => self::ESTADO_ACTIVO,
             'id_rol' => $rol->id_rol,
         ]);
 
         $this->guard->login($usuario);
 
-        return $usuario->load('rol');
+        return UsuarioAutenticadoDatos::fromModel($usuario);
     }
 
-    public function iniciarSesion(string $correo, string $contrasena): Usuario
+    public function iniciarSesion(string $correo, string $contrasena): UsuarioAutenticadoDatos
     {
         $usuario = $this->usuarioRepository->findByCorreo($correo);
+        $hash = $usuario?->getAuthPassword() ?? self::HASH_FALSO;
 
-        if ($usuario === null || ! $this->hasher->check($contrasena, $usuario->getAuthPassword())) {
+        if (! $this->hasher->check($contrasena, $hash) || $usuario === null) {
             throw new CredencialesInvalidasException;
         }
 
@@ -69,7 +69,7 @@ class AutenticacionService implements AutenticacionServiceInterface
 
         $this->guard->login($usuario);
 
-        return $usuario->load('rol');
+        return UsuarioAutenticadoDatos::fromModel($usuario);
     }
 
     public function cerrarSesion(): void

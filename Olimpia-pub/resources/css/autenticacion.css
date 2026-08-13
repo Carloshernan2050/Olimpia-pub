@@ -2,15 +2,20 @@
     --negro: #000000;
     --blanco: #ffffff;
     --azul: #1e6fea;
+    --azul-hover: #1558c0;
+    --azul-foco: rgba(30, 111, 234, 0.35);
     --rojo: #e10600;
     --gris-patron: rgba(255, 255, 255, 0.08);
     --error: #ff4d4d;
 
     margin: 0;
     min-height: 100vh;
+    min-height: 100dvh;
     color: var(--blanco);
-    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-family: "Instrument Sans", "Segoe UI", Tahoma, sans-serif;
     background-color: var(--negro);
+    background-image: radial-gradient(var(--gris-patron) 1px, transparent 1px);
+    background-size: 22px 22px;
 }
 
 .pagina-olimpia *,
@@ -24,9 +29,16 @@
     text-decoration: none;
 }
 
+.pagina-olimpia a:focus-visible,
+.pagina-olimpia button:focus-visible {
+    outline: 2px solid var(--azul);
+    outline-offset: 3px;
+}
+
 /* —— Bienvenida —— */
 .pantalla-bienvenida {
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -78,6 +90,7 @@
 .pantalla-formulario {
     position: relative;
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -100,8 +113,9 @@
     transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.boton-volver:hover {
-    background: #1558c0;
+.boton-volver:hover,
+.boton-volver:focus-visible {
+    background: var(--azul-hover);
     transform: translateX(-2px);
 }
 
@@ -154,7 +168,20 @@
 
 .campo input:focus {
     border-color: var(--azul);
-    box-shadow: 0 0 0 2px rgba(30, 111, 234, 0.35);
+    box-shadow: 0 0 0 2px var(--azul-foco);
+}
+
+.campo:has(.error) input {
+    border-color: var(--error);
+}
+
+.campo input:-webkit-autofill,
+.campo input:-webkit-autofill:hover,
+.campo input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--blanco);
+    caret-color: var(--blanco);
+    box-shadow: 0 0 0 1000px var(--negro) inset;
+    transition: background-color 9999s ease-out;
 }
 
 .campo .error {
@@ -164,9 +191,6 @@
 
 .campo-completo {
     grid-column: 1 / -1;
-    max-width: 360px;
-    justify-self: center;
-    width: 100%;
 }
 
 .acciones-formulario {
@@ -178,7 +202,8 @@
     margin-top: 1.5rem;
 }
 
-.boton-principal {
+.pagina-olimpia .boton-principal,
+.pagina-olimpia a.boton-principal {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -194,7 +219,10 @@
     transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
 }
 
-.boton-principal:hover {
+.pagina-olimpia .boton-principal:hover,
+.pagina-olimpia .boton-principal:focus-visible,
+.pagina-olimpia a.boton-principal:hover,
+.pagina-olimpia a.boton-principal:focus-visible {
     background: var(--rojo);
     color: var(--blanco);
     transform: translateY(-1px);
@@ -216,9 +244,12 @@
 .enlace-secundario a {
     color: var(--azul);
     font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
 }
 
-.enlace-secundario a:hover {
+.enlace-secundario a:hover,
+.enlace-secundario a:focus-visible {
     color: var(--rojo);
 }
 
@@ -235,5 +266,14 @@
     .boton-volver {
         top: 1rem;
         left: 1rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pagina-olimpia *,
+    .pagina-olimpia *::before,
+    .pagina-olimpia *::after {
+        transition: none !important;
+        transform: none !important;
     }
 }

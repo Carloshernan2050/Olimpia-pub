@@ -18,8 +18,11 @@ use App\Repositories\EloquentRolRepository;
 use App\Repositories\EloquentUsuarioRepository;
 use App\Services\AutenticacionService;
 use App\Services\DatabaseInstaller;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Auth\StatefulGuard;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -48,6 +51,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        RateLimiter::for('registro', function (Request $request) {
+            return Limit::perMinute(5)->by($request->ip());
+        });
+
+        RateLimiter::for('inicio-sesion', function (Request $request) {
+            return Limit::perMinute(5)->by(
+                $request->ip().'|'.strtolower((string) $request->input('correo'))
+            );
+        });
     }
 }

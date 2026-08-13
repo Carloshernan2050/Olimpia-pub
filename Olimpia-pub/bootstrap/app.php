@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\Autenticacion\RolNoConfiguradoException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -19,4 +20,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),
         );
+
+        $exceptions->render(function (RolNoConfiguradoException $exception, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'mensaje' => $exception->getMessage(),
+                ], 503);
+            }
+
+            return back()->with('error', $exception->getMessage());
+        });
     })->create();

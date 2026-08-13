@@ -11,39 +11,46 @@ class UsuarioSeeder extends Seeder
     public function __construct(
         private readonly UsuarioRepositoryInterface $usuarioRepository,
         private readonly RolRepositoryInterface $rolRepository
-    ) {
-    }
+    ) {}
 
     public function run(): void
     {
         $usuarios = [
             [
-                'nombre' => 'Ana',
-                'apellido' => 'Cliente',
+                'primer_nombre' => 'Ana',
+                'segundo_nombre' => 'Lucia',
+                'primer_apellido' => 'Cliente',
+                'segundo_apellido' => 'Perez',
                 'correo' => 'cliente@olimpia.com',
                 'contrasena' => 'password',
                 'estado' => 'activo',
                 'rol' => 'cliente',
             ],
             [
-                'nombre' => 'Luis',
-                'apellido' => 'Empleado',
+                'primer_nombre' => 'Luis',
+                'segundo_nombre' => 'Andres',
+                'primer_apellido' => 'Empleado',
+                'segundo_apellido' => 'Gomez',
                 'correo' => 'empleado@olimpia.com',
                 'contrasena' => 'password',
                 'estado' => 'activo',
                 'rol' => 'empleado',
             ],
             [
-                'nombre' => 'Maria',
-                'apellido' => 'Admin',
+                'primer_nombre' => 'Maria',
+                'segundo_nombre' => 'Elena',
+                'primer_apellido' => 'Admin',
+                'segundo_apellido' => 'Ruiz',
                 'correo' => 'admin@olimpia.com',
                 'contrasena' => 'password',
                 'estado' => 'activo',
                 'rol' => 'administrador',
             ],
             [
-                'nombre' => 'Carlos',
-                'apellido' => 'Super',
+                'primer_nombre' => 'Carlos',
+                'segundo_nombre' => 'Jose',
+                'primer_apellido' => 'Super',
+                'segundo_apellido' => 'Diaz',
                 'correo' => 'super@olimpia.com',
                 'contrasena' => 'password',
                 'estado' => 'activo',
@@ -63,8 +70,10 @@ class UsuarioSeeder extends Seeder
             }
 
             $this->usuarioRepository->create([
-                'nombre' => $usuario['nombre'],
-                'apellido' => $usuario['apellido'],
+                'primer_nombre' => $usuario['primer_nombre'],
+                'segundo_nombre' => $usuario['segundo_nombre'],
+                'primer_apellido' => $usuario['primer_apellido'],
+                'segundo_apellido' => $usuario['segundo_apellido'],
                 'correo' => $usuario['correo'],
                 'contrasena' => $usuario['contrasena'],
                 'estado' => $usuario['estado'],

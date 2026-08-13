@@ -12,7 +12,7 @@
             <p class="marca">Olimpia Pub</p>
             <h1>Bienvenidos</h1>
             @auth
-                <p class="saludo">Hola, {{ auth()->user()->nombre }}</p>
+                <p class="saludo">Hola, {{ auth()->user()->primer_nombre }}</p>
             @endauth
         </header>
 

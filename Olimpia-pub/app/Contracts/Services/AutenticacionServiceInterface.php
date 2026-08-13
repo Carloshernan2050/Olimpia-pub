@@ -2,16 +2,14 @@
 
 namespace App\Contracts\Services;
 
-use App\Models\Usuario;
+use App\DTOs\Autenticacion\RegistrarUsuarioDatos;
+use App\DTOs\Autenticacion\UsuarioAutenticadoDatos;
 
 interface AutenticacionServiceInterface
 {
-    /**
-     * @param  array{nombre: string, apellido: string, correo: string, contrasena: string}  $datos
-     */
-    public function registrar(array $datos): Usuario;
+    public function registrar(RegistrarUsuarioDatos $datos): UsuarioAutenticadoDatos;
 
-    public function iniciarSesion(string $correo, string $contrasena): Usuario;
+    public function iniciarSesion(string $correo, string $contrasena): UsuarioAutenticadoDatos;
 
     public function cerrarSesion(): void;
 }

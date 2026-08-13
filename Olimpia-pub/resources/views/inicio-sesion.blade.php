@@ -12,18 +12,24 @@
 
         <h1>Iniciar Sesión</h1>
 
-        <form class="formulario-olimpia una-columna" method="POST" action="{{ route('iniciar-sesion') }}">
+        <form class="formulario-olimpia una-columna" method="POST" action="{{ route('iniciar-sesion.guardar') }}">
             @csrf
+
+            @if (session('error'))
+                <div class="campo">
+                    <div class="error">{{ session('error') }}</div>
+                </div>
+            @endif
 
             <div class="campo">
                 <label for="correo">Correo Electrónico</label>
-                <input id="correo" name="correo" type="email" value="{{ old('correo') }}" required autofocus>
+                <input id="correo" name="correo" type="email" value="{{ old('correo') }}" maxlength="150" autocomplete="username" required autofocus>
                 @error('correo') <div class="error">{{ $message }}</div> @enderror
             </div>
 
             <div class="campo">
                 <label for="contrasena">Contraseña</label>
-                <input id="contrasena" name="contrasena" type="password" required>
+                <input id="contrasena" name="contrasena" type="password" autocomplete="current-password" required>
                 @error('contrasena') <div class="error">{{ $message }}</div> @enderror
             </div>
 

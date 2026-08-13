@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Contracts\Services\AutenticacionServiceInterface;
 use App\Exceptions\Autenticacion\CorreoYaRegistradoException;
 use App\Exceptions\Autenticacion\CredencialesInvalidasException;
-use App\Exceptions\Autenticacion\RolNoConfiguradoException;
 use App\Exceptions\Autenticacion\UsuarioInactivoException;
 use App\Http\Requests\IniciarSesionRequest;
 use App\Http\Requests\RegistrarUsuarioRequest;
@@ -19,8 +18,7 @@ class AutenticacionController extends Controller
 {
     public function __construct(
         private readonly AutenticacionServiceInterface $autenticacionService,
-    ) {
-    }
+    ) {}
 
     public function mostrarRegistro(): View
     {
@@ -35,20 +33,9 @@ class AutenticacionController extends Controller
     public function registrar(RegistrarUsuarioRequest $request): RedirectResponse|JsonResponse
     {
         try {
-            $usuario = $this->autenticacionService->registrar($request->safe()->only([
-                'nombre',
-                'apellido',
-                'correo',
-                'contrasena',
-            ]));
+            $usuario = $this->autenticacionService->registrar($request->datos());
         } catch (CorreoYaRegistradoException $exception) {
-            throw ValidationException::withMessages([
-                'correo' => $exception->getMessage(),
-            ]);
-        } catch (RolNoConfiguradoException $exception) {
-            throw ValidationException::withMessages([
-                'correo' => $exception->getMessage(),
-            ]);
+            $this->lanzarErrorDeValidacion($exception->getMessage());
         }
 
         $request->session()->regenerate();
@@ -56,7 +43,7 @@ class AutenticacionController extends Controller
         if ($request->expectsJson()) {
             return response()->json([
                 'mensaje' => 'Usuario registrado correctamente.',
-                'usuario' => $usuario,
+                'usuario' => $usuario->toArray(),
             ], 201);
         }
 
@@ -70,14 +57,8 @@ class AutenticacionController extends Controller
                 $request->validated('correo'),
                 $request->validated('contrasena'),
             );
-        } catch (CredencialesInvalidasException $exception) {
-            throw ValidationException::withMessages([
-                'correo' => $exception->getMessage(),
-            ]);
-        } catch (UsuarioInactivoException $exception) {
-            throw ValidationException::withMessages([
-                'correo' => $exception->getMessage(),
-            ]);
+        } catch (CredencialesInvalidasException|UsuarioInactivoException $exception) {
+            $this->lanzarErrorDeValidacion($exception->getMessage());
         }
 
         $request->session()->regenerate();
@@ -85,7 +66,7 @@ class AutenticacionController extends Controller
         if ($request->expectsJson()) {
             return response()->json([
                 'mensaje' => 'Sesión iniciada correctamente.',
-                'usuario' => $usuario,
+                'usuario' => $usuario->toArray(),
             ]);
         }
 
@@ -106,5 +87,12 @@ class AutenticacionController extends Controller
         }
 
         return redirect('/')->with('exito', 'Sesión cerrada correctamente.');
+    }
+
+    private function lanzarErrorDeValidacion(string $mensaje): never
+    {
+        throw ValidationException::withMessages([
+            'correo' => $mensaje,
+        ]);
     }
 }
