@@ -19,6 +19,9 @@ class CodigoQr extends Model
         'codigo_qr',
     ];
 
+    /**
+     * Relación: el código QR tiene una mesa asociada.
+     */
     public function mesa(): HasOne
     {
         return $this->hasOne(Mesa::class, 'id_qr', 'id_qr');

@@ -20,11 +20,17 @@ class Mesa extends Model
         'id_qr',
     ];
 
+    /**
+     * Relación: la mesa pertenece a un código QR.
+     */
     public function codigoQr(): BelongsTo
     {
         return $this->belongsTo(CodigoQr::class, 'id_qr', 'id_qr');
     }
 
+    /**
+     * Relación: la mesa tiene muchos pedidos.
+     */
     public function pedidos(): HasMany
     {
         return $this->hasMany(Pedido::class, 'id_mesa', 'id_mesa');

@@ -6,6 +6,9 @@ use App\Models\Usuario;
 
 final readonly class UsuarioAutenticadoDatos
 {
+    /**
+     * Crea el DTO con los datos públicos del usuario autenticado.
+     */
     public function __construct(
         public int $idUsuario,
         public string $primerNombre,
@@ -17,6 +20,9 @@ final readonly class UsuarioAutenticadoDatos
         public string $rol,
     ) {}
 
+    /**
+     * Construye el DTO a partir del modelo de usuario y su rol.
+     */
     public static function fromModel(Usuario $usuario): self
     {
         $usuario->loadMissing('rol');
@@ -34,6 +40,8 @@ final readonly class UsuarioAutenticadoDatos
     }
 
     /**
+     * Convierte el DTO a un arreglo listo para respuestas JSON.
+     *
      * @return array<string, mixed>
      */
     public function toArray(): array

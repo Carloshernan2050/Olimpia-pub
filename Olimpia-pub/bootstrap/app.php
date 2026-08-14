@@ -12,10 +12,16 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    /**
+     * Redirige a invitados al inicio de sesión y a usuarios autenticados al inicio.
+     */
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectGuestsTo(fn () => route('iniciar-sesion'));
         $middleware->redirectUsersTo(fn () => route('inicio'));
     })
+    /**
+     * Responde en JSON para API y muestra el error de rol no configurado.
+     */
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),

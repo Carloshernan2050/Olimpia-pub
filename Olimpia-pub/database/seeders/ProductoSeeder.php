@@ -8,12 +8,18 @@ use Illuminate\Database\Seeder;
 
 class ProductoSeeder extends Seeder
 {
+    /**
+     * Inyecta los repositorios de producto y categoría.
+     */
     public function __construct(
         private readonly ProductoRepositoryInterface $productoRepository,
         private readonly CategoriaRepositoryInterface $categoriaRepository
     ) {
     }
 
+    /**
+     * Crea productos de ejemplo asociados a sus categorías.
+     */
     public function run(): void
     {
         $productos = [

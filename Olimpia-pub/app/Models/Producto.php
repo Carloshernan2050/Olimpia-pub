@@ -24,6 +24,11 @@ class Producto extends Model
         'id_categoria',
     ];
 
+    /**
+     * Define los atributos que deben convertirse a otro tipo.
+     *
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [
@@ -32,11 +37,17 @@ class Producto extends Model
         ];
     }
 
+    /**
+     * Relación: el producto pertenece a una categoría.
+     */
     public function categoria(): BelongsTo
     {
         return $this->belongsTo(Categoria::class, 'id_categoria', 'id_categoria');
     }
 
+    /**
+     * Relación: el producto puede tener muchas promociones.
+     */
     public function promociones(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -47,11 +58,17 @@ class Producto extends Model
         );
     }
 
+    /**
+     * Relación: el producto tiene muchos movimientos de inventario.
+     */
     public function movimientosInventario(): HasMany
     {
         return $this->hasMany(MovimientoInventario::class, 'id_producto', 'id_producto');
     }
 
+    /**
+     * Relación: el producto aparece en muchos detalles de pedido.
+     */
     public function detallesPedido(): HasMany
     {
         return $this->hasMany(DetallePedido::class, 'id_producto', 'id_producto');

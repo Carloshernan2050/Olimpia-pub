@@ -8,12 +8,18 @@ use Illuminate\Database\Seeder;
 
 class MesaSeeder extends Seeder
 {
+    /**
+     * Inyecta los repositorios de código QR y mesa.
+     */
     public function __construct(
         private readonly CodigoQrRepositoryInterface $codigoQrRepository,
         private readonly MesaRepositoryInterface $mesaRepository
     ) {
     }
 
+    /**
+     * Crea mesas de ejemplo con su código QR asociado.
+     */
     public function run(): void
     {
         for ($numero = 1; $numero <= 4; $numero++) {

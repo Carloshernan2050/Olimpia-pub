@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Crea la tabla de categorías.
+     */
     public function up(): void
     {
         Schema::create('categoria', function (Blueprint $table) {
@@ -15,6 +18,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Elimina la tabla de categorías.
+     */
     public function down(): void
     {
         Schema::dropIfExists('categoria');

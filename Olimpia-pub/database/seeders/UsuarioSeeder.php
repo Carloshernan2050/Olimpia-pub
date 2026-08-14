@@ -8,11 +8,17 @@ use Illuminate\Database\Seeder;
 
 class UsuarioSeeder extends Seeder
 {
+    /**
+     * Inyecta los repositorios de usuario y rol.
+     */
     public function __construct(
         private readonly UsuarioRepositoryInterface $usuarioRepository,
         private readonly RolRepositoryInterface $rolRepository
     ) {}
 
+    /**
+     * Crea usuarios de ejemplo para cada rol si aún no existen.
+     */
     public function run(): void
     {
         $usuarios = [

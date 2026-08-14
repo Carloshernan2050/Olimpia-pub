@@ -5,9 +5,9 @@ namespace App\Contracts\Services;
 interface DatabaseInstallerInterface
 {
     /**
-     * Ensures the configured database exists.
+     * Garantiza que la base de datos configurada exista.
      *
-     * @return bool True when the database was created, false when it already existed.
+     * @return bool Verdadero si se creó la base de datos, falso si ya existía.
      */
     public function ensureExists(): bool;
 }

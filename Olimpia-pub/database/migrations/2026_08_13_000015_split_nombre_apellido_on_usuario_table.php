@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Separa nombre y apellido en primer y segundo nombre/apellido.
+     */
     public function up(): void
     {
         Schema::table('usuario', function (Blueprint $table) {
@@ -19,6 +22,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Revierte la separación de nombre y apellido.
+     */
     public function down(): void
     {
         Schema::table('usuario', function (Blueprint $table) {

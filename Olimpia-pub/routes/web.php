@@ -3,10 +3,16 @@
 use App\Http\Controllers\AutenticacionController;
 use Illuminate\Support\Facades\Route;
 
+/**
+ * Muestra la página de inicio.
+ */
 Route::get('/', function () {
     return view('welcome');
 })->name('inicio');
 
+/**
+ * Rutas disponibles solo para visitantes.
+ */
 Route::middleware('guest')->group(function () {
     Route::get('/registro', [AutenticacionController::class, 'mostrarRegistro'])
         ->name('registro');
@@ -26,6 +32,9 @@ Route::middleware('guest')->group(function () {
         ->name('register');
 });
 
+/**
+ * Rutas disponibles solo para usuarios autenticados.
+ */
 Route::middleware('auth')->group(function () {
     Route::post('/cerrar-sesion', [AutenticacionController::class, 'cerrarSesion'])
         ->name('cerrar-sesion');

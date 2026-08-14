@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Crea la tabla de detalles de pedido.
+     */
     public function up(): void
     {
         Schema::create('detalle_pedido', function (Blueprint $table) {
@@ -30,6 +33,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Elimina la tabla de detalles de pedido.
+     */
     public function down(): void
     {
         Schema::dropIfExists('detalle_pedido');

@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Crea la tabla de reportes.
+     */
     public function up(): void
     {
         Schema::create('reporte', function (Blueprint $table) {
@@ -23,6 +26,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Elimina la tabla de reportes.
+     */
     public function down(): void
     {
         Schema::dropIfExists('reporte');

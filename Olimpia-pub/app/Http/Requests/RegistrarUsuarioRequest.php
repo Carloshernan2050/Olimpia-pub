@@ -7,11 +7,17 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class RegistrarUsuarioRequest extends FormRequest
 {
+    /**
+     * Indica si el usuario está autorizado para realizar esta petición.
+     */
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * Normaliza los campos opcionales vacíos a nulo antes de validar.
+     */
     protected function prepareForValidation(): void
     {
         $this->merge([
@@ -21,6 +27,8 @@ class RegistrarUsuarioRequest extends FormRequest
     }
 
     /**
+     * Define las reglas de validación del formulario de registro.
+     *
      * @return array<string, mixed>
      */
     public function rules(): array
@@ -36,6 +44,8 @@ class RegistrarUsuarioRequest extends FormRequest
     }
 
     /**
+     * Devuelve los mensajes de error de validación en español.
+     *
      * @return array<string, string>
      */
     public function messages(): array
@@ -52,6 +62,9 @@ class RegistrarUsuarioRequest extends FormRequest
         ];
     }
 
+    /**
+     * Convierte los datos validados en un DTO de registro.
+     */
     public function datos(): RegistrarUsuarioDatos
     {
         return RegistrarUsuarioDatos::fromValidated($this->safe()->only([

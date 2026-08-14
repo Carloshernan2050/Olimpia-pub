@@ -7,11 +7,17 @@ use Illuminate\Database\Seeder;
 
 class CategoriaSeeder extends Seeder
 {
+    /**
+     * Inyecta el repositorio de categorías.
+     */
     public function __construct(
         private readonly CategoriaRepositoryInterface $categoriaRepository
     ) {
     }
 
+    /**
+     * Crea las categorías iniciales si aún no existen.
+     */
     public function run(): void
     {
         $categorias = [

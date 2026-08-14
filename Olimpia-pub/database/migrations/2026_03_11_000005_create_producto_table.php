@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Crea la tabla de productos.
+     */
     public function up(): void
     {
         Schema::create('producto', function (Blueprint $table) {
@@ -25,6 +28,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Elimina la tabla de productos.
+     */
     public function down(): void
     {
         Schema::dropIfExists('producto');

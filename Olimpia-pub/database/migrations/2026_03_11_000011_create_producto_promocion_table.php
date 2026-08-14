@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Crea la tabla pivote de producto y promoción.
+     */
     public function up(): void
     {
         Schema::create('producto_promocion', function (Blueprint $table) {
@@ -28,6 +31,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Elimina la tabla pivote de producto y promoción.
+     */
     public function down(): void
     {
         Schema::dropIfExists('producto_promocion');

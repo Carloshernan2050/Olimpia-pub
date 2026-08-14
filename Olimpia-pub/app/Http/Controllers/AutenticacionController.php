@@ -16,20 +16,32 @@ use Illuminate\View\View;
 
 class AutenticacionController extends Controller
 {
+    /**
+     * Inyecta el servicio de autenticación.
+     */
     public function __construct(
         private readonly AutenticacionServiceInterface $autenticacionService,
     ) {}
 
+    /**
+     * Muestra el formulario de registro.
+     */
     public function mostrarRegistro(): View
     {
         return view('registro');
     }
 
+    /**
+     * Muestra el formulario de inicio de sesión.
+     */
     public function mostrarInicioSesion(): View
     {
         return view('inicio-sesion');
     }
 
+    /**
+     * Procesa el registro y responde en JSON o con redirección.
+     */
     public function registrar(RegistrarUsuarioRequest $request): RedirectResponse|JsonResponse
     {
         try {
@@ -50,6 +62,9 @@ class AutenticacionController extends Controller
         return redirect('/')->with('exito', 'Registro exitoso. Bienvenido.');
     }
 
+    /**
+     * Procesa el inicio de sesión y responde en JSON o con redirección.
+     */
     public function iniciarSesion(IniciarSesionRequest $request): RedirectResponse|JsonResponse
     {
         try {
@@ -73,6 +88,9 @@ class AutenticacionController extends Controller
         return redirect()->intended('/')->with('exito', 'Sesión iniciada correctamente.');
     }
 
+    /**
+     * Cierra la sesión, invalida la sesión actual y regenera el token CSRF.
+     */
     public function cerrarSesion(Request $request): RedirectResponse|JsonResponse
     {
         $this->autenticacionService->cerrarSesion();
@@ -89,6 +107,9 @@ class AutenticacionController extends Controller
         return redirect('/')->with('exito', 'Sesión cerrada correctamente.');
     }
 
+    /**
+     * Convierte un error de negocio en una excepción de validación asociada al correo.
+     */
     private function lanzarErrorDeValidacion(string $mensaje): never
     {
         throw ValidationException::withMessages([

@@ -13,6 +13,9 @@ class InstallDatabaseCommand extends Command
 
     protected $description = 'Verifica/crea la base de datos, corre migraciones y opcionalmente seeders';
 
+    /**
+     * Verifica o crea la base de datos, ejecuta las migraciones y, si se pide, los seeders.
+     */
     public function handle(DatabaseInstallerInterface $databaseInstaller): int
     {
         $this->info('Verificando base de datos...');

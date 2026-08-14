@@ -22,6 +22,9 @@ class AutenticacionService implements AutenticacionServiceInterface
 
     private const HASH_FALSO = '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi';
 
+    /**
+     * Inyecta el repositorio de usuarios, el de roles, el guardia de sesión y el hasher.
+     */
     public function __construct(
         private readonly UsuarioRepositoryInterface $usuarioRepository,
         private readonly RolRepositoryInterface $rolRepository,
@@ -29,6 +32,9 @@ class AutenticacionService implements AutenticacionServiceInterface
         private readonly Hasher $hasher,
     ) {}
 
+    /**
+     * Registra un usuario con rol cliente, inicia su sesión y devuelve sus datos.
+     */
     public function registrar(RegistrarUsuarioDatos $datos): UsuarioAutenticadoDatos
     {
         if ($this->usuarioRepository->findByCorreo($datos->correo) !== null) {
@@ -54,6 +60,9 @@ class AutenticacionService implements AutenticacionServiceInterface
         return UsuarioAutenticadoDatos::fromModel($usuario);
     }
 
+    /**
+     * Valida las credenciales, comprueba que la cuenta esté activa e inicia sesión.
+     */
     public function iniciarSesion(string $correo, string $contrasena): UsuarioAutenticadoDatos
     {
         $usuario = $this->usuarioRepository->findByCorreo($correo);
@@ -72,6 +81,9 @@ class AutenticacionService implements AutenticacionServiceInterface
         return UsuarioAutenticadoDatos::fromModel($usuario);
     }
 
+    /**
+     * Cierra la sesión del usuario autenticado.
+     */
     public function cerrarSesion(): void
     {
         $this->guard->logout();

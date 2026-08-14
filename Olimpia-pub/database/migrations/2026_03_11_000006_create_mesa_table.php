@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Crea la tabla de mesas.
+     */
     public function up(): void
     {
         Schema::create('mesa', function (Blueprint $table) {
@@ -22,6 +25,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Elimina la tabla de mesas.
+     */
     public function down(): void
     {
         Schema::dropIfExists('mesa');

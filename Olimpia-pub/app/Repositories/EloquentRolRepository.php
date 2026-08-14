@@ -8,16 +8,25 @@ use Illuminate\Support\Collection;
 
 class EloquentRolRepository implements RolRepositoryInterface
 {
+    /**
+     * Inyecta el modelo de rol.
+     */
     public function __construct(
         private readonly Rol $model
     ) {
     }
 
+    /**
+     * Crea un rol con los datos recibidos.
+     */
     public function create(array $data): Rol
     {
         return $this->model->newQuery()->create($data);
     }
 
+    /**
+     * Busca un rol por su nombre.
+     */
     public function findByNombre(string $nombreRol): ?Rol
     {
         return $this->model->newQuery()
@@ -25,6 +34,9 @@ class EloquentRolRepository implements RolRepositoryInterface
             ->first();
     }
 
+    /**
+     * Devuelve todos los roles.
+     */
     public function all(): Collection
     {
         return $this->model->newQuery()->get();

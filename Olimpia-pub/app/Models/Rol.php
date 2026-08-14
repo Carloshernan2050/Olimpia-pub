@@ -17,6 +17,9 @@ class Rol extends Model
         'nombre_rol',
     ];
 
+    /**
+     * Relación: el rol tiene muchos usuarios.
+     */
     public function usuarios(): HasMany
     {
         return $this->hasMany(Usuario::class, 'id_rol', 'id_rol');

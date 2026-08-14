@@ -21,6 +21,11 @@ class Pedido extends Model
         'id_mesa',
     ];
 
+    /**
+     * Define los atributos que deben convertirse a otro tipo.
+     *
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [
@@ -29,11 +34,17 @@ class Pedido extends Model
         ];
     }
 
+    /**
+     * Relación: el pedido pertenece a una mesa.
+     */
     public function mesa(): BelongsTo
     {
         return $this->belongsTo(Mesa::class, 'id_mesa', 'id_mesa');
     }
 
+    /**
+     * Relación: el pedido tiene muchos detalles.
+     */
     public function detalles(): HasMany
     {
         return $this->hasMany(DetallePedido::class, 'id_pedido', 'id_pedido');

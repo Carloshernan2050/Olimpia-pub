@@ -11,6 +11,11 @@ use Throwable;
 
 class DatabaseInstaller implements DatabaseInstallerInterface
 {
+    /**
+     * Garantiza que la base de datos configurada exista y la crea si hace falta.
+     *
+     * @return bool Verdadero si se creó la base de datos, falso si ya existía.
+     */
     public function ensureExists(): bool
     {
         $connection = (string) Config::get('database.default');
@@ -30,6 +35,8 @@ class DatabaseInstaller implements DatabaseInstallerInterface
     }
 
     /**
+     * Crea el archivo SQLite y su directorio cuando aún no existen.
+     *
      * @param  array<string, mixed>  $config
      */
     private function ensureSqliteDatabase(array $config): bool
@@ -58,6 +65,8 @@ class DatabaseInstaller implements DatabaseInstallerInterface
     }
 
     /**
+     * Verifica o crea la base de datos MySQL usando la conexión del servidor.
+     *
      * @param  array<string, mixed>  $config
      */
     private function ensureMySqlDatabase(string $connection, array $config): bool
@@ -97,6 +106,9 @@ class DatabaseInstaller implements DatabaseInstallerInterface
         }
     }
 
+    /**
+     * Comprueba que el nombre de la base de datos solo contenga caracteres permitidos.
+     */
     private function assertSafeDatabaseName(string $database): void
     {
         if ($database === '' || preg_match('/^[A-Za-z0-9_]+$/', $database) !== 1) {

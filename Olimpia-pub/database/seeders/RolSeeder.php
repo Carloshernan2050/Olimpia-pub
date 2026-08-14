@@ -7,11 +7,17 @@ use Illuminate\Database\Seeder;
 
 class RolSeeder extends Seeder
 {
+    /**
+     * Inyecta el repositorio de roles.
+     */
     public function __construct(
         private readonly RolRepositoryInterface $rolRepository
     ) {
     }
 
+    /**
+     * Crea los roles del sistema si aún no existen.
+     */
     public function run(): void
     {
         $roles = [

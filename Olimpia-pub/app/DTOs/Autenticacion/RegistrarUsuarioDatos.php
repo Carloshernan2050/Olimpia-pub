@@ -4,6 +4,9 @@ namespace App\DTOs\Autenticacion;
 
 final readonly class RegistrarUsuarioDatos
 {
+    /**
+     * Crea el DTO con los datos validados del formulario de registro.
+     */
     public function __construct(
         public string $primerNombre,
         public ?string $segundoNombre,
@@ -14,6 +17,8 @@ final readonly class RegistrarUsuarioDatos
     ) {}
 
     /**
+     * Construye el DTO a partir de un arreglo de datos ya validados.
+     *
      * @param  array{primer_nombre: string, segundo_nombre?: string|null, primer_apellido: string, segundo_apellido?: string|null, correo: string, contrasena: string}  $datos
      */
     public static function fromValidated(array $datos): self
@@ -29,6 +34,8 @@ final readonly class RegistrarUsuarioDatos
     }
 
     /**
+     * Devuelve los datos listos para persistir en la base de datos.
+     *
      * @return array<string, string|null>
      */
     public function toPersistence(): array
@@ -43,6 +50,9 @@ final readonly class RegistrarUsuarioDatos
         ];
     }
 
+    /**
+     * Normaliza un valor opcional: recorta espacios y convierte vacío en nulo.
+     */
     private static function opcional(?string $valor): ?string
     {
         if ($valor === null) {

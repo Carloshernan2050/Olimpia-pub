@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Crea la tabla de promociones.
+     */
     public function up(): void
     {
         Schema::create('promocion', function (Blueprint $table) {
@@ -26,6 +29,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Elimina la tabla de promociones.
+     */
     public function down(): void
     {
         Schema::dropIfExists('promocion');

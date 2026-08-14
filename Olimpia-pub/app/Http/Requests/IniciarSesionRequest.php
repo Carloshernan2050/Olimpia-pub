@@ -6,12 +6,17 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class IniciarSesionRequest extends FormRequest
 {
+    /**
+     * Indica si el usuario está autorizado para realizar esta petición.
+     */
     public function authorize(): bool
     {
         return true;
     }
 
     /**
+     * Define las reglas de validación del formulario de inicio de sesión.
+     *
      * @return array<string, mixed>
      */
     public function rules(): array
@@ -23,6 +28,8 @@ class IniciarSesionRequest extends FormRequest
     }
 
     /**
+     * Devuelve los mensajes de error de validación en español.
+     *
      * @return array<string, string>
      */
     public function messages(): array

@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Crea la tabla de movimientos de inventario.
+     */
     public function up(): void
     {
         Schema::create('movimiento_inventario', function (Blueprint $table) {
@@ -30,6 +33,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Elimina la tabla de movimientos de inventario.
+     */
     public function down(): void
     {
         Schema::dropIfExists('movimiento_inventario');

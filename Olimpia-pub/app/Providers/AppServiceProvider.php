@@ -28,7 +28,7 @@ use Illuminate\Support\ServiceProvider;
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * Registra los servicios, repositorios y el guardia de autenticación.
      */
     public function register(): void
     {
@@ -47,7 +47,7 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Bootstrap any application services.
+     * Configura los limitadores de tasa para registro e inicio de sesión.
      */
     public function boot(): void
     {
