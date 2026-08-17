@@ -32,14 +32,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(DatabaseInstallerInterface::class, DatabaseInstaller::class);
-        $this->app->bind(AutenticacionServiceInterface::class, AutenticacionService::class);
-        $this->app->bind(RolRepositoryInterface::class, EloquentRolRepository::class);
-        $this->app->bind(UsuarioRepositoryInterface::class, EloquentUsuarioRepository::class);
-        $this->app->bind(CategoriaRepositoryInterface::class, EloquentCategoriaRepository::class);
-        $this->app->bind(CodigoQrRepositoryInterface::class, EloquentCodigoQrRepository::class);
-        $this->app->bind(MesaRepositoryInterface::class, EloquentMesaRepository::class);
-        $this->app->bind(ProductoRepositoryInterface::class, EloquentProductoRepository::class);
+        foreach ([
+            DatabaseInstallerInterface::class => DatabaseInstaller::class,
+            AutenticacionServiceInterface::class => AutenticacionService::class,
+            RolRepositoryInterface::class => EloquentRolRepository::class,
+            UsuarioRepositoryInterface::class => EloquentUsuarioRepository::class,
+            CategoriaRepositoryInterface::class => EloquentCategoriaRepository::class,
+            CodigoQrRepositoryInterface::class => EloquentCodigoQrRepository::class,
+            MesaRepositoryInterface::class => EloquentMesaRepository::class,
+            ProductoRepositoryInterface::class => EloquentProductoRepository::class,
+        ] as $abstracto => $concreto) {
+            $this->app->bind($abstracto, $concreto);
+        }
 
         $this->app->bind(StatefulGuard::class, function () {
             return Auth::guard('web');

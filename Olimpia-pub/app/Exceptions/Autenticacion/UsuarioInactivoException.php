@@ -2,15 +2,9 @@
 
 namespace App\Exceptions\Autenticacion;
 
-use Exception;
+use App\Exceptions\ExcepcionDeDominio;
 
-class UsuarioInactivoException extends Exception
+class UsuarioInactivoException extends ExcepcionDeDominio
 {
-    /**
-     * Crea la excepción cuando la cuenta del usuario no está activa.
-     */
-    public function __construct(string $message = 'La cuenta de usuario no está activa.')
-    {
-        parent::__construct($message);
-    }
+    protected const MENSAJE = 'La cuenta de usuario no está activa.';
 }

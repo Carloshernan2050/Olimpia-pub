@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Contracts\Services\AutenticacionServiceInterface;
+use App\DTOs\Autenticacion\UsuarioAutenticadoDatos;
 use App\Exceptions\Autenticacion\CorreoYaRegistradoException;
 use App\Exceptions\Autenticacion\CredencialesInvalidasException;
 use App\Exceptions\Autenticacion\UsuarioInactivoException;
@@ -16,55 +17,37 @@ use Illuminate\View\View;
 
 class AutenticacionController extends Controller
 {
-    /**
-     * Inyecta el servicio de autenticación.
-     */
     public function __construct(
         private readonly AutenticacionServiceInterface $autenticacionService,
     ) {}
 
-    /**
-     * Muestra el formulario de registro.
-     */
     public function mostrarRegistro(): View
     {
         return view('registro');
     }
 
-    /**
-     * Muestra el formulario de inicio de sesión.
-     */
     public function mostrarInicioSesion(): View
     {
         return view('inicio-sesion');
     }
 
-    /**
-     * Procesa el registro y responde en JSON o con redirección.
-     */
     public function registrar(RegistrarUsuarioRequest $request): RedirectResponse|JsonResponse
     {
         try {
             $usuario = $this->autenticacionService->registrar($request->datos());
         } catch (CorreoYaRegistradoException $exception) {
-            $this->lanzarErrorDeValidacion($exception->getMessage());
+            throw $this->errorDeValidacion($exception->getMessage());
         }
 
-        $request->session()->regenerate();
-
-        if ($request->expectsJson()) {
-            return response()->json([
-                'mensaje' => 'Usuario registrado correctamente.',
-                'usuario' => $usuario->toArray(),
-            ], 201);
-        }
-
-        return redirect('/')->with('exito', 'Registro exitoso. Bienvenido.');
+        return $this->responderSesion(
+            $request,
+            $usuario,
+            'Usuario registrado correctamente.',
+            'Registro exitoso. Bienvenido.',
+            201
+        );
     }
 
-    /**
-     * Procesa el inicio de sesión y responde en JSON o con redirección.
-     */
     public function iniciarSesion(IniciarSesionRequest $request): RedirectResponse|JsonResponse
     {
         try {
@@ -73,28 +56,22 @@ class AutenticacionController extends Controller
                 $request->validated('contrasena'),
             );
         } catch (CredencialesInvalidasException|UsuarioInactivoException $exception) {
-            $this->lanzarErrorDeValidacion($exception->getMessage());
+            throw $this->errorDeValidacion($exception->getMessage());
         }
 
-        $request->session()->regenerate();
-
-        if ($request->expectsJson()) {
-            return response()->json([
-                'mensaje' => 'Sesión iniciada correctamente.',
-                'usuario' => $usuario->toArray(),
-            ]);
-        }
-
-        return redirect()->intended('/')->with('exito', 'Sesión iniciada correctamente.');
+        return $this->responderSesion(
+            $request,
+            $usuario,
+            'Sesión iniciada correctamente.',
+            'Sesión iniciada correctamente.',
+            200,
+            true
+        );
     }
 
-    /**
-     * Cierra la sesión, invalida la sesión actual y regenera el token CSRF.
-     */
     public function cerrarSesion(Request $request): RedirectResponse|JsonResponse
     {
         $this->autenticacionService->cerrarSesion();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
@@ -107,12 +84,31 @@ class AutenticacionController extends Controller
         return redirect('/')->with('exito', 'Sesión cerrada correctamente.');
     }
 
-    /**
-     * Convierte un error de negocio en una excepción de validación asociada al correo.
-     */
-    private function lanzarErrorDeValidacion(string $mensaje): never
+    private function responderSesion(
+        Request $request,
+        UsuarioAutenticadoDatos $usuario,
+        string $mensajeJson,
+        string $mensajeRedirect,
+        int $status = 200,
+        bool $intended = false,
+    ): RedirectResponse|JsonResponse {
+        $request->session()->regenerate();
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'mensaje' => $mensajeJson,
+                'usuario' => $usuario->toArray(),
+            ], $status);
+        }
+
+        $redireccion = $intended ? redirect()->intended('/') : redirect('/');
+
+        return $redireccion->with('exito', $mensajeRedirect);
+    }
+
+    private function errorDeValidacion(string $mensaje): ValidationException
     {
-        throw ValidationException::withMessages([
+        return ValidationException::withMessages([
             'correo' => $mensaje,
         ]);
     }

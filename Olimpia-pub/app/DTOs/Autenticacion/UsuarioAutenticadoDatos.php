@@ -2,6 +2,7 @@
 
 namespace App\DTOs\Autenticacion;
 
+use App\Exceptions\Autenticacion\RolNoConfiguradoException;
 use App\Models\Usuario;
 
 final readonly class UsuarioAutenticadoDatos
@@ -11,10 +12,7 @@ final readonly class UsuarioAutenticadoDatos
      */
     public function __construct(
         public int $idUsuario,
-        public string $primerNombre,
-        public ?string $segundoNombre,
-        public string $primerApellido,
-        public ?string $segundoApellido,
+        public NombrePersona $nombre,
         public string $correo,
         public string $estado,
         public string $rol,
@@ -26,16 +24,25 @@ final readonly class UsuarioAutenticadoDatos
     public static function fromModel(Usuario $usuario): self
     {
         $usuario->loadMissing('rol');
+        $rol = $usuario->rol;
+
+        if ($rol === null) {
+            throw new RolNoConfiguradoException(
+                'El usuario no tiene un rol asignado.'
+            );
+        }
 
         return new self(
-            idUsuario: (int) $usuario->id_usuario,
-            primerNombre: (string) $usuario->primer_nombre,
-            segundoNombre: $usuario->segundo_nombre,
-            primerApellido: (string) $usuario->primer_apellido,
-            segundoApellido: $usuario->segundo_apellido,
-            correo: (string) $usuario->correo,
-            estado: (string) $usuario->estado,
-            rol: (string) $usuario->rol->nombre_rol,
+            (int) $usuario->id_usuario,
+            new NombrePersona(
+                (string) $usuario->primer_nombre,
+                $usuario->segundo_nombre,
+                (string) $usuario->primer_apellido,
+                $usuario->segundo_apellido
+            ),
+            (string) $usuario->correo,
+            (string) $usuario->estado,
+            (string) $rol->nombre_rol
         );
     }
 
@@ -48,10 +55,7 @@ final readonly class UsuarioAutenticadoDatos
     {
         return [
             'id_usuario' => $this->idUsuario,
-            'primer_nombre' => $this->primerNombre,
-            'segundo_nombre' => $this->segundoNombre,
-            'primer_apellido' => $this->primerApellido,
-            'segundo_apellido' => $this->segundoApellido,
+            ...$this->nombre->toArray(),
             'correo' => $this->correo,
             'estado' => $this->estado,
             'rol' => $this->rol,

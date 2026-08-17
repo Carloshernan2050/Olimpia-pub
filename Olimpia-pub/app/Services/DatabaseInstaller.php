@@ -3,10 +3,14 @@
 namespace App\Services;
 
 use App\Contracts\Services\DatabaseInstallerInterface;
+use App\Exceptions\BaseDatos\ArchivoSqliteNoCreadoException;
+use App\Exceptions\BaseDatos\BaseDatosNoCreadaException;
+use App\Exceptions\BaseDatos\ConexionNoEncontradaException;
+use App\Exceptions\BaseDatos\DirectorioSqliteNoCreadoException;
+use App\Exceptions\BaseDatos\DriverNoSoportadoException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
-use RuntimeException;
 use Throwable;
 
 class DatabaseInstaller implements DatabaseInstallerInterface
@@ -22,15 +26,13 @@ class DatabaseInstaller implements DatabaseInstallerInterface
         $config = Config::get("database.connections.{$connection}");
 
         if (! is_array($config)) {
-            throw new RuntimeException("No existe la conexión de base de datos [{$connection}].");
+            throw new ConexionNoEncontradaException($connection);
         }
 
         return match ($config['driver'] ?? null) {
             'sqlite' => $this->ensureSqliteDatabase($config),
             'mysql', 'mariadb' => $this->ensureMySqlDatabase($connection, $config),
-            default => throw new RuntimeException(
-                'Solo se soporta crear automáticamente bases sqlite, mysql o mariadb.'
-            ),
+            default => throw new DriverNoSoportadoException,
         };
     }
 
@@ -54,11 +56,11 @@ class DatabaseInstaller implements DatabaseInstallerInterface
         $directory = dirname($database);
 
         if (! is_dir($directory) && ! mkdir($directory, 0755, true) && ! is_dir($directory)) {
-            throw new RuntimeException("No se pudo crear el directorio de SQLite: {$directory}");
+            throw new DirectorioSqliteNoCreadoException($directory);
         }
 
         if (touch($database) === false) {
-            throw new RuntimeException("No se pudo crear el archivo SQLite: {$database}");
+            throw new ArchivoSqliteNoCreadoException($database);
         }
 
         return true;
@@ -78,7 +80,7 @@ class DatabaseInstaller implements DatabaseInstallerInterface
         $serverConfig['database'] = null;
 
         Config::set("database.connections.{$connection}", $serverConfig);
-        DB::purge($connection);
+        $this->purgarConexion($connection);
 
         try {
             $exists = DB::connection($connection)->select(
@@ -96,14 +98,19 @@ class DatabaseInstaller implements DatabaseInstallerInterface
 
             return true;
         } catch (Throwable $exception) {
-            throw new RuntimeException(
-                'No se pudo verificar/crear la base de datos. Revisa que MySQL esté encendido y las credenciales del .env.',
-                previous: $exception
-            );
+            throw new BaseDatosNoCreadaException(previous: $exception);
         } finally {
             Config::set("database.connections.{$connection}", $config);
-            DB::purge($connection);
+            $this->purgarConexion($connection);
         }
+    }
+
+    /**
+     * Descarta la conexión cacheada para volver a leer la configuración.
+     */
+    private function purgarConexion(string $connection): void
+    {
+        DB::purge($connection);
     }
 
     /**
@@ -111,7 +118,7 @@ class DatabaseInstaller implements DatabaseInstallerInterface
      */
     private function assertSafeDatabaseName(string $database): void
     {
-        if ($database === '' || preg_match('/^[A-Za-z0-9_]+$/', $database) !== 1) {
+        if ($database === '' || preg_match('/^\w+$/', $database) !== 1) {
             throw new InvalidArgumentException(
                 'El nombre de la base de datos solo puede contener letras, números y guion bajo.'
             );

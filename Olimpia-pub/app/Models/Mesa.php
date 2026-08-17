@@ -2,17 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Mesa extends Model
+class Mesa extends OlimpiaModel
 {
     protected $table = 'mesa';
 
     protected $primaryKey = 'id_mesa';
-
-    public $timestamps = false;
 
     protected $fillable = [
         'numero_mesa',
@@ -20,19 +17,13 @@ class Mesa extends Model
         'id_qr',
     ];
 
-    /**
-     * Relación: la mesa pertenece a un código QR.
-     */
     public function codigoQr(): BelongsTo
     {
-        return $this->belongsTo(CodigoQr::class, 'id_qr', 'id_qr');
+        return $this->pertenecePor(CodigoQr::class, 'id_qr');
     }
 
-    /**
-     * Relación: la mesa tiene muchos pedidos.
-     */
     public function pedidos(): HasMany
     {
-        return $this->hasMany(Pedido::class, 'id_mesa', 'id_mesa');
+        return $this->tieneMuchosPor(Pedido::class, 'id_mesa');
     }
 }

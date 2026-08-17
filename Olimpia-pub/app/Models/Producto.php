@@ -2,18 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Producto extends Model
+class Producto extends OlimpiaModel
 {
     protected $table = 'producto';
 
     protected $primaryKey = 'id_producto';
-
-    public $timestamps = false;
 
     protected $fillable = [
         'nombre',
@@ -24,11 +21,6 @@ class Producto extends Model
         'id_categoria',
     ];
 
-    /**
-     * Define los atributos que deben convertirse a otro tipo.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -37,20 +29,14 @@ class Producto extends Model
         ];
     }
 
-    /**
-     * Relación: el producto pertenece a una categoría.
-     */
     public function categoria(): BelongsTo
     {
-        return $this->belongsTo(Categoria::class, 'id_categoria', 'id_categoria');
+        return $this->pertenecePor(Categoria::class, 'id_categoria');
     }
 
-    /**
-     * Relación: el producto puede tener muchas promociones.
-     */
     public function promociones(): BelongsToMany
     {
-        return $this->belongsToMany(
+        return $this->muchosAMuchosPor(
             Promocion::class,
             'producto_promocion',
             'id_producto',
@@ -58,19 +44,13 @@ class Producto extends Model
         );
     }
 
-    /**
-     * Relación: el producto tiene muchos movimientos de inventario.
-     */
     public function movimientosInventario(): HasMany
     {
-        return $this->hasMany(MovimientoInventario::class, 'id_producto', 'id_producto');
+        return $this->tieneMuchosPor(MovimientoInventario::class, 'id_producto');
     }
 
-    /**
-     * Relación: el producto aparece en muchos detalles de pedido.
-     */
     public function detallesPedido(): HasMany
     {
-        return $this->hasMany(DetallePedido::class, 'id_producto', 'id_producto');
+        return $this->tieneMuchosPor(DetallePedido::class, 'id_producto');
     }
 }

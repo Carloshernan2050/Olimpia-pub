@@ -2,27 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Categoria extends Model
+class Categoria extends OlimpiaModel
 {
     protected $table = 'categoria';
 
     protected $primaryKey = 'id_categoria';
-
-    public $timestamps = false;
 
     protected $fillable = [
         'nombre',
         'descripcion',
     ];
 
-    /**
-     * Relación: la categoría tiene muchos productos.
-     */
     public function productos(): HasMany
     {
-        return $this->hasMany(Producto::class, 'id_categoria', 'id_categoria');
+        return $this->tieneMuchosPor(Producto::class, 'id_categoria');
     }
 }

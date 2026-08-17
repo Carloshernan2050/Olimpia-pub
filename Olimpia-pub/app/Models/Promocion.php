@@ -2,17 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Promocion extends Model
+class Promocion extends OlimpiaModel
 {
     protected $table = 'promocion';
 
     protected $primaryKey = 'id_promocion';
-
-    public $timestamps = false;
 
     protected $fillable = [
         'nombre',
@@ -24,11 +21,6 @@ class Promocion extends Model
         'id_usuario',
     ];
 
-    /**
-     * Define los atributos que deben convertirse a otro tipo.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -38,20 +30,14 @@ class Promocion extends Model
         ];
     }
 
-    /**
-     * Relación: la promoción pertenece a un usuario.
-     */
     public function usuario(): BelongsTo
     {
-        return $this->belongsTo(Usuario::class, 'id_usuario', 'id_usuario');
+        return $this->pertenecePor(Usuario::class, 'id_usuario');
     }
 
-    /**
-     * Relación: la promoción puede aplicarse a muchos productos.
-     */
     public function productos(): BelongsToMany
     {
-        return $this->belongsToMany(
+        return $this->muchosAMuchosPor(
             Producto::class,
             'producto_promocion',
             'id_promocion',

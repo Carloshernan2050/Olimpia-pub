@@ -7,10 +7,13 @@
     --rojo: #e10600;
     --gris-patron: rgba(255, 255, 255, 0.08);
     --error: #ff4d4d;
+    --alto-pantalla: 100vh;
+    --alto-pantalla: 100dvh;
+    --transicion: 0.2s ease;
+    --desplazamiento: 0.15s ease;
 
     margin: 0;
-    min-height: 100vh;
-    min-height: 100dvh;
+    min-height: var(--alto-pantalla);
     color: var(--blanco);
     font-family: "Instrument Sans", "Segoe UI", Tahoma, sans-serif;
     background-color: var(--negro);
@@ -35,13 +38,21 @@
     outline-offset: 3px;
 }
 
-/* —— Bienvenida —— */
-.pantalla-bienvenida {
-    min-height: 100vh;
-    min-height: 100dvh;
+.columna-centrada {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.titulo-olimpia {
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* —— Bienvenida —— */
+.pantalla-bienvenida {
+    min-height: var(--alto-pantalla);
     justify-content: space-between;
     padding: 18vh 1.5rem 12vh;
     text-align: center;
@@ -59,9 +70,6 @@
 .pantalla-bienvenida h1 {
     margin: 0;
     font-size: clamp(2.4rem, 8vw, 4rem);
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
 }
 
 .pantalla-bienvenida .saludo {
@@ -71,8 +79,6 @@
 }
 
 .pantalla-bienvenida .acciones {
-    display: flex;
-    flex-direction: column;
     gap: 1rem;
     width: min(100%, 280px);
 }
@@ -89,11 +95,7 @@
 /* —— Formularios —— */
 .pantalla-formulario {
     position: relative;
-    min-height: 100vh;
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    min-height: var(--alto-pantalla);
     padding: 2rem 1.25rem 3rem;
 }
 
@@ -110,7 +112,7 @@
     color: var(--blanco);
     font-size: 1.25rem;
     line-height: 1;
-    transition: background 0.2s ease, transform 0.2s ease;
+    transition: background var(--transicion), transform var(--transicion);
 }
 
 .boton-volver:hover,
@@ -122,9 +124,6 @@
 .pantalla-formulario h1 {
     margin: 2.5rem 0 2rem;
     font-size: clamp(1.8rem, 5vw, 2.6rem);
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
     text-align: center;
 }
 
@@ -163,16 +162,20 @@
     color: var(--blanco);
     font-size: 1rem;
     outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color var(--transicion), box-shadow var(--transicion);
 }
 
-.campo input:focus {
+.campo input:focus,
+.campo:has(.error) input {
     border-color: var(--azul);
-    box-shadow: 0 0 0 2px var(--azul-foco);
 }
 
 .campo:has(.error) input {
     border-color: var(--error);
+}
+
+.campo input:focus {
+    box-shadow: 0 0 0 2px var(--azul-foco);
 }
 
 .campo input:-webkit-autofill,
@@ -189,15 +192,12 @@
     font-size: 0.85rem;
 }
 
-.campo-completo {
+.campo-completo,
+.acciones-formulario {
     grid-column: 1 / -1;
 }
 
 .acciones-formulario {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     gap: 1rem;
     margin-top: 1.5rem;
 }
@@ -216,7 +216,7 @@
     font-size: 1.05rem;
     font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+    transition: background var(--transicion), color var(--transicion), transform var(--desplazamiento);
 }
 
 .pagina-olimpia .boton-principal:hover,
@@ -270,10 +270,17 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .pagina-olimpia *,
-    .pagina-olimpia *::before,
-    .pagina-olimpia *::after {
-        transition: none !important;
-        transform: none !important;
+    .pagina-olimpia {
+        --transicion: none;
+        --desplazamiento: none;
+    }
+
+    .boton-volver:hover,
+    .boton-volver:focus-visible,
+    .pagina-olimpia .boton-principal:hover,
+    .pagina-olimpia .boton-principal:focus-visible,
+    .pagina-olimpia a.boton-principal:hover,
+    .pagina-olimpia a.boton-principal:focus-visible {
+        transform: none;
     }
 }

@@ -6,17 +6,9 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class IniciarSesionRequest extends FormRequest
 {
-    /**
-     * Indica si el usuario está autorizado para realizar esta petición.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
+    use AutorizaFormularioPublico;
 
     /**
-     * Define las reglas de validación del formulario de inicio de sesión.
-     *
      * @return array<string, mixed>
      */
     public function rules(): array
@@ -28,16 +20,10 @@ class IniciarSesionRequest extends FormRequest
     }
 
     /**
-     * Devuelve los mensajes de error de validación en español.
-     *
      * @return array<string, string>
      */
     public function messages(): array
     {
-        return [
-            'correo.required' => 'El correo es obligatorio.',
-            'correo.email' => 'El correo no es válido.',
-            'contrasena.required' => 'La contraseña es obligatoria.',
-        ];
+        return $this->mensajesCorreoYContrasena();
     }
 }

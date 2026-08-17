@@ -2,15 +2,9 @@
 
 namespace App\Exceptions\Autenticacion;
 
-use Exception;
+use App\Exceptions\ExcepcionDeDominio;
 
-class CorreoYaRegistradoException extends Exception
+class CorreoYaRegistradoException extends ExcepcionDeDominio
 {
-    /**
-     * Crea la excepción cuando el correo ya pertenece a otro usuario.
-     */
-    public function __construct(string $message = 'El correo ya está registrado.')
-    {
-        parent::__construct($message);
-    }
+    protected const MENSAJE = 'El correo ya está registrado.';
 }
