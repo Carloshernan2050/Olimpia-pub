@@ -6,22 +6,15 @@ use App\Contracts\Repositories\RolRepositoryInterface;
 use App\Models\Rol;
 use Illuminate\Support\Collection;
 
-class EloquentRolRepository implements RolRepositoryInterface
+class EloquentRolRepository extends EloquentRepository implements RolRepositoryInterface
 {
-    /**
-     * Inyecta el modelo de rol.
-     */
-    public function __construct(
-        private readonly Rol $model
-    ) {
-    }
-
     /**
      * Crea un rol con los datos recibidos.
      */
     public function create(array $data): Rol
     {
-        return $this->model->newQuery()->create($data);
+        /** @var Rol */
+        return $this->createModel($data);
     }
 
     /**
@@ -29,9 +22,8 @@ class EloquentRolRepository implements RolRepositoryInterface
      */
     public function findByNombre(string $nombreRol): ?Rol
     {
-        return $this->model->newQuery()
-            ->where('nombre_rol', $nombreRol)
-            ->first();
+        /** @var Rol|null */
+        return $this->findFirstBy('nombre_rol', $nombreRol);
     }
 
     /**
@@ -39,6 +31,14 @@ class EloquentRolRepository implements RolRepositoryInterface
      */
     public function all(): Collection
     {
-        return $this->model->newQuery()->get();
+        return $this->allModels();
+    }
+
+    /**
+     * @return class-string<Rol>
+     */
+    protected function modelClass(): string
+    {
+        return Rol::class;
     }
 }

@@ -6,22 +6,15 @@ use App\Contracts\Repositories\UsuarioRepositoryInterface;
 use App\Models\Usuario;
 use Illuminate\Support\Collection;
 
-class EloquentUsuarioRepository implements UsuarioRepositoryInterface
+class EloquentUsuarioRepository extends EloquentRepository implements UsuarioRepositoryInterface
 {
-    /**
-     * Inyecta el modelo de usuario.
-     */
-    public function __construct(
-        private readonly Usuario $model
-    ) {
-    }
-
     /**
      * Crea un usuario con los datos recibidos.
      */
     public function create(array $data): Usuario
     {
-        return $this->model->newQuery()->create($data);
+        /** @var Usuario */
+        return $this->createModel($data);
     }
 
     /**
@@ -29,9 +22,8 @@ class EloquentUsuarioRepository implements UsuarioRepositoryInterface
      */
     public function findByCorreo(string $correo): ?Usuario
     {
-        return $this->model->newQuery()
-            ->where('correo', $correo)
-            ->first();
+        /** @var Usuario|null */
+        return $this->findFirstBy('correo', $correo);
     }
 
     /**
@@ -39,6 +31,14 @@ class EloquentUsuarioRepository implements UsuarioRepositoryInterface
      */
     public function all(): Collection
     {
-        return $this->model->newQuery()->get();
+        return $this->allModels();
+    }
+
+    /**
+     * @return class-string<Usuario>
+     */
+    protected function modelClass(): string
+    {
+        return Usuario::class;
     }
 }

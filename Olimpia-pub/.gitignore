@@ -21,6 +21,7 @@ node_modules/
 /public/storage
 /storage/*.key
 /storage/pail
+/storage/coverage
 /vendor
 vendor/
 _ide_helper.php
@@ -28,6 +29,9 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 sonar.bat
+.sonar-token
+.scannerwork/
+.sonar/
 npm-debug.log*
 yarn-error.log*
 pnpm-debug.log*

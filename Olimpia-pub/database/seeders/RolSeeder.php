@@ -12,8 +12,7 @@ class RolSeeder extends Seeder
      */
     public function __construct(
         private readonly RolRepositoryInterface $rolRepository
-    ) {
-    }
+    ) {}
 
     /**
      * Crea los roles del sistema si aún no existen.

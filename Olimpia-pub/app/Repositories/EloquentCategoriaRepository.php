@@ -5,22 +5,15 @@ namespace App\Repositories;
 use App\Contracts\Repositories\CategoriaRepositoryInterface;
 use App\Models\Categoria;
 
-class EloquentCategoriaRepository implements CategoriaRepositoryInterface
+class EloquentCategoriaRepository extends EloquentRepository implements CategoriaRepositoryInterface
 {
-    /**
-     * Inyecta el modelo de categoría.
-     */
-    public function __construct(
-        private readonly Categoria $model
-    ) {
-    }
-
     /**
      * Crea una categoría con los datos recibidos.
      */
     public function create(array $data): Categoria
     {
-        return $this->model->newQuery()->create($data);
+        /** @var Categoria */
+        return $this->createModel($data);
     }
 
     /**
@@ -28,8 +21,15 @@ class EloquentCategoriaRepository implements CategoriaRepositoryInterface
      */
     public function findByNombre(string $nombre): ?Categoria
     {
-        return $this->model->newQuery()
-            ->where('nombre', $nombre)
-            ->first();
+        /** @var Categoria|null */
+        return $this->findFirstBy('nombre', $nombre);
+    }
+
+    /**
+     * @return class-string<Categoria>
+     */
+    protected function modelClass(): string
+    {
+        return Categoria::class;
     }
 }

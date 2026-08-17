@@ -1,22 +1,18 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Olimpia') }}</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="pagina-olimpia">
-    <main class="pantalla-bienvenida">
+@extends('layouts.olimpia')
+
+@section('titulo', config('app.name', 'Olimpia'))
+
+@section('contenido')
+    <main class="pantalla-bienvenida columna-centrada">
         <header>
             <p class="marca">Olimpia Pub</p>
-            <h1>Bienvenidos</h1>
+            <h1 class="titulo-olimpia">Bienvenidos</h1>
             @auth
-                <p class="saludo">Hola, {{ auth()->user()->primer_nombre }}</p>
+                <p class="saludo">Hola, {{ auth()->user()?->primer_nombre }}</p>
             @endauth
         </header>
 
-        <div class="acciones">
+        <div class="acciones columna-centrada">
             @guest
                 <a class="boton-principal" href="{{ route('iniciar-sesion') }}">Iniciar Sesión</a>
                 <a class="boton-principal" href="{{ route('registro') }}">Registrarse</a>
@@ -28,5 +24,4 @@
             @endguest
         </div>
     </main>
-</body>
-</html>
+@endsection

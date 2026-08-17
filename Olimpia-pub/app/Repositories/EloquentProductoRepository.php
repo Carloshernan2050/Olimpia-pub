@@ -5,22 +5,15 @@ namespace App\Repositories;
 use App\Contracts\Repositories\ProductoRepositoryInterface;
 use App\Models\Producto;
 
-class EloquentProductoRepository implements ProductoRepositoryInterface
+class EloquentProductoRepository extends EloquentRepository implements ProductoRepositoryInterface
 {
-    /**
-     * Inyecta el modelo de producto.
-     */
-    public function __construct(
-        private readonly Producto $model
-    ) {
-    }
-
     /**
      * Crea un producto con los datos recibidos.
      */
     public function create(array $data): Producto
     {
-        return $this->model->newQuery()->create($data);
+        /** @var Producto */
+        return $this->createModel($data);
     }
 
     /**
@@ -28,8 +21,15 @@ class EloquentProductoRepository implements ProductoRepositoryInterface
      */
     public function findByNombre(string $nombre): ?Producto
     {
-        return $this->model->newQuery()
-            ->where('nombre', $nombre)
-            ->first();
+        /** @var Producto|null */
+        return $this->findFirstBy('nombre', $nombre);
+    }
+
+    /**
+     * @return class-string<Producto>
+     */
+    protected function modelClass(): string
+    {
+        return Producto::class;
     }
 }

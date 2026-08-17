@@ -11,6 +11,7 @@ use App\Exceptions\Autenticacion\CorreoYaRegistradoException;
 use App\Exceptions\Autenticacion\CredencialesInvalidasException;
 use App\Exceptions\Autenticacion\RolNoConfiguradoException;
 use App\Exceptions\Autenticacion\UsuarioInactivoException;
+use App\Models\Usuario;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Contracts\Hashing\Hasher;
 
@@ -55,9 +56,7 @@ class AutenticacionService implements AutenticacionServiceInterface
             'id_rol' => $rol->id_rol,
         ]);
 
-        $this->guard->login($usuario);
-
-        return UsuarioAutenticadoDatos::fromModel($usuario);
+        return $this->presentar($usuario);
     }
 
     /**
@@ -68,7 +67,11 @@ class AutenticacionService implements AutenticacionServiceInterface
         $usuario = $this->usuarioRepository->findByCorreo($correo);
         $hash = $usuario?->getAuthPassword() ?? self::HASH_FALSO;
 
-        if (! $this->hasher->check($contrasena, $hash) || $usuario === null) {
+        if (! $this->hasher->check($contrasena, $hash)) {
+            throw new CredencialesInvalidasException;
+        }
+
+        if ($usuario === null) {
             throw new CredencialesInvalidasException;
         }
 
@@ -76,9 +79,7 @@ class AutenticacionService implements AutenticacionServiceInterface
             throw new UsuarioInactivoException;
         }
 
-        $this->guard->login($usuario);
-
-        return UsuarioAutenticadoDatos::fromModel($usuario);
+        return $this->presentar($usuario);
     }
 
     /**
@@ -87,5 +88,15 @@ class AutenticacionService implements AutenticacionServiceInterface
     public function cerrarSesion(): void
     {
         $this->guard->logout();
+    }
+
+    /**
+     * Inicia sesión y expone los datos públicos del usuario.
+     */
+    private function presentar(Usuario $usuario): UsuarioAutenticadoDatos
+    {
+        $this->guard->login($usuario);
+
+        return UsuarioAutenticadoDatos::fromModel($usuario);
     }
 }

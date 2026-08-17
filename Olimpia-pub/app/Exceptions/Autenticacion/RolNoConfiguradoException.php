@@ -2,15 +2,9 @@
 
 namespace App\Exceptions\Autenticacion;
 
-use Exception;
+use App\Exceptions\ExcepcionDeDominio;
 
-class RolNoConfiguradoException extends Exception
+class RolNoConfiguradoException extends ExcepcionDeDominio
 {
-    /**
-     * Crea la excepción cuando el rol requerido no está configurado.
-     */
-    public function __construct(string $message = 'El rol requerido no está configurado.')
-    {
-        parent::__construct($message);
-    }
+    protected const MENSAJE = 'El rol requerido no está configurado.';
 }

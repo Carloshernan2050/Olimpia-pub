@@ -2,15 +2,9 @@
 
 namespace App\Exceptions\Autenticacion;
 
-use Exception;
+use App\Exceptions\ExcepcionDeDominio;
 
-class CredencialesInvalidasException extends Exception
+class CredencialesInvalidasException extends ExcepcionDeDominio
 {
-    /**
-     * Crea la excepción cuando el correo o la contraseña no coinciden.
-     */
-    public function __construct(string $message = 'Correo o contraseña incorrectos.')
-    {
-        parent::__construct($message);
-    }
+    protected const MENSAJE = 'Correo o contraseña incorrectos.';
 }
