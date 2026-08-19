@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('usuario', function (Blueprint $table) {
             $table->increments('id_usuario');
-            $table->string('nombre', 100);
-            $table->string('apellido', 100);
+            $table->string('primer_nombre', 100);
+            $table->string('segundo_nombre', 100)->nullable();
+            $table->string('primer_apellido', 100);
+            $table->string('segundo_apellido', 100)->nullable();
             $table->string('correo', 150)->unique();
             $table->string('contrasena');
             $table->string('estado', 20)->default('activo');

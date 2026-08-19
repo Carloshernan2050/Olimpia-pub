@@ -22,29 +22,57 @@ class UsuarioSeeder extends Seeder
     public function run(): void
     {
         $usuarios = [
-            ['Ana', 'Lucia', 'Cliente', 'Perez', 'cliente@olimpia.com', 'cliente'],
-            ['Luis', 'Andres', 'Empleado', 'Gomez', 'empleado@olimpia.com', 'empleado'],
-            ['Maria', 'Elena', 'Admin', 'Ruiz', 'admin@olimpia.com', 'administrador'],
-            ['Carlos', 'Jose', 'Super', 'Diaz', 'super@olimpia.com', 'superadministrador'],
+            [
+                'primer_nombre' => 'Ana',
+                'segundo_nombre' => 'Lucia',
+                'primer_apellido' => 'Perez',
+                'segundo_apellido' => 'Lopez',
+                'correo' => 'cliente@olimpia.com',
+                'rol' => 'cliente',
+            ],
+            [
+                'primer_nombre' => 'Luis',
+                'segundo_nombre' => 'Andres',
+                'primer_apellido' => 'Gomez',
+                'segundo_apellido' => 'Martinez',
+                'correo' => 'empleado@olimpia.com',
+                'rol' => 'empleado',
+            ],
+            [
+                'primer_nombre' => 'Maria',
+                'segundo_nombre' => 'Elena',
+                'primer_apellido' => 'Ruiz',
+                'segundo_apellido' => 'Garcia',
+                'correo' => 'admin@olimpia.com',
+                'rol' => 'administrador',
+            ],
+            [
+                'primer_nombre' => 'Carlos',
+                'segundo_nombre' => 'Jose',
+                'primer_apellido' => 'Diaz',
+                'segundo_apellido' => 'Hernandez',
+                'correo' => 'super@olimpia.com',
+                'rol' => 'superadministrador',
+            ],
         ];
 
-        foreach ($usuarios as [$primerNombre, $segundoNombre, $primerApellido, $segundoApellido, $correo, $nombreRol]) {
-            if ($this->usuarioRepository->findByCorreo($correo) !== null) {
+        foreach ($usuarios as $usuario) {
+            if ($this->usuarioRepository->findByCorreo($usuario['correo']) !== null) {
                 continue;
             }
 
-            $rol = $this->rolRepository->findByNombre($nombreRol);
+            $rol = $this->rolRepository->findByNombre($usuario['rol']);
 
             if ($rol === null) {
                 continue;
             }
 
             $this->usuarioRepository->create([
-                'primer_nombre' => $primerNombre,
-                'segundo_nombre' => $segundoNombre,
-                'primer_apellido' => $primerApellido,
-                'segundo_apellido' => $segundoApellido,
-                'correo' => $correo,
+                'primer_nombre' => $usuario['primer_nombre'],
+                'segundo_nombre' => $usuario['segundo_nombre'],
+                'primer_apellido' => $usuario['primer_apellido'],
+                'segundo_apellido' => $usuario['segundo_apellido'],
+                'correo' => $usuario['correo'],
                 'contrasena' => 'password',
                 'estado' => 'activo',
                 'id_rol' => $rol->id_rol,
