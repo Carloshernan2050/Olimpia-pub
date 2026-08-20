@@ -48,10 +48,10 @@ abstract class EloquentRepository
     /**
      * Abre una consulta nueva sobre el modelo del repositorio.
      */
-    private function newQuery(): Builder
+    protected function newQuery(): Builder
     {
         $modelClass = $this->modelClass();
 
-        return (new $modelClass())->newQuery();
+        return (new $modelClass)->newQuery();
     }
 }

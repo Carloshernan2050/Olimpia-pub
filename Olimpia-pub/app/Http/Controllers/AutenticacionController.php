@@ -23,12 +23,12 @@ class AutenticacionController extends Controller
 
     public function mostrarRegistro(): View
     {
-        return view('registro');
+        return view('registro.registro');
     }
 
     public function mostrarInicioSesion(): View
     {
-        return view('inicio-sesion');
+        return view('registro.inicio-sesion');
     }
 
     public function registrar(RegistrarUsuarioRequest $request): RedirectResponse|JsonResponse
@@ -101,7 +101,8 @@ class AutenticacionController extends Controller
             ], $status);
         }
 
-        $redireccion = $intended ? redirect()->intended('/') : redirect('/');
+        $destino = route('dashboard');
+        $redireccion = $intended ? redirect()->intended($destino) : redirect($destino);
 
         return $redireccion->with('exito', $mensajeRedirect);
     }

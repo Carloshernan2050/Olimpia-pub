@@ -1,1 +1,0 @@
-/* Punto de entrada de Vite para el frontend de Olimpia. */

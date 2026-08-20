@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Route;
  * Muestra la página de inicio.
  */
 Route::get('/', function () {
-    return view('welcome');
-})->name('inicio');
+    return view('registro.bienvenida');
+})->middleware('guest')->name('inicio');
 
 /**
  * Rutas disponibles solo para visitantes.
@@ -39,3 +39,5 @@ Route::middleware('auth')->group(function () {
     Route::post('/cerrar-sesion', [AutenticacionController::class, 'cerrarSesion'])
         ->name('cerrar-sesion');
 });
+
+require __DIR__.'/dashboard.php'; // NOSONAR Laravel recarga web.php y require_once omitiría las rutas.

@@ -4,10 +4,13 @@ namespace Tests\Feature\Repositories;
 
 use App\Contracts\Repositories\CategoriaRepositoryInterface;
 use App\Contracts\Repositories\CodigoQrRepositoryInterface;
+use App\Contracts\Repositories\ContenidoInicioRepositoryInterface;
 use App\Contracts\Repositories\MesaRepositoryInterface;
 use App\Contracts\Repositories\ProductoRepositoryInterface;
 use App\Contracts\Repositories\RolRepositoryInterface;
 use App\Contracts\Repositories\UsuarioRepositoryInterface;
+use App\Enums\PosicionInicio;
+use App\Enums\TipoBloqueInicio;
 use Database\Seeders\RolSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -104,5 +107,55 @@ class RepositoriosEloquentTest extends TestCase
         $this->assertSame(4, $mesas->findByNumero(4)?->numero_mesa);
         $this->assertTrue($mesa->codigoQr()->is($codigo));
         $this->assertTrue($codigo->mesa()->is($mesa));
+    }
+
+    public function test_repositorio_de_contenido_inicio_omite_inactivos(): void
+    {
+        $contenidos = $this->app->make(ContenidoInicioRepositoryInterface::class);
+
+        $contenidos->create([
+            'posicion' => PosicionInicio::SuperiorIzquierda->value,
+            'tipo' => TipoBloqueInicio::Texto->value,
+            'titulo' => 'Activo',
+            'cuerpo' => 'Texto',
+            'url_media' => null,
+            'orden' => 1,
+            'estado' => 'activo',
+        ]);
+        $contenidos->create([
+            'posicion' => PosicionInicio::SuperiorDerecha->value,
+            'tipo' => TipoBloqueInicio::Texto->value,
+            'titulo' => 'Inactivo',
+            'cuerpo' => 'Oculto',
+            'url_media' => null,
+            'orden' => 2,
+            'estado' => 'inactivo',
+        ]);
+
+        $activos = $contenidos->activosPorPosicion();
+
+        $this->assertTrue($activos->has(PosicionInicio::SuperiorIzquierda->value));
+        $this->assertFalse($activos->has(PosicionInicio::SuperiorDerecha->value));
+    }
+
+    public function test_repositorio_de_contenido_inicio_crea_y_lista_activos(): void
+    {
+        $contenidos = $this->app->make(ContenidoInicioRepositoryInterface::class);
+
+        $this->assertNull($contenidos->findByPosicion(PosicionInicio::SuperiorIzquierda->value));
+
+        $bloque = $contenidos->create([
+            'posicion' => PosicionInicio::SuperiorIzquierda->value,
+            'tipo' => TipoBloqueInicio::Texto->value,
+            'titulo' => 'Portada',
+            'cuerpo' => 'Texto',
+            'url_media' => null,
+            'orden' => 1,
+            'estado' => 'activo',
+        ]);
+
+        $this->assertSame('Portada', $contenidos->findByPosicion(PosicionInicio::SuperiorIzquierda->value)?->titulo);
+        $this->assertTrue($contenidos->activosPorPosicion()->has(PosicionInicio::SuperiorIzquierda->value));
+        $this->assertSame(PosicionInicio::SuperiorIzquierda, $bloque->posicion);
     }
 }

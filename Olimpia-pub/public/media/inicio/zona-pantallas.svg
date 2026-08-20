@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="Zona de pantallas">
+    <rect width="640" height="400" fill="#d9d9d9"/>
+    <path d="M80 300 250 170 360 250 470 140 640 300v100H0V320Z" fill="#bfbfbf"/>
+    <circle cx="500" cy="90" r="42" fill="#cfcfcf"/>
+</svg>

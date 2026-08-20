@@ -1,0 +1,136 @@
+.grilla-inicio {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2.4vw, 2rem);
+    width: min(100%, var(--ancho-maximo));
+    margin-inline: auto;
+    padding: clamp(1rem, 3vw, 2.4rem);
+}
+
+.bloque-inicio {
+    min-width: 0;
+    min-height: clamp(8.5rem, 22vw, 14rem);
+}
+
+.bloque-texto {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.65rem;
+    color: var(--gris-texto);
+}
+
+.bloque-texto h2 {
+    margin: 0;
+    color: var(--blanco);
+    font-size: clamp(1rem, 1.8vw, 1.25rem);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.bloque-texto p {
+    margin: 0;
+    font-size: clamp(0.92rem, 1.5vw, 1.05rem);
+    line-height: 1.65;
+}
+
+.bloque-video {
+    display: flex;
+    align-items: center;
+}
+
+.bloque-video-marco {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 0.35rem;
+    background: var(--gris-bloque);
+}
+
+.bloque-video video {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: min(52vh, 28rem);
+    background: #111;
+    vertical-align: middle;
+}
+
+.bloque-imagen {
+    display: flex;
+}
+
+.bloque-imagen figure {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+    border-radius: 0.35rem;
+    background: var(--gris-bloque);
+    min-height: clamp(8.5rem, 22vw, 14rem);
+}
+
+.bloque-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.bloque-imagen-vacio {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    min-height: inherit;
+    color: #8d8d8d;
+}
+
+.bloque-imagen-vacio .icono-dashboard {
+    width: clamp(2.8rem, 6vw, 4rem);
+    height: clamp(2.8rem, 6vw, 4rem);
+}
+
+@media (max-width: 1023px) {
+    .grilla-inicio {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .bloque-inicio[data-posicion="superior_centro"] {
+        grid-column: 1 / -1;
+        min-height: auto;
+    }
+
+    .bloque-video video {
+        max-height: min(42vh, 24rem);
+    }
+}
+
+@media (max-width: 639px) {
+    .grilla-inicio {
+        grid-template-columns: 1fr;
+        padding: 1rem 0.9rem 1.5rem;
+        gap: 1.1rem;
+    }
+
+    .bloque-inicio,
+    .bloque-inicio[data-posicion="superior_centro"] {
+        grid-column: auto;
+        min-height: auto;
+    }
+
+    .bloque-texto {
+        justify-content: flex-start;
+    }
+
+    .bloque-imagen figure,
+    .bloque-video-marco {
+        min-height: 11rem;
+    }
+}
+
+@media (min-width: 1600px) {
+    .grilla-inicio {
+        padding-block: 2.75rem;
+    }
+}

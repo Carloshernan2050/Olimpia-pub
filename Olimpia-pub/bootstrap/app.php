@@ -13,11 +13,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     /**
-     * Redirige a invitados al inicio de sesión y a usuarios autenticados al inicio.
+     * Redirige a invitados al inicio de sesión y a usuarios autenticados al dashboard.
      */
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectGuestsTo(fn () => route('iniciar-sesion'));
-        $middleware->redirectUsersTo(fn () => route('inicio'));
+        $middleware->redirectUsersTo(fn () => route('dashboard'));
     })
     /**
      * Responde en JSON para API y muestra el error de rol no configurado.

@@ -43,7 +43,7 @@ class AutenticacionTest extends TestCase
             'contrasena_confirmation' => 'password1',
         ]);
 
-        $respuesta->assertRedirect('/');
+        $respuesta->assertRedirect(route('dashboard'));
         $this->assertAuthenticated();
         $this->assertDatabaseHas('usuario', [
             'correo' => 'ana@olimpia.com',
@@ -59,7 +59,7 @@ class AutenticacionTest extends TestCase
             'correo' => 'ana@olimpia.com',
             'contrasena' => 'password1',
             'contrasena_confirmation' => 'password1',
-        ])->assertRedirect('/');
+        ])->assertRedirect(route('dashboard'));
 
         $this->post('/cerrar-sesion');
 
@@ -87,7 +87,7 @@ class AutenticacionTest extends TestCase
         $this->post('/iniciar-sesion', [
             'correo' => 'ana@olimpia.com',
             'contrasena' => 'password1',
-        ])->assertRedirect('/');
+        ])->assertRedirect(route('dashboard'));
 
         $this->assertAuthenticated();
     }
@@ -198,8 +198,8 @@ class AutenticacionTest extends TestCase
     {
         $this->registrarUsuario();
 
-        $this->get('/registro')->assertRedirect(route('inicio'));
-        $this->get('/iniciar-sesion')->assertRedirect(route('inicio'));
+        $this->get('/registro')->assertRedirect(route('dashboard'));
+        $this->get('/iniciar-sesion')->assertRedirect(route('dashboard'));
     }
 
     public function test_invitado_no_puede_cerrar_sesion(): void
@@ -222,9 +222,6 @@ class AutenticacionTest extends TestCase
         ])->assertStatus(429);
     }
 
-    /**
-     * @return void
-     */
     private function registrarUsuario(string $correo = 'ana@olimpia.com'): void
     {
         $this->post('/registro', [
@@ -233,6 +230,6 @@ class AutenticacionTest extends TestCase
             'correo' => $correo,
             'contrasena' => 'password1',
             'contrasena_confirmation' => 'password1',
-        ])->assertRedirect('/');
+        ])->assertRedirect(route('dashboard'));
     }
 }

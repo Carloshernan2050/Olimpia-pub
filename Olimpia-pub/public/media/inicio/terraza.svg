@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="Terraza Olimpia">
+    <rect width="640" height="400" fill="#d4d4d4"/>
+    <path d="M0 310 180 190 300 260 430 150 640 290v110H0Z" fill="#bdbdbd"/>
+    <circle cx="140" cy="100" r="38" fill="#c8c8c8"/>
+</svg>
