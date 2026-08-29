@@ -89,6 +89,10 @@ class AutenticacionTest extends TestCase
             'contrasena' => 'password1',
         ])->assertRedirect(route('dashboard'));
 
+        $this->get(route('dashboard'))
+            ->assertSee('Sesión iniciada correctamente.')
+            ->assertSee('data-aviso', false);
+
         $this->assertAuthenticated();
     }
 
@@ -124,7 +128,7 @@ class AutenticacionTest extends TestCase
 
     public function test_inicia_sesion_por_json(): void
     {
-        $this->registrarUsuario();
+        $this->autenticar();
         $this->post('/cerrar-sesion');
 
         $this->postJson('/iniciar-sesion', [
@@ -139,15 +143,17 @@ class AutenticacionTest extends TestCase
 
     public function test_cierra_sesion_por_web_y_json(): void
     {
-        $this->registrarUsuario();
+        $this->autenticar();
 
         $this->post('/cerrar-sesion')
             ->assertRedirect('/')
             ->assertSessionHas('exito');
 
+        $this->get('/')->assertSee('Sesión cerrada correctamente.')->assertSee('data-aviso', false);
+
         $this->assertGuest();
 
-        $this->registrarUsuario('luis@olimpia.com');
+        $this->autenticar('luis@olimpia.com');
 
         $this->postJson('/cerrar-sesion')
             ->assertOk()
@@ -158,7 +164,7 @@ class AutenticacionTest extends TestCase
 
     public function test_rechaza_usuario_inactivo(): void
     {
-        $this->registrarUsuario();
+        $this->autenticar();
         $this->post('/cerrar-sesion');
 
         Usuario::query()->where('correo', 'ana@olimpia.com')->update(['estado' => 'inactivo']);
@@ -196,7 +202,7 @@ class AutenticacionTest extends TestCase
 
     public function test_usuario_autenticado_no_ve_formularios_de_invitado(): void
     {
-        $this->registrarUsuario();
+        $this->autenticar();
 
         $this->get('/registro')->assertRedirect(route('dashboard'));
         $this->get('/iniciar-sesion')->assertRedirect(route('dashboard'));
@@ -220,16 +226,5 @@ class AutenticacionTest extends TestCase
             'correo' => 'ana@olimpia.com',
             'contrasena' => 'password1',
         ])->assertStatus(429);
-    }
-
-    private function registrarUsuario(string $correo = 'ana@olimpia.com'): void
-    {
-        $this->post('/registro', [
-            'primer_nombre' => 'Ana',
-            'primer_apellido' => 'Perez',
-            'correo' => $correo,
-            'contrasena' => 'password1',
-            'contrasena_confirmation' => 'password1',
-        ])->assertRedirect(route('dashboard'));
     }
 }

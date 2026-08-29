@@ -13,4 +13,12 @@ abstract class ExcepcionDeDominio extends Exception
     {
         parent::__construct($message ?? static::MENSAJE, 0, $previous);
     }
+
+    /**
+     * Mensaje por defecto de la excepción, para reutilizarlo en validación.
+     */
+    public static function mensajePorDefecto(): string
+    {
+        return static::MENSAJE;
+    }
 }

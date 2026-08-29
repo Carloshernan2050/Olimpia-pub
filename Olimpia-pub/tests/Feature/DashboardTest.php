@@ -45,13 +45,7 @@ class DashboardTest extends TestCase
 
     public function test_despues_del_login_redirige_al_dashboard(): void
     {
-        $this->post('/registro', [
-            'primer_nombre' => 'Ana',
-            'primer_apellido' => 'Perez',
-            'correo' => 'ana@olimpia.com',
-            'contrasena' => 'password1',
-            'contrasena_confirmation' => 'password1',
-        ])->assertRedirect(route('dashboard'));
+        $this->registrarUsuarioCliente('ana@olimpia.com')->assertRedirect(route('dashboard'));
 
         $this->get('/')->assertRedirect(route('dashboard'));
     }
@@ -98,19 +92,5 @@ class DashboardTest extends TestCase
         $this->seed(ContenidoInicioSeeder::class);
 
         $this->assertDatabaseCount('contenido_inicio', 6);
-    }
-
-    /**
-     * Registra e inicia sesión con un usuario de prueba.
-     */
-    private function autenticar(): void
-    {
-        $this->post('/registro', [
-            'primer_nombre' => 'Ana',
-            'primer_apellido' => 'Perez',
-            'correo' => 'ana@olimpia.com',
-            'contrasena' => 'password1',
-            'contrasena_confirmation' => 'password1',
-        ]);
     }
 }

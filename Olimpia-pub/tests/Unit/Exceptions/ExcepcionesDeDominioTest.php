@@ -11,6 +11,7 @@ use App\Exceptions\BaseDatos\BaseDatosNoCreadaException;
 use App\Exceptions\BaseDatos\ConexionNoEncontradaException;
 use App\Exceptions\BaseDatos\DirectorioSqliteNoCreadoException;
 use App\Exceptions\BaseDatos\DriverNoSoportadoException;
+use App\Exceptions\Promocion\PromocionNoEncontradaException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -25,9 +26,11 @@ class ExcepcionesDeDominioTest extends TestCase
             'El rol requerido no está configurado.',
             (new RolNoConfiguradoException)->getMessage()
         );
+        $this->assertSame('Falta el rol.', (new RolNoConfiguradoException('Falta el rol.'))->getMessage());
+        $this->assertSame('La promoción no existe.', (new PromocionNoEncontradaException)->getMessage());
         $this->assertSame(
-            'Falta el rol.',
-            (new RolNoConfiguradoException('Falta el rol.'))->getMessage()
+            'El correo ya está registrado.',
+            CorreoYaRegistradoException::mensajePorDefecto()
         );
     }
 

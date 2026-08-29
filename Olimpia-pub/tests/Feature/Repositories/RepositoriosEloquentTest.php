@@ -7,6 +7,7 @@ use App\Contracts\Repositories\CodigoQrRepositoryInterface;
 use App\Contracts\Repositories\ContenidoInicioRepositoryInterface;
 use App\Contracts\Repositories\MesaRepositoryInterface;
 use App\Contracts\Repositories\ProductoRepositoryInterface;
+use App\Contracts\Repositories\PromocionRepositoryInterface;
 use App\Contracts\Repositories\RolRepositoryInterface;
 use App\Contracts\Repositories\UsuarioRepositoryInterface;
 use App\Enums\PosicionInicio;
@@ -157,5 +158,68 @@ class RepositoriosEloquentTest extends TestCase
         $this->assertSame('Portada', $contenidos->findByPosicion(PosicionInicio::SuperiorIzquierda->value)?->titulo);
         $this->assertTrue($contenidos->activosPorPosicion()->has(PosicionInicio::SuperiorIzquierda->value));
         $this->assertSame(PosicionInicio::SuperiorIzquierda, $bloque->posicion);
+    }
+
+    public function test_repositorio_de_promociones_lista_solo_vigentes(): void
+    {
+        $roles = $this->app->make(RolRepositoryInterface::class);
+        $usuarios = $this->app->make(UsuarioRepositoryInterface::class);
+        $promociones = $this->app->make(PromocionRepositoryInterface::class);
+        $rol = $roles->findByNombre('cliente');
+
+        $usuario = $usuarios->create([
+            'primer_nombre' => 'Ana',
+            'segundo_nombre' => null,
+            'primer_apellido' => 'Perez',
+            'segundo_apellido' => null,
+            'correo' => 'ana@olimpia.com',
+            'contrasena' => 'password1',
+            'estado' => 'activo',
+            'id_rol' => $rol->id_rol,
+        ]);
+
+        $vigente = $promociones->create([
+            'nombre' => 'Vigente',
+            'descripcion' => 'Hoy',
+            'descuento' => 15,
+            'fecha_inicio' => now()->toDateString(),
+            'fecha_fin' => now()->addWeek()->toDateString(),
+            'estado' => 'activa',
+            'id_usuario' => $usuario->id_usuario,
+        ]);
+        $promociones->create([
+            'nombre' => 'Vencida',
+            'descuento' => 10,
+            'fecha_inicio' => now()->subWeek()->toDateString(),
+            'fecha_fin' => now()->subDay()->toDateString(),
+            'estado' => 'activa',
+            'id_usuario' => $usuario->id_usuario,
+        ]);
+
+        $activas = $promociones->activas();
+
+        $this->assertSame('Vigente', $vigente->nombre);
+        $this->assertCount(1, $activas);
+        $this->assertTrue($activas->contains('nombre', 'Vigente'));
+        $this->assertFalse($activas->contains('nombre', 'Vencida'));
+
+        $alfa = $promociones->create([
+            'nombre' => 'Alfa',
+            'descuento' => 5,
+            'fecha_inicio' => now()->toDateString(),
+            'fecha_fin' => now()->addWeek()->toDateString(),
+            'estado' => 'activa',
+            'id_usuario' => $usuario->id_usuario,
+        ]);
+        $promociones->update($alfa, ['nombre' => 'Alfa plus']);
+        $this->assertSame('Alfa plus', $promociones->findById($alfa->id_promocion)?->nombre);
+
+        $ordenadas = $promociones->activas();
+        $this->assertSame(['Alfa plus', 'Vigente'], $ordenadas->pluck('nombre')->all());
+
+        $this->assertGreaterThanOrEqual(2, $promociones->todas()->count());
+
+        $promociones->delete($alfa);
+        $this->assertNull($promociones->findById($alfa->id_promocion));
     }
 }

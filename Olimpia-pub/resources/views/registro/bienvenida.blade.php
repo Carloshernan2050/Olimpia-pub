@@ -17,10 +17,7 @@
                 <a class="boton-principal" href="{{ route('iniciar-sesion') }}">Iniciar Sesión</a>
                 <a class="boton-principal" href="{{ route('registro') }}">Registrarse</a>
             @else
-                <form method="POST" action="{{ route('cerrar-sesion') }}">
-                    @csrf
-                    <button class="boton-principal" type="submit">Cerrar Sesión</button>
-                </form>
+                <x-dashboard.cerrar-sesion />
             @endguest
         </div>
     </main>

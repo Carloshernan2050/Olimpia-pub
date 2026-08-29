@@ -91,8 +91,6 @@
 }
 
 .campo {
-    display: flex;
-    flex-direction: column;
     gap: 0.4rem;
 }
 
@@ -102,28 +100,10 @@
 }
 
 .campo input {
-    width: 100%;
     padding: 0.85rem 1rem;
-    border: 1.5px solid var(--blanco);
     border-radius: 0.85rem;
-    background: transparent;
-    color: var(--blanco);
     font-size: 1rem;
-    outline: none;
     transition: border-color var(--transicion), box-shadow var(--transicion);
-}
-
-.campo input:focus,
-.campo:has(.error) input {
-    border-color: var(--azul);
-}
-
-.campo:has(.error) input {
-    border-color: var(--error);
-}
-
-.campo input:focus {
-    box-shadow: 0 0 0 2px var(--azul-foco);
 }
 
 .campo input:-webkit-autofill,
@@ -136,7 +116,6 @@
 }
 
 .campo .error {
-    color: var(--error);
     font-size: 0.85rem;
 }
 

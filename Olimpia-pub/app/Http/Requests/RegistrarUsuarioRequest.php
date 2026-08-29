@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\DTOs\Autenticacion\RegistrarUsuarioDatos;
+use App\Exceptions\Autenticacion\CorreoYaRegistradoException;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegistrarUsuarioRequest extends FormRequest
@@ -49,7 +50,7 @@ class RegistrarUsuarioRequest extends FormRequest
         return [
             'primer_nombre.required' => 'El primer nombre es obligatorio.',
             'primer_apellido.required' => 'El primer apellido es obligatorio.',
-            'correo.unique' => 'El correo ya está registrado.',
+            'correo.unique' => CorreoYaRegistradoException::mensajePorDefecto(),
             'contrasena.min' => 'La contraseña debe tener al menos 8 caracteres.',
             'contrasena.confirmed' => 'La confirmación de contraseña no coincide.',
             ...$this->mensajesCorreoYContrasena(),

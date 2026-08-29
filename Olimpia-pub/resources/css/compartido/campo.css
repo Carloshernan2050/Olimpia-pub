@@ -1,0 +1,28 @@
+.campo {
+    display: flex;
+    flex-direction: column;
+}
+
+.campo input,
+.campo select {
+    width: 100%;
+    border: 1.5px solid var(--blanco);
+    background: transparent;
+    color: var(--blanco);
+    outline: none;
+}
+
+.campo input:focus,
+.campo select:focus {
+    border-color: var(--azul);
+    box-shadow: 0 0 0 2px var(--azul-foco);
+}
+
+.campo:has(.error) input,
+.campo:has(.error) select {
+    border-color: var(--error);
+}
+
+.campo .error {
+    color: var(--error);
+}

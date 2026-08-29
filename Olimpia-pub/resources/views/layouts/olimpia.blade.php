@@ -7,6 +7,7 @@
     ])
 </head>
 <body class="pagina-olimpia">
+    <x-aviso-flash />
     @yield('contenido')
 </body>
 </html>

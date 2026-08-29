@@ -5,6 +5,7 @@ namespace App\DTOs\Dashboard;
 use App\Enums\PosicionInicio;
 use App\Enums\TipoBloqueInicio;
 use App\Models\ContenidoInicio;
+use App\Support\Dashboard\UrlMediaPublica;
 
 final readonly class BloqueInicioDatos
 {
@@ -62,15 +63,7 @@ final readonly class BloqueInicioDatos
      */
     public function urlMediaPublica(): ?string
     {
-        if (! filled($this->urlMedia)) {
-            return null;
-        }
-
-        if (str_starts_with($this->urlMedia, 'http://') || str_starts_with($this->urlMedia, 'https://')) {
-            return $this->urlMedia;
-        }
-
-        return asset($this->urlMedia);
+        return UrlMediaPublica::de($this->urlMedia);
     }
 
     /**
@@ -98,12 +91,6 @@ final readonly class BloqueInicioDatos
             return null;
         }
 
-        $base = substr($this->urlMedia, 0, -4);
-
-        if (str_starts_with($this->urlMedia, 'http://') || str_starts_with($this->urlMedia, 'https://')) {
-            return $base.$sufijo;
-        }
-
-        return asset($base.$sufijo);
+        return UrlMediaPublica::de(substr($this->urlMedia, 0, -4).$sufijo);
     }
 }

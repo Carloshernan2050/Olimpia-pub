@@ -11,12 +11,6 @@
         <form class="formulario-olimpia dos-columnas" method="POST" action="{{ route('registro.guardar') }}">
             @csrf
 
-            @if (session('error'))
-                <div class="campo campo-completo">
-                    <div class="error">{{ session('error') }}</div>
-                </div>
-            @endif
-
             <div class="campo">
                 <label for="primer_nombre">Primer Nombre</label>
                 <input
@@ -28,9 +22,7 @@
                     autocomplete="given-name"
                     required
                 >
-                @error('primer_nombre')
-                    <div class="error">{{ $message }}</div>
-                @enderror
+                <x-error-campo nombre="primer_nombre" />
             </div>
 
             <div class="campo">
@@ -43,9 +35,7 @@
                     maxlength="100"
                     autocomplete="additional-name"
                 >
-                @error('segundo_nombre')
-                    <div class="error">{{ $message }}</div>
-                @enderror
+                <x-error-campo nombre="segundo_nombre" />
             </div>
 
             <div class="campo">
@@ -59,9 +49,7 @@
                     autocomplete="family-name"
                     required
                 >
-                @error('primer_apellido')
-                    <div class="error">{{ $message }}</div>
-                @enderror
+                <x-error-campo nombre="primer_apellido" />
             </div>
 
             <div class="campo">
@@ -73,9 +61,7 @@
                     value="{{ old('segundo_apellido') }}"
                     maxlength="100"
                 >
-                @error('segundo_apellido')
-                    <div class="error">{{ $message }}</div>
-                @enderror
+                <x-error-campo nombre="segundo_apellido" />
             </div>
 
             <div class="campo">
@@ -89,9 +75,7 @@
                     autocomplete="email"
                     required
                 >
-                @error('correo')
-                    <div class="error">{{ $message }}</div>
-                @enderror
+                <x-error-campo nombre="correo" />
             </div>
 
             <div class="campo">
@@ -103,9 +87,7 @@
                     autocomplete="new-password"
                     required
                 >
-                @error('contrasena')
-                    <div class="error">{{ $message }}</div>
-                @enderror
+                <x-error-campo nombre="contrasena" />
             </div>
 
             <div class="campo campo-completo">

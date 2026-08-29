@@ -1,0 +1,98 @@
+.avisos-flash {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    z-index: 80;
+    display: grid;
+    gap: 0.55rem;
+    width: min(26rem, calc(100vw - 1.5rem));
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.pagina-dashboard .avisos-flash {
+    top: 6.35rem;
+}
+
+.aviso-flash {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    padding: 0.8rem 0.85rem 0.8rem 1rem;
+    border-radius: 0.75rem;
+    color: var(--blanco);
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.4;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+    pointer-events: auto;
+    animation: aviso-ciclo 4s ease forwards;
+}
+
+.aviso-flash p {
+    margin: 0;
+    flex: 1;
+}
+
+.aviso-flash-exito {
+    background: var(--azul);
+}
+
+.aviso-flash-error {
+    background: var(--rojo);
+}
+
+.aviso-flash-cerrar {
+    flex-shrink: 0;
+    width: 1.7rem;
+    height: 1.7rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0.4rem;
+    background: transparent;
+    color: inherit;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.aviso-flash-cerrar:hover,
+.aviso-flash-cerrar:focus-visible {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.avisos-flash[hidden],
+.aviso-flash.is-oculto,
+.aviso-flash[hidden] {
+    display: none !important;
+    animation: none;
+}
+
+@keyframes aviso-ciclo {
+    0% {
+        opacity: 0;
+        transform: translateY(-0.6rem);
+    }
+
+    8% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    78% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-0.6rem);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .aviso-flash {
+        animation: none;
+        opacity: 1;
+    }
+}

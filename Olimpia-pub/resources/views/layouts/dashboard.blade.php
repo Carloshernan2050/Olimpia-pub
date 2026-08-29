@@ -17,9 +17,7 @@
         :seccion-activa="$seccionActiva"
     />
 
-    @if (session('exito'))
-        <p class="dashboard-aviso" role="status">{{ session('exito') }}</p>
-    @endif
+    <x-aviso-flash />
 
     <main class="dashboard-contenido" id="contenido-principal">
         @yield('contenido')

@@ -9,17 +9,21 @@ use Tests\TestCase;
 
 class NavegacionDashboardServiceTest extends TestCase
 {
-    public function test_home_es_el_unico_item_con_ruta(): void
+    public function test_home_y_promociones_tienen_ruta(): void
     {
         $service = new NavegacionDashboardService(Request::create('/dashboard'));
         $items = $service->items();
         $inicio = $items[0];
+        $promociones = $items[2];
 
         $this->assertCount(9, $items);
         $this->assertSame('inicio', $inicio->clave);
         $this->assertSame('dashboard', $inicio->ruta);
         $this->assertTrue($inicio->estaDisponible());
-        $this->assertCount(1, array_filter($items, fn ($item) => $item->estaDisponible()));
+        $this->assertSame('promociones', $promociones->clave);
+        $this->assertSame('promociones', $promociones->ruta);
+        $this->assertTrue($promociones->estaDisponible());
+        $this->assertCount(2, array_filter($items, fn ($item) => $item->estaDisponible()));
     }
 
     public function test_la_cabecera_incluye_perfil(): void
@@ -43,6 +47,18 @@ class NavegacionDashboardServiceTest extends TestCase
         $service = new NavegacionDashboardService($request);
 
         $this->assertSame('inicio', $service->seccionActiva());
+    }
+
+    public function test_seccion_activa_es_promociones_en_su_ruta(): void
+    {
+        $request = Request::create('/dashboard/promociones');
+        $ruta = new Route(['GET'], '/dashboard/promociones', fn () => null);
+        $ruta->name('promociones');
+        $request->setRouteResolver(fn () => $ruta);
+
+        $service = new NavegacionDashboardService($request);
+
+        $this->assertSame('promociones', $service->seccionActiva());
     }
 
     public function test_seccion_activa_queda_vacia_fuera_del_dashboard(): void

@@ -33,11 +33,9 @@ class AutenticacionController extends Controller
 
     public function registrar(RegistrarUsuarioRequest $request): RedirectResponse|JsonResponse
     {
-        try {
-            $usuario = $this->autenticacionService->registrar($request->datos());
-        } catch (CorreoYaRegistradoException $exception) {
-            throw $this->errorDeValidacion($exception->getMessage());
-        }
+        $usuario = $this->intentarAutenticar(
+            fn () => $this->autenticacionService->registrar($request->datos())
+        );
 
         return $this->responderSesion(
             $request,
@@ -50,20 +48,20 @@ class AutenticacionController extends Controller
 
     public function iniciarSesion(IniciarSesionRequest $request): RedirectResponse|JsonResponse
     {
-        try {
-            $usuario = $this->autenticacionService->iniciarSesion(
+        $usuario = $this->intentarAutenticar(
+            fn () => $this->autenticacionService->iniciarSesion(
                 $request->validated('correo'),
                 $request->validated('contrasena'),
-            );
-        } catch (CredencialesInvalidasException|UsuarioInactivoException $exception) {
-            throw $this->errorDeValidacion($exception->getMessage());
-        }
+            )
+        );
+
+        $mensaje = 'Sesión iniciada correctamente.';
 
         return $this->responderSesion(
             $request,
             $usuario,
-            'Sesión iniciada correctamente.',
-            'Sesión iniciada correctamente.',
+            $mensaje,
+            $mensaje,
             200,
             true
         );
@@ -75,13 +73,15 @@ class AutenticacionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
+        $mensaje = 'Sesión cerrada correctamente.';
+
         if ($request->expectsJson()) {
             return response()->json([
-                'mensaje' => 'Sesión cerrada correctamente.',
+                'mensaje' => $mensaje,
             ]);
         }
 
-        return redirect('/')->with('exito', 'Sesión cerrada correctamente.');
+        return redirect('/')->with('exito', $mensaje);
     }
 
     private function responderSesion(
@@ -105,6 +105,18 @@ class AutenticacionController extends Controller
         $redireccion = $intended ? redirect()->intended($destino) : redirect($destino);
 
         return $redireccion->with('exito', $mensajeRedirect);
+    }
+
+    /**
+     * Convierte errores de dominio esperados en validación del formulario.
+     */
+    private function intentarAutenticar(callable $accion): UsuarioAutenticadoDatos
+    {
+        try {
+            return $accion();
+        } catch (CorreoYaRegistradoException|CredencialesInvalidasException|UsuarioInactivoException $exception) {
+            throw $this->errorDeValidacion($exception->getMessage());
+        }
     }
 
     private function errorDeValidacion(string $mensaje): ValidationException

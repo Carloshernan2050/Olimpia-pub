@@ -1,6 +1,8 @@
 <?php
 
 use App\Exceptions\Autenticacion\RolNoConfiguradoException;
+use App\Exceptions\Promocion\PromocionNoEncontradaException;
+use App\Support\Http\RespuestaDeExcepcion;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -28,12 +30,15 @@ return Application::configure(basePath: dirname(__DIR__))
         );
 
         $exceptions->render(function (RolNoConfiguradoException $exception, Request $request) {
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'mensaje' => $exception->getMessage(),
-                ], 503);
-            }
+            return RespuestaDeExcepcion::jsonOAviso($request, $exception, 503, back());
+        });
 
-            return back()->with('error', $exception->getMessage());
+        $exceptions->render(function (PromocionNoEncontradaException $exception, Request $request) {
+            return RespuestaDeExcepcion::jsonOAviso(
+                $request,
+                $exception,
+                404,
+                redirect()->route('promociones'),
+            );
         });
     })->create();

@@ -14,6 +14,7 @@ class Promocion extends OlimpiaModel
     protected $fillable = [
         'nombre',
         'descripcion',
+        'url_imagen',
         'descuento',
         'fecha_inicio',
         'fecha_fin',

@@ -14,6 +14,7 @@ class NavegacionDashboardService implements NavegacionDashboardServiceInterface
      */
     private const RUTAS_POR_SECCION = [
         'dashboard' => 'inicio',
+        'promociones' => 'promociones',
     ];
 
     /**
@@ -24,7 +25,7 @@ class NavegacionDashboardService implements NavegacionDashboardServiceInterface
     ) {}
 
     /**
-     * Ítems de la barra secundaria. Solo Home tiene ruta por ahora.
+     * Ítems de la barra secundaria. Home y Promociones ya tienen pantalla.
      *
      * @return list<ItemNavegacionDatos>
      */
@@ -33,7 +34,7 @@ class NavegacionDashboardService implements NavegacionDashboardServiceInterface
         return [
             new ItemNavegacionDatos('inicio', 'Inicio', 'inicio', 'dashboard'),
             new ItemNavegacionDatos('productos', 'Productos', 'etiqueta'),
-            new ItemNavegacionDatos('promociones', 'Promociones', 'megafono'),
+            new ItemNavegacionDatos('promociones', 'Promociones', 'megafono', 'promociones'),
             new ItemNavegacionDatos('inventario', 'Inventario', 'herramienta'),
             new ItemNavegacionDatos('reportes', 'Reportes', 'portapapeles'),
             new ItemNavegacionDatos('eventos', 'Eventos', 'pesa'),

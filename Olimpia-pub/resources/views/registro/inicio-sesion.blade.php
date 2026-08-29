@@ -11,12 +11,6 @@
         <form class="formulario-olimpia una-columna" method="POST" action="{{ route('iniciar-sesion.guardar') }}">
             @csrf
 
-            @if (session('error'))
-                <div class="campo">
-                    <div class="error">{{ session('error') }}</div>
-                </div>
-            @endif
-
             <div class="campo">
                 <label for="correo">Correo Electrónico</label>
                 <input
@@ -29,7 +23,7 @@
                     required
                     autofocus
                 >
-                @error('correo') <div class="error">{{ $message }}</div> @enderror
+                <x-error-campo nombre="correo" />
             </div>
 
             <div class="campo">
@@ -41,7 +35,7 @@
                     autocomplete="current-password"
                     required
                 >
-                @error('contrasena') <div class="error">{{ $message }}</div> @enderror
+                <x-error-campo nombre="contrasena" />
             </div>
 
             <div class="acciones-formulario columna-centrada">

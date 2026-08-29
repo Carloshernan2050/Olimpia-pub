@@ -1,13 +1,19 @@
+import { iniciarAvisos } from '../compartido/avisos';
+import { cuandoElDocumentoEsteListo } from '../compartido/cuando-el-documento-este-listo';
 import { cerrarAlPulsarFuera } from './cerrar-al-pulsar-fuera';
+import { iniciarModalPromocion } from './modal-promocion';
+import { iniciarSelectoresCantidad } from './selector-cantidad';
 
 export function iniciarDashboard() {
-    document.addEventListener('DOMContentLoaded', () => {
-        const menuPerfil = document.querySelector('[data-menu-perfil]');
+    cuandoElDocumentoEsteListo(() => {
+        document.querySelectorAll('[data-cerrar-al-pulsar-fuera]').forEach((elemento) => {
+            if (elemento instanceof HTMLDetailsElement) {
+                cerrarAlPulsarFuera(elemento);
+            }
+        });
 
-        if (!(menuPerfil instanceof HTMLDetailsElement)) {
-            return;
-        }
-
-        cerrarAlPulsarFuera(menuPerfil);
+        iniciarSelectoresCantidad();
+        iniciarModalPromocion();
+        iniciarAvisos();
     });
 }

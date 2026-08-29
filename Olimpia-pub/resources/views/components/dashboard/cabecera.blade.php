@@ -30,7 +30,7 @@
         <div class="dashboard-acciones">
             @foreach ($accionesCabecera as $accion)
                 @if ($accion->esPerfil)
-                    <details class="menu-perfil" data-menu-perfil>
+                    <details class="menu-perfil" data-menu-perfil data-cerrar-al-pulsar-fuera>
                         <summary aria-label="{{ $accion->etiqueta }}">
                             <x-dashboard.icono :nombre="$accion->icono" />
                         </summary>
