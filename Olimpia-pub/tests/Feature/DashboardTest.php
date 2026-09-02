@@ -60,6 +60,21 @@ class DashboardTest extends TestCase
             ->assertSee('aria-label="Inicio"', false);
     }
 
+    public function test_la_cabecera_sigue_la_marca_el_buscador_y_las_acciones(): void
+    {
+        $this->autenticar();
+
+        $this->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('class="dashboard-cabecera"', false)
+            ->assertSee('class="dashboard-marca-nombre"', false)
+            ->assertSee('placeholder="Search"', false)
+            ->assertSee('class="dashboard-acciones"', false)
+            ->assertSee('class="dashboard-nav"', false)
+            ->assertSee('aria-label="Carrito (próximamente)"', false)
+            ->assertSee('aria-label="Perfil"', false);
+    }
+
     public function test_muestra_imagenes_perfil_y_titulo_de_inicio(): void
     {
         $this->autenticar();

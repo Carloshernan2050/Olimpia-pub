@@ -17,34 +17,36 @@ class NavegacionDashboardServiceTest extends TestCase
         $service = $this->servicio(Request::create('/dashboard'), true);
         $items = $service->items();
         $inicio = $items[0];
-        $promociones = $items[2];
+        $promociones = $items[1];
+        $inventario = $items[4];
 
         $this->assertCount(9, $items);
         $this->assertSame('inicio', $inicio->clave);
         $this->assertSame('dashboard', $inicio->ruta);
         $this->assertTrue($inicio->estaDisponible());
         $this->assertSame('promociones', $promociones->clave);
+        $this->assertSame('etiqueta', $promociones->icono);
         $this->assertSame('promociones', $promociones->ruta);
         $this->assertTrue($promociones->estaDisponible());
-        $this->assertSame('inventario', $items[3]->clave);
-        $this->assertSame('inventario', $items[3]->ruta);
-        $this->assertTrue($items[3]->estaDisponible());
+        $this->assertSame('inventario', $inventario->clave);
+        $this->assertSame('inventario', $inventario->ruta);
+        $this->assertSame('portapapeles', $inventario->icono);
+        $this->assertSame('carta', $items[3]->clave);
+        $this->assertSame('comida', $items[3]->icono);
+        $this->assertSame('mesa', $items[5]->icono);
+        $this->assertTrue($inventario->estaDisponible());
         $this->assertCount(3, array_filter($items, fn ($item) => $item->estaDisponible()));
     }
 
-    public function test_sin_permiso_no_muestra_inventario(): void
+    public function test_sin_permiso_el_inventario_queda_inactivo(): void
     {
-        $claves = array_map(
-            fn ($item) => $item->clave,
-            $this->servicio(Request::create('/dashboard'), false)->items(),
-        );
+        $items = $this->servicio(Request::create('/dashboard'), false)->items();
+        $inventario = $items[4];
 
-        $this->assertCount(8, $claves);
-        $this->assertNotContains('inventario', $claves);
-        $this->assertCount(2, array_filter(
-            $this->servicio(Request::create('/dashboard'), false)->items(),
-            fn ($item) => $item->estaDisponible(),
-        ));
+        $this->assertCount(9, $items);
+        $this->assertSame('inventario', $inventario->clave);
+        $this->assertFalse($inventario->estaDisponible());
+        $this->assertCount(2, array_filter($items, fn ($item) => $item->estaDisponible()));
     }
 
     public function test_la_cabecera_incluye_perfil(): void

@@ -1,0 +1,205 @@
+.dashboard-cabecera {
+    background: var(--blanco);
+    color: var(--negro);
+    padding: 0.7rem clamp(0.85rem, 2.6vw, 2rem);
+    border-bottom: 1px solid var(--negro);
+}
+
+.dashboard-cabecera-interior {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(10rem, 38rem) minmax(0, 1fr);
+    align-items: center;
+    column-gap: clamp(0.75rem, 2vw, 1.75rem);
+    width: 100%;
+}
+
+.dashboard-marca {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    justify-self: start;
+    color: var(--negro);
+    min-width: 0;
+}
+
+.dashboard-marca-nombre {
+    margin: 0;
+    font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+.dashboard-marca .icono-dashboard {
+    width: clamp(1.55rem, 2.8vw, 1.95rem);
+    height: clamp(1.55rem, 2.8vw, 1.95rem);
+    color: var(--azul-marca);
+}
+
+.dashboard-buscador {
+    width: 100%;
+    min-width: 0;
+}
+
+.dashboard-buscador form {
+    margin: 0;
+}
+
+.dashboard-buscador-caja {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    width: 100%;
+    min-height: 2.7rem;
+    padding: 0.35rem 1.2rem;
+    border: 0;
+    border-radius: var(--radio-pill);
+    background: var(--negro);
+    color: var(--blanco);
+}
+
+.dashboard-buscador-caja .icono-dashboard {
+    width: 1.05rem;
+    height: 1.05rem;
+    color: var(--blanco);
+}
+
+.dashboard-buscador input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: var(--blanco);
+    font: inherit;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+.dashboard-buscador input::placeholder {
+    color: #d4d4d4;
+}
+
+.dashboard-acciones {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    justify-self: end;
+    gap: clamp(0.15rem, 0.8vw, 0.45rem);
+}
+
+.dashboard-accion,
+.menu-perfil summary {
+    display: grid;
+    place-items: center;
+    width: 2.45rem;
+    height: 2.45rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0.55rem;
+    background: transparent;
+    color: var(--negro);
+    cursor: pointer;
+}
+
+.dashboard-accion:hover,
+.dashboard-accion:focus-visible,
+.menu-perfil summary:hover,
+.menu-perfil[open] summary {
+    background: var(--gris-suave);
+}
+
+.dashboard-accion .icono-dashboard,
+.menu-perfil summary .icono-dashboard {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.menu-perfil {
+    position: relative;
+}
+
+.menu-perfil summary {
+    list-style: none;
+}
+
+.menu-perfil summary::-webkit-details-marker {
+    display: none;
+}
+
+.menu-perfil-panel {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    right: 0;
+    z-index: 20;
+    width: min(18rem, calc(100vw - 1.5rem));
+    padding: 0.9rem;
+    border-radius: 0.85rem;
+    background: var(--blanco);
+    color: var(--negro);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+.menu-perfil-panel p {
+    margin: 0 0 0.85rem;
+    font-size: 0.95rem;
+}
+
+.menu-perfil-panel .boton-principal {
+    width: 100%;
+}
+
+@media (max-width: 767px) {
+    .dashboard-cabecera-interior {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "marca acciones"
+            "buscador buscador";
+        row-gap: 0.7rem;
+        column-gap: 0.6rem;
+    }
+
+    .dashboard-marca {
+        grid-area: marca;
+    }
+
+    .dashboard-buscador {
+        grid-area: buscador;
+    }
+
+    .dashboard-acciones {
+        grid-area: acciones;
+    }
+
+    .dashboard-marca-nombre {
+        font-size: 1.25rem;
+    }
+
+    .dashboard-accion,
+    .menu-perfil summary {
+        width: 2.2rem;
+        height: 2.2rem;
+    }
+
+    .dashboard-accion .icono-dashboard,
+    .menu-perfil summary .icono-dashboard {
+        width: 1.3rem;
+        height: 1.3rem;
+    }
+}
+
+@media (max-width: 420px) {
+    .dashboard-cabecera {
+        padding-inline: 0.7rem;
+    }
+
+    .dashboard-acciones {
+        gap: 0;
+    }
+
+    .dashboard-accion,
+    .menu-perfil summary {
+        width: 2rem;
+        height: 2rem;
+    }
+}

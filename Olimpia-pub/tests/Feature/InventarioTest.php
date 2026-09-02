@@ -71,7 +71,7 @@ class InventarioTest extends TestCase
 
         $this->get(route('dashboard'))
             ->assertOk()
-            ->assertDontSee('aria-label="Inventario"', false)
+            ->assertSee('aria-label="Inventario (próximamente)"', false)
             ->assertDontSee('href="'.route('inventario').'"', false);
     }
 
