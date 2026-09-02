@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Models\Rol;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Testing\TestResponse;
 
@@ -37,5 +38,19 @@ abstract class TestCase extends BaseTestCase
     protected function autenticar(string $correo = 'ana@olimpia.com'): void
     {
         $this->registrarUsuarioCliente($correo)->assertRedirect(route('dashboard'));
+    }
+
+    /**
+     * Deja autenticado a un usuario con el rol indicado.
+     */
+    protected function autenticarConRol(string $nombreRol, string $correo = 'ana@olimpia.com'): void
+    {
+        $this->autenticar($correo);
+
+        $usuario = auth()->user();
+        $rol = Rol::query()->where('nombre_rol', $nombreRol)->firstOrFail();
+
+        $usuario->forceFill(['id_rol' => $rol->id_rol])->save();
+        $usuario->unsetRelation('rol');
     }
 }

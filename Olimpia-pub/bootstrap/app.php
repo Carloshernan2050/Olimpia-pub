@@ -1,6 +1,13 @@
 <?php
 
 use App\Exceptions\Autenticacion\RolNoConfiguradoException;
+use App\Exceptions\Inventario\AccesoInventarioDenegadoException;
+use App\Exceptions\Inventario\MovimientoInventarioNoEncontradoException;
+use App\Exceptions\Inventario\ProductoConPedidosException;
+use App\Exceptions\Inventario\ProductoInventarioNoEncontradoException;
+use App\Exceptions\Inventario\ProductoNombreDuplicadoException;
+use App\Exceptions\Inventario\StockInsuficienteException;
+use App\Http\Middleware\VerificarAccesoInventario;
 use App\Exceptions\Promocion\PromocionNoEncontradaException;
 use App\Support\Http\RespuestaDeExcepcion;
 use Illuminate\Foundation\Application;
@@ -20,6 +27,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectGuestsTo(fn () => route('iniciar-sesion'));
         $middleware->redirectUsersTo(fn () => route('dashboard'));
+        $middleware->alias([
+            'acceso-inventario' => VerificarAccesoInventario::class,
+        ]);
     })
     /**
      * Responde en JSON para API y muestra el error de rol no configurado.
@@ -39,6 +49,39 @@ return Application::configure(basePath: dirname(__DIR__))
                 $exception,
                 404,
                 redirect()->route('promociones'),
+            );
+        });
+
+        $exceptions->render(function (AccesoInventarioDenegadoException $exception, Request $request) {
+            return RespuestaDeExcepcion::jsonOAviso(
+                $request,
+                $exception,
+                403,
+                redirect()->route('dashboard'),
+            );
+        });
+
+        $exceptions->render(function (
+            ProductoInventarioNoEncontradoException|MovimientoInventarioNoEncontradoException $exception,
+            Request $request,
+        ) {
+            return RespuestaDeExcepcion::jsonOAviso(
+                $request,
+                $exception,
+                404,
+                redirect()->route('inventario'),
+            );
+        });
+
+        $exceptions->render(function (
+            StockInsuficienteException|ProductoConPedidosException|ProductoNombreDuplicadoException $exception,
+            Request $request,
+        ) {
+            return RespuestaDeExcepcion::jsonOAviso(
+                $request,
+                $exception,
+                422,
+                redirect()->route('inventario'),
             );
         });
     })->create();

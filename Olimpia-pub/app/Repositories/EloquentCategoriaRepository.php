@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\CategoriaRepositoryInterface;
 use App\Models\Categoria;
+use Illuminate\Support\Collection;
 
 class EloquentCategoriaRepository extends EloquentRepository implements CategoriaRepositoryInterface
 {
@@ -23,6 +24,18 @@ class EloquentCategoriaRepository extends EloquentRepository implements Categori
     {
         /** @var Categoria|null */
         return $this->findFirstBy('nombre', $nombre);
+    }
+
+    /**
+     * Todas las categorías ordenadas por nombre.
+     *
+     * @return Collection<int, Categoria>
+     */
+    public function todas(): Collection
+    {
+        return $this->newQuery()
+            ->orderBy('nombre')
+            ->get();
     }
 
     /**

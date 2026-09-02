@@ -14,7 +14,8 @@ class CatalogoIconosTest extends TestCase
         $nombres = [
             'balon', 'buscar', 'carrito', 'ubicacion', 'qr', 'ajustes', 'perfil',
             'inicio', 'etiqueta', 'megafono', 'herramienta', 'portapapeles',
-            'pesa', 'grafica', 'estiramiento', 'historial', 'imagen', 'filtro',
+            'pesa', 'grafica', 'estiramiento', 'historial', 'caja', 'tendencia-baja',
+            'carrito-alerta', 'ojo', 'imagen', 'filtro',
             'mas', 'cerrar', 'lapiz', 'papelera',
         ];
 
