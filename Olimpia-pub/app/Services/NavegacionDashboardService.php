@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Contracts\Services\AutorizacionInventarioServiceInterface;
 use App\Contracts\Services\NavegacionDashboardServiceInterface;
 use App\DTOs\Dashboard\AccionCabeceraDatos;
 use App\DTOs\Dashboard\ItemNavegacionDatos;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
 
 class NavegacionDashboardService implements NavegacionDashboardServiceInterface
@@ -15,27 +17,36 @@ class NavegacionDashboardService implements NavegacionDashboardServiceInterface
     private const RUTAS_POR_SECCION = [
         'dashboard' => 'inicio',
         'promociones' => 'promociones',
+        'inventario' => 'inventario',
     ];
 
     /**
-     * Inyecta la petición actual para resolver la sección activa.
+     * Inyecta la petición y la autorización de inventario.
      */
     public function __construct(
         private readonly Request $request,
+        private readonly AutorizacionInventarioServiceInterface $autorizacionInventario,
     ) {}
 
     /**
-     * Ítems de la barra secundaria. Home y Promociones ya tienen pantalla.
+     * Ítems de la barra secundaria. Home, Promociones e Inventario ya tienen pantalla.
      *
      * @return list<ItemNavegacionDatos>
      */
     public function items(): array
     {
-        return [
+        $items = [
             new ItemNavegacionDatos('inicio', 'Inicio', 'inicio', 'dashboard'),
             new ItemNavegacionDatos('productos', 'Productos', 'etiqueta'),
             new ItemNavegacionDatos('promociones', 'Promociones', 'megafono', 'promociones'),
-            new ItemNavegacionDatos('inventario', 'Inventario', 'herramienta'),
+        ];
+
+        if ($this->puedeVerInventario()) {
+            $items[] = new ItemNavegacionDatos('inventario', 'Inventario', 'herramienta', 'inventario');
+        }
+
+        return [
+            ...$items,
             new ItemNavegacionDatos('reportes', 'Reportes', 'portapapeles'),
             new ItemNavegacionDatos('eventos', 'Eventos', 'pesa'),
             new ItemNavegacionDatos('analitica', 'Analítica', 'grafica'),
@@ -68,5 +79,16 @@ class NavegacionDashboardService implements NavegacionDashboardServiceInterface
         $ruta = $this->request->route()?->getName();
 
         return self::RUTAS_POR_SECCION[$ruta] ?? '';
+    }
+
+    /**
+     * El inventario solo aparece para empleados y roles superiores.
+     */
+    private function puedeVerInventario(): bool
+    {
+        $usuario = $this->request->user();
+
+        return $usuario instanceof Usuario
+            && $this->autorizacionInventario->puedeAcceder($usuario);
     }
 }

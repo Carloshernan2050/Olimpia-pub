@@ -6,30 +6,38 @@ use App\Contracts\Repositories\CategoriaRepositoryInterface;
 use App\Contracts\Repositories\CodigoQrRepositoryInterface;
 use App\Contracts\Repositories\ContenidoInicioRepositoryInterface;
 use App\Contracts\Repositories\MesaRepositoryInterface;
+use App\Contracts\Repositories\MovimientoInventarioRepositoryInterface;
 use App\Contracts\Repositories\ProductoRepositoryInterface;
 use App\Contracts\Repositories\PromocionRepositoryInterface;
 use App\Contracts\Repositories\RolRepositoryInterface;
 use App\Contracts\Repositories\UsuarioRepositoryInterface;
 use App\Contracts\Services\AlmacenamientoImagenPromocionInterface;
 use App\Contracts\Services\AutenticacionServiceInterface;
+use App\Contracts\Services\AutorizacionInventarioServiceInterface;
+use App\Contracts\Services\CatalogoInventarioServiceInterface;
 use App\Contracts\Services\CatalogoPromocionesServiceInterface;
 use App\Contracts\Services\ContenidoInicioServiceInterface;
 use App\Contracts\Services\DatabaseInstallerInterface;
+use App\Contracts\Services\GestionInventarioServiceInterface;
 use App\Contracts\Services\GestionPromocionesServiceInterface;
 use App\Contracts\Services\NavegacionDashboardServiceInterface;
 use App\Repositories\EloquentCategoriaRepository;
 use App\Repositories\EloquentCodigoQrRepository;
 use App\Repositories\EloquentContenidoInicioRepository;
 use App\Repositories\EloquentMesaRepository;
+use App\Repositories\EloquentMovimientoInventarioRepository;
 use App\Repositories\EloquentProductoRepository;
 use App\Repositories\EloquentPromocionRepository;
 use App\Repositories\EloquentRolRepository;
 use App\Repositories\EloquentUsuarioRepository;
 use App\Services\AlmacenamientoImagenPromocion;
 use App\Services\AutenticacionService;
+use App\Services\AutorizacionInventarioService;
+use App\Services\CatalogoInventarioService;
 use App\Services\CatalogoPromocionesService;
 use App\Services\ContenidoInicioService;
 use App\Services\DatabaseInstaller;
+use App\Services\GestionInventarioService;
 use App\Services\GestionPromocionesService;
 use App\Services\NavegacionDashboardService;
 use App\View\Composers\DashboardComposer;
@@ -53,9 +61,12 @@ class AppServiceProvider extends ServiceProvider
         foreach ([
             DatabaseInstallerInterface::class => DatabaseInstaller::class,
             AutenticacionServiceInterface::class => AutenticacionService::class,
+            AutorizacionInventarioServiceInterface::class => AutorizacionInventarioService::class,
             ContenidoInicioServiceInterface::class => ContenidoInicioService::class,
             CatalogoPromocionesServiceInterface::class => CatalogoPromocionesService::class,
+            CatalogoInventarioServiceInterface::class => CatalogoInventarioService::class,
             GestionPromocionesServiceInterface::class => GestionPromocionesService::class,
+            GestionInventarioServiceInterface::class => GestionInventarioService::class,
             NavegacionDashboardServiceInterface::class => NavegacionDashboardService::class,
             RolRepositoryInterface::class => EloquentRolRepository::class,
             UsuarioRepositoryInterface::class => EloquentUsuarioRepository::class,
@@ -64,6 +75,7 @@ class AppServiceProvider extends ServiceProvider
             MesaRepositoryInterface::class => EloquentMesaRepository::class,
             ProductoRepositoryInterface::class => EloquentProductoRepository::class,
             PromocionRepositoryInterface::class => EloquentPromocionRepository::class,
+            MovimientoInventarioRepositoryInterface::class => EloquentMovimientoInventarioRepository::class,
             ContenidoInicioRepositoryInterface::class => EloquentContenidoInicioRepository::class,
             AlmacenamientoImagenPromocionInterface::class => AlmacenamientoImagenPromocion::class,
         ] as $abstracto => $concreto) {

@@ -6,10 +6,13 @@ use App\Contracts\Repositories\CategoriaRepositoryInterface;
 use App\Contracts\Repositories\CodigoQrRepositoryInterface;
 use App\Contracts\Repositories\ContenidoInicioRepositoryInterface;
 use App\Contracts\Repositories\MesaRepositoryInterface;
+use App\Contracts\Repositories\MovimientoInventarioRepositoryInterface;
 use App\Contracts\Repositories\ProductoRepositoryInterface;
 use App\Contracts\Repositories\PromocionRepositoryInterface;
 use App\Contracts\Repositories\RolRepositoryInterface;
 use App\Contracts\Repositories\UsuarioRepositoryInterface;
+use App\DTOs\Dashboard\FiltroInventarioDatos;
+use App\Enums\EstadoStockInventario;
 use App\Enums\PosicionInicio;
 use App\Enums\TipoBloqueInicio;
 use Database\Seeders\RolSeeder;
@@ -108,6 +111,30 @@ class RepositoriosEloquentTest extends TestCase
         $this->assertSame(4, $mesas->findByNumero(4)?->numero_mesa);
         $this->assertTrue($mesa->codigoQr()->is($codigo));
         $this->assertTrue($codigo->mesa()->is($mesa));
+
+        $agotado = $productos->create([
+            'nombre' => 'Agua',
+            'descripcion' => 'Sin stock',
+            'precio' => 2,
+            'stock' => 0,
+            'estado' => 'activo',
+            'id_categoria' => $categoria->id_categoria,
+        ]);
+        $productos->update($agotado, ['stock' => 1]);
+        $this->assertSame(1, $productos->findById($agotado->id_producto)?->stock);
+
+        $filtrados = $productos->filtrar(new FiltroInventarioDatos('Col', null, null, 1));
+        $this->assertTrue($filtrados->contains('nombre', 'Cola'));
+        $this->assertFalse($filtrados->contains('nombre', 'Agua'));
+
+        $bajos = $productos->filtrar(new FiltroInventarioDatos(null, null, EstadoStockInventario::Bajo, 1));
+        $this->assertTrue($bajos->contains('nombre', 'Agua'));
+        $this->assertGreaterThanOrEqual(2, $productos->todos()->count());
+        $this->assertCount(1, $categorias->todas());
+
+        $resumen = $productos->resumenStock(10);
+        $this->assertSame(2, $resumen['productos']);
+        $this->assertSame(2, $resumen['bajo']);
     }
 
     public function test_repositorio_de_contenido_inicio_omite_inactivos(): void
@@ -221,5 +248,53 @@ class RepositoriosEloquentTest extends TestCase
 
         $promociones->delete($alfa);
         $this->assertNull($promociones->findById($alfa->id_promocion));
+    }
+
+    public function test_repositorio_de_movimientos_crea_lista_y_elimina(): void
+    {
+        $categorias = $this->app->make(CategoriaRepositoryInterface::class);
+        $productos = $this->app->make(ProductoRepositoryInterface::class);
+        $movimientos = $this->app->make(MovimientoInventarioRepositoryInterface::class);
+        $usuarios = $this->app->make(UsuarioRepositoryInterface::class);
+        $roles = $this->app->make(RolRepositoryInterface::class);
+        $rol = $roles->findByNombre('cliente');
+
+        $usuario = $usuarios->create([
+            'primer_nombre' => 'Ana',
+            'segundo_nombre' => null,
+            'primer_apellido' => 'Perez',
+            'segundo_apellido' => null,
+            'correo' => 'ana@olimpia.com',
+            'contrasena' => 'password1',
+            'estado' => 'activo',
+            'id_rol' => $rol->id_rol,
+        ]);
+        $categoria = $categorias->create(['nombre' => 'Bebidas']);
+        $producto = $productos->create([
+            'nombre' => 'Cola',
+            'precio' => 3.5,
+            'stock' => 10,
+            'estado' => 'activo',
+            'id_categoria' => $categoria->id_categoria,
+        ]);
+
+        $movimiento = $movimientos->create([
+            'tipo_movimiento' => 'entrada',
+            'cantidad' => 4,
+            'fecha' => now(),
+            'id_producto' => $producto->id_producto,
+            'id_usuario' => $usuario->id_usuario,
+        ]);
+
+        $this->assertSame(4, $movimientos->findById($movimiento->id_movimiento)?->cantidad);
+        $this->assertSame(1, $movimientos->contar());
+        $this->assertCount(1, $movimientos->recientes());
+        $this->assertCount(1, $movimientos->porProducto($producto->id_producto));
+
+        $movimientos->update($movimiento, ['cantidad' => 6]);
+        $this->assertSame(6, $movimientos->findById($movimiento->id_movimiento)?->cantidad);
+
+        $movimientos->eliminarDeProducto($producto->id_producto);
+        $this->assertSame(0, $movimientos->contar());
     }
 }
