@@ -3,7 +3,7 @@
 namespace Tests\Unit\Services;
 
 use App\Contracts\Repositories\PromocionRepositoryInterface;
-use App\Contracts\Services\AlmacenamientoImagenPromocionInterface;
+use App\Contracts\Services\AlmacenamientoImagenPublicaInterface;
 use App\DTOs\Dashboard\GuardarPromocionDatos;
 use App\DTOs\Dashboard\PromocionGestionDatos;
 use App\Exceptions\Promocion\PromocionNoEncontradaException;
@@ -18,7 +18,7 @@ class GestionPromocionesServiceTest extends TestCase
 {
     private PromocionRepositoryInterface&MockInterface $repositorio;
 
-    private AlmacenamientoImagenPromocionInterface&MockInterface $imagenes;
+    private AlmacenamientoImagenPublicaInterface&MockInterface $imagenes;
 
     private GestionPromocionesService $service;
 
@@ -27,7 +27,7 @@ class GestionPromocionesServiceTest extends TestCase
         parent::setUp();
 
         $this->repositorio = Mockery::mock(PromocionRepositoryInterface::class);
-        $this->imagenes = Mockery::mock(AlmacenamientoImagenPromocionInterface::class);
+        $this->imagenes = Mockery::mock(AlmacenamientoImagenPublicaInterface::class);
         $this->service = new GestionPromocionesService($this->repositorio, $this->imagenes);
     }
 

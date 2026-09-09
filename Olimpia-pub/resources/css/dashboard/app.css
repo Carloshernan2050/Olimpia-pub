@@ -3,9 +3,12 @@
 @import '../compartido/aviso.css';
 @import '../compartido/campo.css';
 @import './shell.css';
+@import './cabecera.css';
+@import './navegacion.css';
 @import './inicio.css';
 @import './promociones.css';
 @import './inventario.css';
+@import './eventos.css';
 
 @source '../../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../../storage/framework/views/*.php';

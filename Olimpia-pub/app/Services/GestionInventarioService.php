@@ -17,6 +17,7 @@ use App\Exceptions\Inventario\ProductoNombreDuplicadoException;
 use App\Exceptions\Inventario\StockInsuficienteException;
 use App\Models\MovimientoInventario;
 use App\Models\Producto;
+use Illuminate\Support\Collection;
 
 class GestionInventarioService implements GestionInventarioServiceInterface
 {
@@ -157,11 +158,7 @@ class GestionInventarioService implements GestionInventarioServiceInterface
      */
     public function listar(): array
     {
-        return $this->movimientoRepository
-            ->recientes()
-            ->map(fn (MovimientoInventario $movimiento): MovimientoInventarioGestionDatos => MovimientoInventarioGestionDatos::fromModel($movimiento))
-            ->values()
-            ->all();
+        return $this->mapearMovimientos($this->movimientoRepository->recientes());
     }
 
     /**
@@ -171,9 +168,23 @@ class GestionInventarioService implements GestionInventarioServiceInterface
      */
     public function listarDeProducto(int $idProducto): array
     {
-        return $this->movimientoRepository
-            ->porProducto($idProducto)
-            ->map(fn (MovimientoInventario $movimiento): MovimientoInventarioGestionDatos => MovimientoInventarioGestionDatos::fromModel($movimiento))
+        return $this->mapearMovimientos($this->movimientoRepository->porProducto($idProducto));
+    }
+
+    /**
+     * Convierte los movimientos persistidos en DTOs de gestión.
+     *
+     * @param  Collection<int, MovimientoInventario>  $movimientos
+     * @return list<MovimientoInventarioGestionDatos>
+     */
+    private function mapearMovimientos(Collection $movimientos): array
+    {
+        return $movimientos
+            ->map(
+                function (MovimientoInventario $movimiento): MovimientoInventarioGestionDatos {
+                    return MovimientoInventarioGestionDatos::fromModel($movimiento);
+                }
+            )
             ->values()
             ->all();
     }

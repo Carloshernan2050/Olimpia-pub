@@ -8,6 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class ConsultarInventarioRequest extends FormRequest
 {
     use AutorizaUsuarioAutenticado;
+    use IdentificadorDeConsulta;
 
     /**
      * @return array<string, mixed>
@@ -63,14 +64,5 @@ class ConsultarInventarioRequest extends FormRequest
             || $this->idVer() !== null
             || $this->idProductoPrefill() !== null
             || $this->boolean('nueva');
-    }
-
-    private function identificadorPositivo(mixed $id): ?int
-    {
-        if (! is_numeric($id) || (int) $id < 1) {
-            return null;
-        }
-
-        return (int) $id;
     }
 }

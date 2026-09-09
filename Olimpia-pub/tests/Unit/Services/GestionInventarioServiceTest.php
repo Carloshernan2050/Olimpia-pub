@@ -10,6 +10,7 @@ use App\DTOs\Dashboard\MovimientoInventarioGestionDatos;
 use App\DTOs\Dashboard\ProductoInventarioDatos;
 use App\Exceptions\Inventario\MovimientoInventarioNoEncontradoException;
 use App\Exceptions\Inventario\ProductoConPedidosException;
+use App\Exceptions\Inventario\ProductoInventarioNoEncontradoException;
 use App\Exceptions\Inventario\ProductoNombreDuplicadoException;
 use App\Exceptions\Inventario\StockInsuficienteException;
 use App\Models\Categoria;
@@ -128,6 +129,52 @@ class GestionInventarioServiceTest extends TestCase
         $this->assertSame('Limonada', $listado[0]->nombreProducto);
     }
 
+    public function test_listar_de_producto_mapea_los_movimientos(): void
+    {
+        $this->movimientos->shouldReceive('porProducto')
+            ->once()
+            ->with(7)
+            ->andReturn(collect([$this->movimiento()]));
+
+        $listado = $this->service->listarDeProducto(7);
+
+        $this->assertCount(1, $listado);
+        $this->assertSame('Limonada', $listado[0]->nombreProducto);
+    }
+
+    public function test_buscar_devuelve_null_si_no_existe_el_movimiento(): void
+    {
+        $this->movimientos->shouldReceive('findById')->once()->with(99)->andReturn(null);
+
+        $this->assertNull($this->service->buscar(99));
+    }
+
+    public function test_buscar_devuelve_el_movimiento(): void
+    {
+        $this->movimientos->shouldReceive('findById')->once()->with(9)->andReturn($this->movimiento());
+
+        $encontrado = $this->service->buscar(9);
+
+        $this->assertSame(9, $encontrado?->id);
+        $this->assertSame('Limonada', $encontrado?->nombreProducto);
+    }
+
+    public function test_buscar_producto_devuelve_null_si_no_existe(): void
+    {
+        $this->productos->shouldReceive('findById')->once()->with(99)->andReturn(null);
+
+        $this->assertNull($this->service->buscarProducto(99));
+    }
+
+    public function test_crear_falla_si_el_producto_no_existe(): void
+    {
+        $this->productos->shouldReceive('findById')->once()->with(7)->andReturn(null);
+
+        $this->expectException(ProductoInventarioNoEncontradoException::class);
+
+        $this->service->crear($this->datos(), 4);
+    }
+
     public function test_crear_producto_con_stock_registra_entrada_inicial(): void
     {
         $datos = $this->datosProducto();
@@ -150,7 +197,7 @@ class GestionInventarioServiceTest extends TestCase
 
         $this->assertInstanceOf(ProductoInventarioDatos::class, $creado);
         $this->assertSame('Limonada', $creado->nombre);
-        $this->assertSame(12, $creado->stock);
+        $this->assertSame(12, $creado->existencia->stock);
         $this->assertSame('Bebidas', $creado->categoria);
     }
 
@@ -165,7 +212,7 @@ class GestionInventarioServiceTest extends TestCase
 
         $creado = $this->service->crearProducto($datos, 4);
 
-        $this->assertSame(0, $creado->stock);
+        $this->assertSame(0, $creado->existencia->stock);
     }
 
     public function test_crear_producto_falla_si_el_nombre_ya_existe(): void

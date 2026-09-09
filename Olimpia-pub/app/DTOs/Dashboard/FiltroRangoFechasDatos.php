@@ -2,7 +2,7 @@
 
 namespace App\DTOs\Dashboard;
 
-final readonly class FiltroPromocionesDatos
+final readonly class FiltroRangoFechasDatos
 {
     /**
      * Rango de fechas del catálogo (desde / hasta).
@@ -13,7 +13,7 @@ final readonly class FiltroPromocionesDatos
     ) {}
 
     /**
-     * Filtro inicial: vigentes de hoy, sin rango extra.
+     * Filtro inicial, sin rango extra.
      */
     public static function predeterminado(): self
     {

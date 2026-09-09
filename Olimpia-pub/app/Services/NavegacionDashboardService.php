@@ -18,6 +18,8 @@ class NavegacionDashboardService implements NavegacionDashboardServiceInterface
         'dashboard' => 'inicio',
         'promociones' => 'promociones',
         'inventario' => 'inventario',
+        'eventos' => 'eventos',
+        'eventos.detalle' => 'eventos',
     ];
 
     /**
@@ -29,26 +31,24 @@ class NavegacionDashboardService implements NavegacionDashboardServiceInterface
     ) {}
 
     /**
-     * Ítems de la barra secundaria. Home, Promociones e Inventario ya tienen pantalla.
+     * Ítems de la barra secundaria. La etiqueta abre Promociones; el megáfono, Eventos; el portapapeles, Inventario.
      *
      * @return list<ItemNavegacionDatos>
      */
     public function items(): array
     {
-        $items = [
-            new ItemNavegacionDatos('inicio', 'Inicio', 'inicio', 'dashboard'),
-            new ItemNavegacionDatos('productos', 'Productos', 'etiqueta'),
-            new ItemNavegacionDatos('promociones', 'Promociones', 'megafono', 'promociones'),
-        ];
-
-        if ($this->puedeVerInventario()) {
-            $items[] = new ItemNavegacionDatos('inventario', 'Inventario', 'herramienta', 'inventario');
-        }
-
         return [
-            ...$items,
-            new ItemNavegacionDatos('reportes', 'Reportes', 'portapapeles'),
-            new ItemNavegacionDatos('eventos', 'Eventos', 'pesa'),
+            new ItemNavegacionDatos('inicio', 'Inicio', 'inicio', 'dashboard'),
+            new ItemNavegacionDatos('promociones', 'Promociones', 'etiqueta', 'promociones'),
+            new ItemNavegacionDatos('eventos', 'Eventos', 'megafono', 'eventos'),
+            new ItemNavegacionDatos('carta', 'Comida y bebida', 'comida'),
+            new ItemNavegacionDatos(
+                'inventario',
+                'Inventario',
+                'portapapeles',
+                $this->puedeVerInventario() ? 'inventario' : null,
+            ),
+            new ItemNavegacionDatos('mesas', 'Mesas', 'mesa'),
             new ItemNavegacionDatos('analitica', 'Analítica', 'grafica'),
             new ItemNavegacionDatos('actividades', 'Actividades', 'estiramiento'),
             new ItemNavegacionDatos('historial', 'Historial', 'historial'),

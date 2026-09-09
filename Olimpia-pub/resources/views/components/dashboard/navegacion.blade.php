@@ -4,7 +4,7 @@
 ])
 
 <nav class="dashboard-nav" aria-label="Secciones">
-    <ul class="dashboard-nav-lista dashboard-interior">
+    <ul class="dashboard-nav-lista">
         @foreach ($itemsNavegacion as $item)
             <li>
                 @if ($item->estaDisponible())
@@ -18,7 +18,7 @@
                     </a>
                 @else
                     <span
-                        class="dashboard-nav-item is-inactivo"
+                        class="dashboard-nav-item"
                         title="Próximamente"
                         aria-label="{{ $item->etiqueta }} (próximamente)"
                     >

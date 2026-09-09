@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Dashboard\EventoController;
 use App\Http\Controllers\Dashboard\InventarioController;
 use App\Http\Controllers\Dashboard\PromocionController;
+use App\Support\Dashboard\RutasDashboard;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -21,6 +23,19 @@ Route::middleware('auth')->group(function () {
     Route::delete('/dashboard/promociones/{promocion}', [PromocionController::class, 'eliminar'])
         ->whereNumber('promocion')
         ->name('promociones.eliminar');
+    Route::get('/dashboard/eventos', [EventoController::class, 'mostrar'])
+        ->name('eventos');
+    Route::post('/dashboard/eventos', [EventoController::class, 'guardar'])
+        ->name('eventos.guardar');
+    Route::get(RutasDashboard::eventoPorId(), [EventoController::class, 'detalle'])
+        ->whereNumber('evento')
+        ->name('eventos.detalle');
+    Route::put(RutasDashboard::eventoPorId(), [EventoController::class, 'actualizar'])
+        ->whereNumber('evento')
+        ->name('eventos.actualizar');
+    Route::delete(RutasDashboard::eventoPorId(), [EventoController::class, 'eliminar'])
+        ->whereNumber('evento')
+        ->name('eventos.eliminar');
     Route::middleware('acceso-inventario')->group(function () {
         Route::get('/dashboard/inventario', [InventarioController::class, 'mostrar'])
             ->name('inventario');

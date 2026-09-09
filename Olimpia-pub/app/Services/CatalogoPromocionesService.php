@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Contracts\Repositories\PromocionRepositoryInterface;
 use App\Contracts\Services\CatalogoPromocionesServiceInterface;
 use App\DTOs\Dashboard\CatalogoPromocionesDatos;
-use App\DTOs\Dashboard\FiltroPromocionesDatos;
+use App\DTOs\Dashboard\FiltroRangoFechasDatos;
 use App\DTOs\Dashboard\PromocionTarjetaDatos;
 use App\Models\Promocion;
 
@@ -21,9 +21,9 @@ class CatalogoPromocionesService implements CatalogoPromocionesServiceInterface
     /**
      * Convierte las promociones filtradas en tarjetas del catálogo.
      */
-    public function obtenerCatalogo(?FiltroPromocionesDatos $filtro = null): CatalogoPromocionesDatos
+    public function obtenerCatalogo(?FiltroRangoFechasDatos $filtro = null): CatalogoPromocionesDatos
     {
-        $filtro ??= FiltroPromocionesDatos::predeterminado();
+        $filtro ??= FiltroRangoFechasDatos::predeterminado();
 
         $promociones = $this->promocionRepository
             ->activas($filtro)

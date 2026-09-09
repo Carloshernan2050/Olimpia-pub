@@ -3,7 +3,7 @@
 namespace Tests\Unit\Services;
 
 use App\Contracts\Repositories\PromocionRepositoryInterface;
-use App\DTOs\Dashboard\FiltroPromocionesDatos;
+use App\DTOs\Dashboard\FiltroRangoFechasDatos;
 use App\DTOs\Dashboard\PromocionTarjetaDatos;
 use App\Models\Promocion;
 use App\Services\CatalogoPromocionesService;
@@ -30,7 +30,7 @@ class CatalogoPromocionesServiceTest extends TestCase
     {
         $this->repositorio->shouldReceive('activas')
             ->once()
-            ->with(Mockery::type(FiltroPromocionesDatos::class))
+            ->with(Mockery::type(FiltroRangoFechasDatos::class))
             ->andReturn(collect());
 
         $catalogo = $this->service->obtenerCatalogo();
@@ -48,7 +48,7 @@ class CatalogoPromocionesServiceTest extends TestCase
         ]);
         $promocion->id_promocion = 7;
 
-        $filtro = new FiltroPromocionesDatos(null, null);
+        $filtro = new FiltroRangoFechasDatos(null, null);
 
         $this->repositorio->shouldReceive('activas')
             ->once()

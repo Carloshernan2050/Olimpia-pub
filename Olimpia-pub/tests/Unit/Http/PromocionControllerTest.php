@@ -5,7 +5,7 @@ namespace Tests\Unit\Http;
 use App\Contracts\Services\CatalogoPromocionesServiceInterface;
 use App\Contracts\Services\GestionPromocionesServiceInterface;
 use App\DTOs\Dashboard\CatalogoPromocionesDatos;
-use App\DTOs\Dashboard\FiltroPromocionesDatos;
+use App\DTOs\Dashboard\FiltroRangoFechasDatos;
 use App\Http\Controllers\Dashboard\PromocionController;
 use App\Http\Requests\ConsultarCatalogoPromocionesRequest;
 use Mockery;
@@ -19,7 +19,7 @@ class PromocionControllerTest extends TestCase
         $catalogoServicio = Mockery::mock(CatalogoPromocionesServiceInterface::class);
         $catalogoServicio->shouldReceive('obtenerCatalogo')
             ->once()
-            ->with(Mockery::type(FiltroPromocionesDatos::class))
+            ->with(Mockery::type(FiltroRangoFechasDatos::class))
             ->andReturn($catalogo);
 
         $gestion = Mockery::mock(GestionPromocionesServiceInterface::class);

@@ -5,6 +5,7 @@
 
 <div class="inventario-tabla-envoltorio">
     <table class="inventario-tabla">
+        <caption class="sr-only">Productos del inventario</caption>
         <thead>
             <tr>
                 <th scope="col">Producto</th>

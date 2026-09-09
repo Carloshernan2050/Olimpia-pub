@@ -20,9 +20,9 @@
     </td>
     <td>{{ $producto->categoria }}</td>
     <td>{{ $producto->precioFormateado() }}</td>
-    <td>{{ $producto->stock }}</td>
+    <td>{{ $producto->existencia->stock }}</td>
     <td>
-        <span class="inventario-estado inventario-estado-{{ $producto->estadoStock->value }}">
+        <span class="inventario-estado inventario-estado-{{ $producto->existencia->estadoStock->value }}">
             {{ $producto->etiquetaEstadoStock() }}
         </span>
     </td>

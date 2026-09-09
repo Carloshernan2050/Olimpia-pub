@@ -11,6 +11,7 @@ use App\Exceptions\BaseDatos\BaseDatosNoCreadaException;
 use App\Exceptions\BaseDatos\ConexionNoEncontradaException;
 use App\Exceptions\BaseDatos\DirectorioSqliteNoCreadoException;
 use App\Exceptions\BaseDatos\DriverNoSoportadoException;
+use App\Exceptions\Evento\EventoNoEncontradoException;
 use App\Exceptions\Inventario\AccesoInventarioDenegadoException;
 use App\Exceptions\Inventario\MovimientoInventarioNoEncontradoException;
 use App\Exceptions\Inventario\ProductoConPedidosException;
@@ -33,6 +34,7 @@ class ExcepcionesDeDominioTest extends TestCase
         );
         $this->assertSame('Falta el rol.', (new RolNoConfiguradoException('Falta el rol.'))->getMessage());
         $this->assertSame('La promoción no existe.', (new PromocionNoEncontradaException)->getMessage());
+        $this->assertSame('El evento no existe.', (new EventoNoEncontradoException)->getMessage());
         $this->assertSame('El producto no existe en el inventario.', (new ProductoInventarioNoEncontradoException)->getMessage());
         $this->assertSame('El movimiento de inventario no existe.', (new MovimientoInventarioNoEncontradoException)->getMessage());
         $this->assertSame('No hay stock suficiente para registrar el movimiento.', (new StockInsuficienteException)->getMessage());

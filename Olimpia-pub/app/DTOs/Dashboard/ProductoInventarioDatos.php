@@ -2,7 +2,6 @@
 
 namespace App\DTOs\Dashboard;
 
-use App\Enums\EstadoStockInventario;
 use App\Models\Producto;
 
 final readonly class ProductoInventarioDatos
@@ -16,9 +15,7 @@ final readonly class ProductoInventarioDatos
         public ?string $descripcion,
         public string $categoria,
         public string $precio,
-        public int $stock,
-        public string $estado,
-        public EstadoStockInventario $estadoStock,
+        public InventarioExistenciaDatos $existencia,
     ) {}
 
     /**
@@ -34,9 +31,7 @@ final readonly class ProductoInventarioDatos
             $producto->descripcion,
             $categoria?->nombre ?? 'Sin categoría',
             (string) $producto->precio,
-            (int) $producto->stock,
-            (string) $producto->estado,
-            EstadoStockInventario::fromStock((int) $producto->stock),
+            InventarioExistenciaDatos::fromModel($producto),
         );
     }
 
@@ -65,7 +60,7 @@ final readonly class ProductoInventarioDatos
      */
     public function etiquetaEstadoStock(): string
     {
-        return $this->estadoStock->etiqueta();
+        return $this->existencia->estadoStock->etiqueta();
     }
 
     /**
@@ -73,6 +68,6 @@ final readonly class ProductoInventarioDatos
      */
     public function estaActivo(): bool
     {
-        return $this->estado === 'activo';
+        return $this->existencia->estado === 'activo';
     }
 }

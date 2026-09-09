@@ -1,14 +1,15 @@
 <?php
 
 use App\Exceptions\Autenticacion\RolNoConfiguradoException;
+use App\Exceptions\Evento\EventoNoEncontradoException;
 use App\Exceptions\Inventario\AccesoInventarioDenegadoException;
 use App\Exceptions\Inventario\MovimientoInventarioNoEncontradoException;
 use App\Exceptions\Inventario\ProductoConPedidosException;
 use App\Exceptions\Inventario\ProductoInventarioNoEncontradoException;
 use App\Exceptions\Inventario\ProductoNombreDuplicadoException;
 use App\Exceptions\Inventario\StockInsuficienteException;
-use App\Http\Middleware\VerificarAccesoInventario;
 use App\Exceptions\Promocion\PromocionNoEncontradaException;
+use App\Http\Middleware\VerificarAccesoInventario;
 use App\Support\Http\RespuestaDeExcepcion;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -49,6 +50,15 @@ return Application::configure(basePath: dirname(__DIR__))
                 $exception,
                 404,
                 redirect()->route('promociones'),
+            );
+        });
+
+        $exceptions->render(function (EventoNoEncontradoException $exception, Request $request) {
+            return RespuestaDeExcepcion::jsonOAviso(
+                $request,
+                $exception,
+                404,
+                redirect()->route('eventos'),
             );
         });
 

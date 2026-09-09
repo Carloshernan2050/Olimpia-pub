@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\Repositories\PromocionRepositoryInterface;
-use App\Contracts\Services\AlmacenamientoImagenPromocionInterface;
+use App\Contracts\Services\AlmacenamientoImagenPublicaInterface;
 use App\Contracts\Services\GestionPromocionesServiceInterface;
 use App\DTOs\Dashboard\GuardarPromocionDatos;
 use App\DTOs\Dashboard\PromocionGestionDatos;
@@ -13,12 +13,14 @@ use Illuminate\Http\UploadedFile;
 
 class GestionPromocionesService implements GestionPromocionesServiceInterface
 {
+    use AplicaImagenPublica;
+
     /**
      * Inyecta el repositorio y el almacenamiento de imágenes.
      */
     public function __construct(
         private readonly PromocionRepositoryInterface $promocionRepository,
-        private readonly AlmacenamientoImagenPromocionInterface $imagenes,
+        private readonly AlmacenamientoImagenPublicaInterface $imagenes,
     ) {}
 
     /**
@@ -31,7 +33,7 @@ class GestionPromocionesService implements GestionPromocionesServiceInterface
     ): PromocionGestionDatos {
         return PromocionGestionDatos::fromModel(
             $this->promocionRepository->create(
-                $this->conImagen($datos->paraCrear($idUsuario), $imagen)
+                $this->conImagen($this->imagenes, $datos->paraCrear($idUsuario), $imagen)
             )
         );
     }
@@ -49,7 +51,7 @@ class GestionPromocionesService implements GestionPromocionesServiceInterface
         return PromocionGestionDatos::fromModel(
             $this->promocionRepository->update(
                 $actual,
-                $this->conImagen($datos->paraActualizar(), $imagen, $actual->url_imagen)
+                $this->conImagen($this->imagenes, $datos->paraActualizar(), $imagen, $actual->url_imagen)
             )
         );
     }
@@ -100,26 +102,5 @@ class GestionPromocionesService implements GestionPromocionesServiceInterface
         }
 
         return $promocion;
-    }
-
-    /**
-     * Añade la imagen al payload y borra la anterior si se está reemplazando.
-     *
-     * @param  array<string, mixed>  $payload
-     * @return array<string, mixed>
-     */
-    private function conImagen(array $payload, ?UploadedFile $imagen, ?string $rutaAnterior = null): array
-    {
-        if ($imagen === null) {
-            return $payload;
-        }
-
-        if (filled($rutaAnterior)) {
-            $this->imagenes->eliminar($rutaAnterior);
-        }
-
-        $payload['url_imagen'] = $this->imagenes->guardar($imagen);
-
-        return $payload;
     }
 }
