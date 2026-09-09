@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             MesaSeeder::class,
             ProductoSeeder::class,
             ContenidoInicioSeeder::class,
+            EventoSeeder::class,
         ]);
     }
 }

@@ -4,7 +4,7 @@ namespace App\Contracts\Services;
 
 use Illuminate\Http\UploadedFile;
 
-interface AlmacenamientoImagenPromocionInterface
+interface AlmacenamientoImagenPublicaInterface
 {
     /**
      * Guarda la imagen y devuelve la ruta relativa en el disco público.

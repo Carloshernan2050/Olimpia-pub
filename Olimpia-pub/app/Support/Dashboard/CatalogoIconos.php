@@ -87,7 +87,17 @@ final class CatalogoIconos
         'cerrar' => '<path d="m6 6 12 12M18 6 6 18"/>',
         'lapiz' => '<path d="M4 16.2V20h3.8L19 8.8 15.2 5 4 16.2Z"/><path d="m15.2 5 3.8 3.8"/>',
         'papelera' => '<path d="M5 7h14M10 7V5h4v2M8 7v12h8V7"/>',
+        'comida' => '<path d="M2.5 12.4c.2-3.2 2.3-5.1 4.9-5.1s4.7 1.9 4.9 5.1"/>'
+            .'<path d="M2.4 12.4h10"/>'
+            .'<path d="M2.5 15.4c.3 2.1 2.3 3.3 4.9 3.3s4.6-1.2 4.9-3.3"/>'
+            .'<path d="M18.6 3.5 17.4 8.7"/>'
+            .'<path d="M14 8.7h7.6"/>'
+            .'<path d="M14.6 8.7 15.5 19.5h4.8l.9-10.8"/>',
     ];
+
+    private const SVG_APERTURA = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"';
+
+    private const SVG_CIERRE = '</svg>';
 
     /**
      * Iconos con SVG propio (no usan el trazo de línea compartido).
@@ -95,17 +105,7 @@ final class CatalogoIconos
      * @var array<string, string>
      */
     private const SVG_PROPIOS = [
-        'comida' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"'
-            .' fill="none" stroke="currentColor" stroke-width="1.8"'
-            .' stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
-            .'<path d="M2.5 12.4c.2-3.2 2.3-5.1 4.9-5.1s4.7 1.9 4.9 5.1"/>'
-            .'<path d="M2.4 12.4h10"/>'
-            .'<path d="M2.5 15.4c.3 2.1 2.3 3.3 4.9 3.3s4.6-1.2 4.9-3.3"/>'
-            .'<path d="M18.6 3.5 17.4 8.7"/>'
-            .'<path d="M14 8.7h7.6"/>'
-            .'<path d="M14.6 8.7 15.5 19.5h4.8l.9-10.8"/>'
-            .'</svg>',
-        'balon' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"'
+        'balon' => self::SVG_APERTURA
             .' aria-hidden="true">'
             .'<circle cx="12" cy="12" r="9.2" fill="currentColor"/>'
             .'<circle cx="12" cy="12" r="9.2" fill="none" stroke="#ffffff"'
@@ -114,7 +114,7 @@ final class CatalogoIconos
             .'<path d="M12 3.2 9.6 8.2M12 3.2l2.4 5M4.8 8.4l4.8 1.6M19.2 8.4 14.4 10'
             .'M3.8 14.4l4.8-1.6M20.2 14.4l-4.8-1.6M8 18.8l1.5-3.6M16 18.8l-1.5-3.6"'
             .' fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round"/>'
-            .'</svg>',
+            .self::SVG_CIERRE,
     ];
 
     /**
@@ -135,10 +135,10 @@ final class CatalogoIconos
 
     private function envolver(string $trazos): string
     {
-        $apertura = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"';
+        $apertura = self::SVG_APERTURA;
         $apertura .= ' fill="none" stroke="currentColor" stroke-width="1.8"';
         $apertura .= ' stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
 
-        return $apertura.$trazos.'</svg>';
+        return $apertura.$trazos.self::SVG_CIERRE;
     }
 }

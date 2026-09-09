@@ -35,7 +35,12 @@ class NavegacionDashboardServiceTest extends TestCase
         $this->assertSame('comida', $items[3]->icono);
         $this->assertSame('mesa', $items[5]->icono);
         $this->assertTrue($inventario->estaDisponible());
-        $this->assertCount(3, array_filter($items, fn ($item) => $item->estaDisponible()));
+        $this->assertSame('eventos', $items[2]->clave);
+        $this->assertSame('megafono', $items[2]->icono);
+        $this->assertSame('eventos', $items[2]->ruta);
+        $this->assertTrue($items[2]->estaDisponible());
+        $this->assertSame('mesas', $items[5]->clave);
+        $this->assertCount(4, array_filter($items, fn ($item) => $item->estaDisponible()));
     }
 
     public function test_sin_permiso_el_inventario_queda_inactivo(): void
@@ -46,7 +51,7 @@ class NavegacionDashboardServiceTest extends TestCase
         $this->assertCount(9, $items);
         $this->assertSame('inventario', $inventario->clave);
         $this->assertFalse($inventario->estaDisponible());
-        $this->assertCount(2, array_filter($items, fn ($item) => $item->estaDisponible()));
+        $this->assertCount(3, array_filter($items, fn ($item) => $item->estaDisponible()));
     }
 
     public function test_la_cabecera_incluye_perfil(): void
@@ -88,6 +93,26 @@ class NavegacionDashboardServiceTest extends TestCase
         $request->setRouteResolver(fn () => $ruta);
 
         $this->assertSame('inventario', $this->servicio($request)->seccionActiva());
+    }
+
+    public function test_seccion_activa_es_eventos_en_su_ruta(): void
+    {
+        $request = Request::create('/dashboard/eventos');
+        $ruta = new Route(['GET'], '/dashboard/eventos', fn () => null);
+        $ruta->name('eventos');
+        $request->setRouteResolver(fn () => $ruta);
+
+        $this->assertSame('eventos', $this->servicio($request)->seccionActiva());
+    }
+
+    public function test_seccion_activa_es_eventos_en_el_detalle(): void
+    {
+        $request = Request::create('/dashboard/eventos/1');
+        $ruta = new Route(['GET'], '/dashboard/eventos/{evento}', fn () => null);
+        $ruta->name('eventos.detalle');
+        $request->setRouteResolver(fn () => $ruta);
+
+        $this->assertSame('eventos', $this->servicio($request)->seccionActiva());
     }
 
     public function test_seccion_activa_queda_vacia_fuera_del_dashboard(): void

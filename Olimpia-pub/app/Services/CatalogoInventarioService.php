@@ -53,12 +53,20 @@ class CatalogoInventarioService implements CatalogoInventarioServiceInterface
             $this->paginacion($paginador),
             $this->categoriaRepository
                 ->todas()
-                ->map(fn (Categoria $categoria): CategoriaInventarioDatos => CategoriaInventarioDatos::fromModel($categoria))
+                ->map(
+                    fn (Categoria $categoria): CategoriaInventarioDatos => CategoriaInventarioDatos::fromModel(
+                        $categoria
+                    )
+                )
                 ->values()
                 ->all(),
             $this->productoRepository
                 ->todos()
-                ->map(fn (Producto $producto): ProductoInventarioOpcionDatos => ProductoInventarioOpcionDatos::fromModel($producto))
+                ->map(
+                    fn (Producto $producto): ProductoInventarioOpcionDatos => ProductoInventarioOpcionDatos::fromModel(
+                        $producto
+                    )
+                )
                 ->values()
                 ->all(),
         );

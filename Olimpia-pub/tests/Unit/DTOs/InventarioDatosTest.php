@@ -6,12 +6,15 @@ use App\DTOs\Dashboard\CatalogoInventarioDatos;
 use App\DTOs\Dashboard\FiltroInventarioDatos;
 use App\DTOs\Dashboard\GuardarMovimientoInventarioDatos;
 use App\DTOs\Dashboard\GuardarProductoInventarioDatos;
+use App\DTOs\Dashboard\InventarioExistenciaDatos;
+use App\DTOs\Dashboard\MovimientoInventarioGestionDatos;
 use App\DTOs\Dashboard\PaginacionInventarioDatos;
 use App\DTOs\Dashboard\ProductoInventarioDatos;
 use App\DTOs\Dashboard\ResumenInventarioDatos;
 use App\Enums\EstadoStockInventario;
 use App\Enums\TipoMovimientoInventario;
 use App\Models\Categoria;
+use App\Models\MovimientoInventario;
 use App\Models\Producto;
 use Tests\TestCase;
 
@@ -25,7 +28,9 @@ class InventarioDatosTest extends TestCase
         $this->assertSame(3, $fila->id);
         $this->assertSame('Limonada', $fila->nombre);
         $this->assertSame('Bebidas', $fila->categoria);
-        $this->assertSame(EstadoStockInventario::Bajo, $fila->estadoStock);
+        $this->assertSame(4, $fila->existencia->stock);
+        $this->assertSame('activo', $fila->existencia->estado);
+        $this->assertSame(EstadoStockInventario::Bajo, $fila->existencia->estadoStock);
         $this->assertSame('Stock bajo', $fila->etiquetaEstadoStock());
         $this->assertSame('8,50', $fila->precioFormateado());
         $this->assertTrue($fila->estaActivo());
@@ -73,6 +78,45 @@ class InventarioDatosTest extends TestCase
         $this->assertSame(1, $filtro->pagina);
         $this->assertTrue($filtro->estaActivo());
         $this->assertSame(['busqueda' => 'Cola'], $filtro->query());
+    }
+
+    public function test_filtro_conserva_categoria_y_pagina_validas(): void
+    {
+        $filtro = FiltroInventarioDatos::fromInput(null, '4', 'agotado', 3);
+
+        $this->assertSame(4, $filtro->idCategoria);
+        $this->assertSame(EstadoStockInventario::Agotado, $filtro->estadoStock);
+        $this->assertSame(3, $filtro->pagina);
+        $this->assertTrue($filtro->estaActivo());
+        $this->assertSame(['categoria' => 4, 'estado' => 'agotado'], $filtro->query());
+    }
+
+    public function test_existencia_copia_stock_y_estado_del_modelo(): void
+    {
+        $existencia = InventarioExistenciaDatos::fromModel($this->producto(['stock' => 0, 'estado' => 'activo']));
+
+        $this->assertSame(0, $existencia->stock);
+        $this->assertSame('activo', $existencia->estado);
+        $this->assertSame(EstadoStockInventario::Agotado, $existencia->estadoStock);
+    }
+
+    public function test_movimiento_sin_tipo_ni_producto_usa_valores_por_defecto(): void
+    {
+        $movimiento = new MovimientoInventario([
+            'tipo_movimiento' => 'otro',
+            'cantidad' => 2,
+            'fecha' => null,
+            'id_producto' => 3,
+        ]);
+        $movimiento->id_movimiento = 4;
+        $movimiento->setRelation('producto', null);
+
+        $datos = MovimientoInventarioGestionDatos::fromModel($movimiento);
+
+        $this->assertSame(TipoMovimientoInventario::Entrada, $datos->tipo);
+        $this->assertSame('Producto', $datos->nombreProducto);
+        $this->assertSame('', $datos->fecha);
+        $this->assertSame('Entrada', $datos->etiquetaTipo());
     }
 
     public function test_guardar_movimiento_normaliza_tipo_y_cantidad(): void

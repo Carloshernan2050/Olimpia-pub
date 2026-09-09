@@ -40,7 +40,7 @@
         @if ($productoVer)
             <section class="inventario-detalle" aria-label="Detalle del producto">
                 <p><strong>Categoría:</strong> {{ $productoVer->categoria }}</p>
-                <p><strong>Stock:</strong> {{ $productoVer->stock }}</p>
+                <p><strong>Stock:</strong> {{ $productoVer->existencia->stock }}</p>
                 <p><strong>Precio:</strong> {{ $productoVer->precioFormateado() }}</p>
                 <p><strong>Estado:</strong> {{ $productoVer->etiquetaEstadoStock() }}</p>
                 @if (filled($productoVer->descripcion))
@@ -78,7 +78,9 @@
                             <li>
                                 <div>
                                     <p>{{ $item->nombreProducto }}</p>
-                                    <span>{{ $item->etiquetaTipo() }} · {{ $item->cantidad }} · {{ $item->fecha }}</span>
+                                    <span>
+                                        {{ $item->etiquetaTipo() }} · {{ $item->cantidad }} · {{ $item->fecha }}
+                                    </span>
                                 </div>
                                 <div class="modal-inventario-item-acciones">
                                     <a
@@ -96,7 +98,10 @@
                                     >
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" aria-label="Eliminar movimiento de {{ $item->nombreProducto }}">
+                                        <button
+                                            type="submit"
+                                            aria-label="Eliminar movimiento de {{ $item->nombreProducto }}"
+                                        >
                                             <x-dashboard.icono nombre="papelera" />
                                         </button>
                                     </form>

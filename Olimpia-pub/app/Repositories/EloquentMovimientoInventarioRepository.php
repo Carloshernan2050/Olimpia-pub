@@ -2,11 +2,11 @@
 
 namespace App\Repositories;
 
-use App\Contracts\Repositories\MovimientoInventarioRepositoryInterface;
+use App\Contracts\Repositories\MovimientoInventarioRepositoryInterface as ContratoMovimientoInventario;
 use App\Models\MovimientoInventario;
 use Illuminate\Support\Collection;
 
-class EloquentMovimientoInventarioRepository extends EloquentRepository implements MovimientoInventarioRepositoryInterface
+class EloquentMovimientoInventarioRepository extends EloquentRepository implements ContratoMovimientoInventario
 {
     /**
      * Crea un movimiento con los datos recibidos.

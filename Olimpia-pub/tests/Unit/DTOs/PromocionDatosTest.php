@@ -3,7 +3,7 @@
 namespace Tests\Unit\DTOs;
 
 use App\DTOs\Dashboard\CatalogoPromocionesDatos;
-use App\DTOs\Dashboard\FiltroPromocionesDatos;
+use App\DTOs\Dashboard\FiltroRangoFechasDatos;
 use App\DTOs\Dashboard\GuardarPromocionDatos;
 use App\DTOs\Dashboard\PromocionGestionDatos;
 use App\DTOs\Dashboard\PromocionTarjetaDatos;
@@ -107,7 +107,7 @@ class PromocionDatosTest extends TestCase
 
     public function test_filtro_predeterminado_no_esta_activo(): void
     {
-        $filtro = FiltroPromocionesDatos::predeterminado();
+        $filtro = FiltroRangoFechasDatos::predeterminado();
 
         $this->assertFalse($filtro->estaActivo());
         $this->assertNull($filtro->desde);
@@ -117,7 +117,7 @@ class PromocionDatosTest extends TestCase
 
     public function test_filtro_ignora_fechas_invalidas(): void
     {
-        $filtro = FiltroPromocionesDatos::fromInput('ayer', '2026-08-01');
+        $filtro = FiltroRangoFechasDatos::fromInput('ayer', '2026-08-01');
 
         $this->assertNull($filtro->desde);
         $this->assertSame('2026-08-01', $filtro->hasta);

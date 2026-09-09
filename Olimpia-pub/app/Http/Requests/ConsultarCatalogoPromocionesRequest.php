@@ -2,12 +2,13 @@
 
 namespace App\Http\Requests;
 
-use App\DTOs\Dashboard\FiltroPromocionesDatos;
+use App\DTOs\Dashboard\FiltroRangoFechasDatos;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ConsultarCatalogoPromocionesRequest extends FormRequest
 {
     use AutorizaUsuarioAutenticado;
+    use IdentificadorDeConsulta;
 
     /**
      * @return array<string, mixed>
@@ -20,9 +21,9 @@ class ConsultarCatalogoPromocionesRequest extends FormRequest
     /**
      * Filtro de orden y fechas del catálogo.
      */
-    public function filtro(): FiltroPromocionesDatos
+    public function filtro(): FiltroRangoFechasDatos
     {
-        return FiltroPromocionesDatos::fromInput(
+        return FiltroRangoFechasDatos::fromInput(
             $this->query('desde'),
             $this->query('hasta'),
         );
@@ -33,13 +34,7 @@ class ConsultarCatalogoPromocionesRequest extends FormRequest
      */
     public function idEdicion(): ?int
     {
-        $id = $this->query('editar');
-
-        if (! is_numeric($id) || (int) $id < 1) {
-            return null;
-        }
-
-        return (int) $id;
+        return $this->identificadorPositivo($this->query('editar'));
     }
 
     /**

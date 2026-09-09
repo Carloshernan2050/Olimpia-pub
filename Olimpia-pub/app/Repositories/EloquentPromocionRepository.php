@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Contracts\Repositories\PromocionRepositoryInterface;
-use App\DTOs\Dashboard\FiltroPromocionesDatos;
+use App\DTOs\Dashboard\FiltroRangoFechasDatos;
 use App\Models\Promocion;
 use Illuminate\Support\Collection;
 
@@ -51,9 +51,9 @@ class EloquentPromocionRepository extends EloquentRepository implements Promocio
      *
      * @return Collection<int, Promocion>
      */
-    public function activas(?FiltroPromocionesDatos $filtro = null): Collection
+    public function activas(?FiltroRangoFechasDatos $filtro = null): Collection
     {
-        $filtro ??= FiltroPromocionesDatos::predeterminado();
+        $filtro ??= FiltroRangoFechasDatos::predeterminado();
         $consulta = $this->newQuery()->where('estado', 'activa');
 
         if ($filtro->desde === null && $filtro->hasta === null) {

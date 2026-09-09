@@ -5,38 +5,45 @@ namespace App\Providers;
 use App\Contracts\Repositories\CategoriaRepositoryInterface;
 use App\Contracts\Repositories\CodigoQrRepositoryInterface;
 use App\Contracts\Repositories\ContenidoInicioRepositoryInterface;
+use App\Contracts\Repositories\EventoRepositoryInterface;
 use App\Contracts\Repositories\MesaRepositoryInterface;
 use App\Contracts\Repositories\MovimientoInventarioRepositoryInterface;
 use App\Contracts\Repositories\ProductoRepositoryInterface;
 use App\Contracts\Repositories\PromocionRepositoryInterface;
 use App\Contracts\Repositories\RolRepositoryInterface;
 use App\Contracts\Repositories\UsuarioRepositoryInterface;
-use App\Contracts\Services\AlmacenamientoImagenPromocionInterface;
+use App\Contracts\Services\AlmacenamientoImagenPublicaInterface;
 use App\Contracts\Services\AutenticacionServiceInterface;
 use App\Contracts\Services\AutorizacionInventarioServiceInterface;
+use App\Contracts\Services\CatalogoEventosServiceInterface;
 use App\Contracts\Services\CatalogoInventarioServiceInterface;
 use App\Contracts\Services\CatalogoPromocionesServiceInterface;
 use App\Contracts\Services\ContenidoInicioServiceInterface;
 use App\Contracts\Services\DatabaseInstallerInterface;
+use App\Contracts\Services\GestionEventosServiceInterface;
 use App\Contracts\Services\GestionInventarioServiceInterface;
 use App\Contracts\Services\GestionPromocionesServiceInterface;
 use App\Contracts\Services\NavegacionDashboardServiceInterface;
 use App\Repositories\EloquentCategoriaRepository;
 use App\Repositories\EloquentCodigoQrRepository;
 use App\Repositories\EloquentContenidoInicioRepository;
+use App\Repositories\EloquentEventoRepository;
 use App\Repositories\EloquentMesaRepository;
 use App\Repositories\EloquentMovimientoInventarioRepository;
 use App\Repositories\EloquentProductoRepository;
 use App\Repositories\EloquentPromocionRepository;
 use App\Repositories\EloquentRolRepository;
 use App\Repositories\EloquentUsuarioRepository;
+use App\Services\AlmacenamientoImagenEvento;
 use App\Services\AlmacenamientoImagenPromocion;
 use App\Services\AutenticacionService;
 use App\Services\AutorizacionInventarioService;
+use App\Services\CatalogoEventosService;
 use App\Services\CatalogoInventarioService;
 use App\Services\CatalogoPromocionesService;
 use App\Services\ContenidoInicioService;
 use App\Services\DatabaseInstaller;
+use App\Services\GestionEventosService;
 use App\Services\GestionInventarioService;
 use App\Services\GestionPromocionesService;
 use App\Services\NavegacionDashboardService;
@@ -64,8 +71,10 @@ class AppServiceProvider extends ServiceProvider
             AutorizacionInventarioServiceInterface::class => AutorizacionInventarioService::class,
             ContenidoInicioServiceInterface::class => ContenidoInicioService::class,
             CatalogoPromocionesServiceInterface::class => CatalogoPromocionesService::class,
+            CatalogoEventosServiceInterface::class => CatalogoEventosService::class,
             CatalogoInventarioServiceInterface::class => CatalogoInventarioService::class,
             GestionPromocionesServiceInterface::class => GestionPromocionesService::class,
+            GestionEventosServiceInterface::class => GestionEventosService::class,
             GestionInventarioServiceInterface::class => GestionInventarioService::class,
             NavegacionDashboardServiceInterface::class => NavegacionDashboardService::class,
             RolRepositoryInterface::class => EloquentRolRepository::class,
@@ -75,9 +84,9 @@ class AppServiceProvider extends ServiceProvider
             MesaRepositoryInterface::class => EloquentMesaRepository::class,
             ProductoRepositoryInterface::class => EloquentProductoRepository::class,
             PromocionRepositoryInterface::class => EloquentPromocionRepository::class,
+            EventoRepositoryInterface::class => EloquentEventoRepository::class,
             MovimientoInventarioRepositoryInterface::class => EloquentMovimientoInventarioRepository::class,
             ContenidoInicioRepositoryInterface::class => EloquentContenidoInicioRepository::class,
-            AlmacenamientoImagenPromocionInterface::class => AlmacenamientoImagenPromocion::class,
         ] as $abstracto => $concreto) {
             $this->app->bind($abstracto, $concreto);
         }
@@ -85,6 +94,18 @@ class AppServiceProvider extends ServiceProvider
         $this->app->when(AlmacenamientoImagenPromocion::class)
             ->needs(Filesystem::class)
             ->give(fn () => Storage::disk('public'));
+
+        $this->app->when(AlmacenamientoImagenEvento::class)
+            ->needs(Filesystem::class)
+            ->give(fn () => Storage::disk('public'));
+
+        $this->app->when(GestionPromocionesService::class)
+            ->needs(AlmacenamientoImagenPublicaInterface::class)
+            ->give(AlmacenamientoImagenPromocion::class);
+
+        $this->app->when(GestionEventosService::class)
+            ->needs(AlmacenamientoImagenPublicaInterface::class)
+            ->give(AlmacenamientoImagenEvento::class);
 
         $this->app->bind(StatefulGuard::class, function () {
             return Auth::guard('web');

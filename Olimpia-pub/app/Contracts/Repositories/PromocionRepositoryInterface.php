@@ -2,7 +2,7 @@
 
 namespace App\Contracts\Repositories;
 
-use App\DTOs\Dashboard\FiltroPromocionesDatos;
+use App\DTOs\Dashboard\FiltroRangoFechasDatos;
 use App\Models\Promocion;
 use Illuminate\Support\Collection;
 
@@ -37,7 +37,7 @@ interface PromocionRepositoryInterface
      *
      * @return Collection<int, Promocion>
      */
-    public function activas(?FiltroPromocionesDatos $filtro = null): Collection;
+    public function activas(?FiltroRangoFechasDatos $filtro = null): Collection;
 
     /**
      * Todas las promociones para el listado de gestión.

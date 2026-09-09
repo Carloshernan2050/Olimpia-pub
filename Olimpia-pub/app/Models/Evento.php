@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EstadoEvento;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Evento extends OlimpiaModel
@@ -13,6 +14,7 @@ class Evento extends OlimpiaModel
     protected $fillable = [
         'nombre',
         'descripcion',
+        'url_imagen',
         'fecha',
         'hora',
         'estado',
@@ -23,6 +25,7 @@ class Evento extends OlimpiaModel
     {
         return [
             'fecha' => 'date',
+            'estado' => EstadoEvento::class,
         ];
     }
 

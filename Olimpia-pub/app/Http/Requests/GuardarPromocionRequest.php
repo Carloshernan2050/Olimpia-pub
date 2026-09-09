@@ -8,6 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class GuardarPromocionRequest extends FormRequest
 {
     use AutorizaUsuarioAutenticado;
+    use ObtieneImagenSubida;
 
     /**
      * @return array<string, mixed>

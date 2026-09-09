@@ -1,25 +1,10 @@
+import { iniciarModalDialogo } from './modal-dialogo';
+
 export function iniciarModalInventario(raiz = document) {
-    const modal = raiz.querySelector('[data-modal-inventario]');
-
-    if (!(modal instanceof HTMLDialogElement)) {
-        return;
-    }
-
-    raiz.querySelectorAll('[data-abrir-modal-inventario]').forEach((boton) => {
-        boton.addEventListener('click', () => modal.showModal());
-    });
-
-    modal.querySelectorAll('[data-cerrar-modal-inventario]').forEach((boton) => {
-        boton.addEventListener('click', () => modal.close());
-    });
-
-    modal.addEventListener('click', (evento) => {
-        if (evento.target === modal) {
-            modal.close();
-        }
-    });
-
-    if (modal.hasAttribute('data-abrir') && ! modal.open) {
-        modal.showModal();
-    }
+    iniciarModalDialogo(
+        raiz,
+        '[data-modal-inventario]',
+        '[data-abrir-modal-inventario]',
+        '[data-cerrar-modal-inventario]',
+    );
 }
