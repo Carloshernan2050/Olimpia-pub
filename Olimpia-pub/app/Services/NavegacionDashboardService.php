@@ -17,6 +17,7 @@ class NavegacionDashboardService implements NavegacionDashboardServiceInterface
     private const RUTAS_POR_SECCION = [
         'dashboard' => 'inicio',
         'promociones' => 'promociones',
+        'menu' => 'carta',
         'inventario' => 'inventario',
         'eventos' => 'eventos',
         'eventos.detalle' => 'eventos',
@@ -31,7 +32,7 @@ class NavegacionDashboardService implements NavegacionDashboardServiceInterface
     ) {}
 
     /**
-     * Ítems de la barra secundaria. La etiqueta abre Promociones; el megáfono, Eventos; el portapapeles, Inventario.
+     * Ítems de la barra secundaria. La etiqueta abre Promociones; el megáfono, Eventos; el plato, el Menú; el portapapeles, Inventario.
      *
      * @return list<ItemNavegacionDatos>
      */
@@ -41,7 +42,7 @@ class NavegacionDashboardService implements NavegacionDashboardServiceInterface
             new ItemNavegacionDatos('inicio', 'Inicio', 'inicio', 'dashboard'),
             new ItemNavegacionDatos('promociones', 'Promociones', 'etiqueta', 'promociones'),
             new ItemNavegacionDatos('eventos', 'Eventos', 'megafono', 'eventos'),
-            new ItemNavegacionDatos('carta', 'Comida y bebida', 'comida'),
+            new ItemNavegacionDatos('carta', 'Comida y bebida', 'comida', 'menu'),
             new ItemNavegacionDatos(
                 'inventario',
                 'Inventario',

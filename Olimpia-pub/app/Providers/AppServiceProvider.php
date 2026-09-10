@@ -17,6 +17,7 @@ use App\Contracts\Services\AutenticacionServiceInterface;
 use App\Contracts\Services\AutorizacionInventarioServiceInterface;
 use App\Contracts\Services\CatalogoEventosServiceInterface;
 use App\Contracts\Services\CatalogoInventarioServiceInterface;
+use App\Contracts\Services\CatalogoMenuServiceInterface;
 use App\Contracts\Services\CatalogoPromocionesServiceInterface;
 use App\Contracts\Services\ContenidoInicioServiceInterface;
 use App\Contracts\Services\DatabaseInstallerInterface;
@@ -40,6 +41,7 @@ use App\Services\AutenticacionService;
 use App\Services\AutorizacionInventarioService;
 use App\Services\CatalogoEventosService;
 use App\Services\CatalogoInventarioService;
+use App\Services\CatalogoMenuService;
 use App\Services\CatalogoPromocionesService;
 use App\Services\ContenidoInicioService;
 use App\Services\DatabaseInstaller;
@@ -73,6 +75,7 @@ class AppServiceProvider extends ServiceProvider
             CatalogoPromocionesServiceInterface::class => CatalogoPromocionesService::class,
             CatalogoEventosServiceInterface::class => CatalogoEventosService::class,
             CatalogoInventarioServiceInterface::class => CatalogoInventarioService::class,
+            CatalogoMenuServiceInterface::class => CatalogoMenuService::class,
             GestionPromocionesServiceInterface::class => GestionPromocionesService::class,
             GestionEventosServiceInterface::class => GestionEventosService::class,
             GestionInventarioServiceInterface::class => GestionInventarioService::class,

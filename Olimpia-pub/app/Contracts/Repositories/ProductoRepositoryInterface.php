@@ -3,6 +3,7 @@
 namespace App\Contracts\Repositories;
 
 use App\DTOs\Dashboard\FiltroInventarioDatos;
+use App\DTOs\Dashboard\FiltroMenuDatos;
 use App\Models\Producto;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -44,6 +45,13 @@ interface ProductoRepositoryInterface
      * @return LengthAwarePaginator<int, Producto>
      */
     public function filtrar(FiltroInventarioDatos $filtro, int $porPagina = 8): LengthAwarePaginator;
+
+    /**
+     * Productos activos del inventario para la carta, filtrados por nombre y categoría.
+     *
+     * @return Collection<int, Producto>
+     */
+    public function paraMenu(FiltroMenuDatos $filtro): Collection;
 
     /**
      * Todos los productos ordenados por nombre.
