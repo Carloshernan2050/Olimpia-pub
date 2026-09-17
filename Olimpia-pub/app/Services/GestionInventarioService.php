@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Contracts\Repositories\MovimientoInventarioRepositoryInterface;
 use App\Contracts\Repositories\ProductoRepositoryInterface;
+use App\Contracts\Services\AlmacenamientoImagenPublicaInterface;
 use App\Contracts\Services\GestionInventarioServiceInterface;
 use App\DTOs\Dashboard\GuardarMovimientoInventarioDatos;
 use App\DTOs\Dashboard\GuardarProductoInventarioDatos;
@@ -17,16 +18,20 @@ use App\Exceptions\Inventario\ProductoNombreDuplicadoException;
 use App\Exceptions\Inventario\StockInsuficienteException;
 use App\Models\MovimientoInventario;
 use App\Models\Producto;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 
 class GestionInventarioService implements GestionInventarioServiceInterface
 {
+    use AplicaImagenPublica;
+
     /**
-     * Inyecta los repositorios de producto y movimiento.
+     * Inyecta los repositorios y el almacenamiento de imágenes.
      */
     public function __construct(
         private readonly ProductoRepositoryInterface $productoRepository,
         private readonly MovimientoInventarioRepositoryInterface $movimientoRepository,
+        private readonly AlmacenamientoImagenPublicaInterface $imagenes,
     ) {}
 
     /**
@@ -83,17 +88,20 @@ class GestionInventarioService implements GestionInventarioServiceInterface
     }
 
     /**
-     * Persiste un producto nuevo y registra la entrada inicial si hay stock.
+     * Persiste un producto nuevo, con imagen si se envió, y registra la entrada inicial.
      */
     public function crearProducto(
         GuardarProductoInventarioDatos $datos,
         int $idUsuario,
+        ?UploadedFile $imagen = null,
     ): ProductoInventarioDatos {
         if ($this->productoRepository->findByNombre($datos->nombre) !== null) {
             throw new ProductoNombreDuplicadoException;
         }
 
-        $producto = $this->productoRepository->create($datos->paraCrear());
+        $producto = $this->productoRepository->create(
+            $this->conImagen($this->imagenes, $datos->paraCrear(), $imagen)
+        );
 
         if ($datos->stock > 0) {
             $this->movimientoRepository->create([
@@ -137,6 +145,33 @@ class GestionInventarioService implements GestionInventarioServiceInterface
     }
 
     /**
+     * Actualiza los datos de un producto, ajusta la cantidad si cambió y reemplaza la imagen si hay una nueva.
+     */
+    public function actualizarProducto(
+        int $id,
+        GuardarProductoInventarioDatos $datos,
+        int $idUsuario,
+        ?UploadedFile $imagen = null,
+    ): ProductoInventarioDatos {
+        $actual = $this->obtenerProducto($id);
+        $duplicado = $this->productoRepository->findByNombre($datos->nombre);
+
+        if ($duplicado !== null && (int) $duplicado->id_producto !== $id) {
+            throw new ProductoNombreDuplicadoException;
+        }
+
+        $producto = $this->productoRepository->update(
+            $actual,
+            $this->conImagen($this->imagenes, $datos->paraActualizar(), $imagen, $actual->url_imagen)
+        );
+
+        $producto = $this->ajustarCantidad($producto, (int) $actual->stock, $datos->stock, $idUsuario);
+        $producto->loadMissing('categoria');
+
+        return ProductoInventarioDatos::fromModel($producto);
+    }
+
+    /**
      * Elimina un producto y sus movimientos si no tiene pedidos.
      */
     public function eliminarProducto(int $id): void
@@ -147,6 +182,7 @@ class GestionInventarioService implements GestionInventarioServiceInterface
             throw new ProductoConPedidosException;
         }
 
+        $this->imagenes->eliminar($producto->url_imagen);
         $this->movimientoRepository->eliminarDeProducto($id);
         $this->productoRepository->delete($producto);
     }
@@ -220,9 +256,9 @@ class GestionInventarioService implements GestionInventarioServiceInterface
     /**
      * Suma o resta stock según el tipo de movimiento.
      */
-    private function aplicarMovimiento(Producto $producto, TipoMovimientoInventario $tipo, int $cantidad): void
+    private function aplicarMovimiento(Producto $producto, TipoMovimientoInventario $tipo, int $cantidad): Producto
     {
-        $this->cambiarStock($producto, $this->delta($tipo, $cantidad));
+        return $this->cambiarStock($producto, $this->delta($tipo, $cantidad));
     }
 
     /**
@@ -244,7 +280,7 @@ class GestionInventarioService implements GestionInventarioServiceInterface
     /**
      * Persiste el nuevo stock si no queda negativo.
      */
-    private function cambiarStock(Producto $producto, int $delta): void
+    private function cambiarStock(Producto $producto, int $delta): Producto
     {
         $nuevo = (int) $producto->stock + $delta;
 
@@ -252,6 +288,32 @@ class GestionInventarioService implements GestionInventarioServiceInterface
             throw new StockInsuficienteException;
         }
 
-        $this->productoRepository->update($producto, ['stock' => $nuevo]);
+        return $this->productoRepository->update($producto, ['stock' => $nuevo]);
+    }
+
+    /**
+     * Si la cantidad cambió, ajusta el stock y deja el movimiento correspondiente.
+     */
+    private function ajustarCantidad(Producto $producto, int $stockActual, int $stockDestino, int $idUsuario): Producto
+    {
+        $delta = $stockDestino - $stockActual;
+
+        if ($delta === 0) {
+            return $producto;
+        }
+
+        $tipo = $delta > 0 ? TipoMovimientoInventario::Entrada : TipoMovimientoInventario::Salida;
+        $cantidad = abs($delta);
+        $ajustado = $this->aplicarMovimiento($producto, $tipo, $cantidad);
+
+        $this->movimientoRepository->create([
+            'tipo_movimiento' => $tipo->value,
+            'cantidad' => $cantidad,
+            'fecha' => now(),
+            'id_producto' => $ajustado->id_producto,
+            'id_usuario' => $idUsuario,
+        ]);
+
+        return $ajustado;
     }
 }

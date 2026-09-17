@@ -28,12 +28,24 @@ class InventarioDatosTest extends TestCase
         $this->assertSame(3, $fila->id);
         $this->assertSame('Limonada', $fila->nombre);
         $this->assertSame('Bebidas', $fila->categoria);
+        $this->assertSame(2, $fila->idCategoria);
         $this->assertSame(4, $fila->existencia->stock);
         $this->assertSame('activo', $fila->existencia->estado);
         $this->assertSame(EstadoStockInventario::Bajo, $fila->existencia->estadoStock);
         $this->assertSame('Stock bajo', $fila->etiquetaEstadoStock());
         $this->assertSame('8,50', $fila->precioFormateado());
         $this->assertTrue($fila->estaActivo());
+        $this->assertFalse($fila->tieneImagen());
+    }
+
+    public function test_from_model_copia_la_imagen_del_producto(): void
+    {
+        $fila = ProductoInventarioDatos::fromModel($this->producto([
+            'url_imagen' => 'productos/limonada.jpg',
+        ]));
+
+        $this->assertTrue($fila->tieneImagen());
+        $this->assertSame('/storage/productos/limonada.jpg', $fila->urlImagenPublica());
     }
 
     public function test_sin_descripcion_usa_la_categoria_como_detalle(): void
@@ -151,6 +163,8 @@ class InventarioDatosTest extends TestCase
         $this->assertSame(2, $datos->idCategoria);
         $this->assertSame('activo', $datos->estado);
         $this->assertSame('Limonada', $datos->paraCrear()['nombre']);
+        $this->assertSame(0, $datos->paraCrear()['stock']);
+        $this->assertArrayNotHasKey('stock', $datos->paraActualizar());
     }
 
     /**
@@ -164,6 +178,7 @@ class InventarioDatosTest extends TestCase
             'precio' => '3.50',
             'stock' => 12,
             'estado' => 'activo',
+            'id_categoria' => 2,
             ...$extra,
         ]);
         $producto->id_producto = 3;

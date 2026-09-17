@@ -12,6 +12,7 @@ use App\Contracts\Repositories\PromocionRepositoryInterface;
 use App\Contracts\Repositories\RolRepositoryInterface;
 use App\Contracts\Repositories\UsuarioRepositoryInterface;
 use App\DTOs\Dashboard\FiltroInventarioDatos;
+use App\DTOs\Dashboard\FiltroMenuDatos;
 use App\Enums\EstadoStockInventario;
 use App\Enums\PosicionInicio;
 use App\Enums\TipoBloqueInicio;
@@ -131,6 +132,10 @@ class RepositoriosEloquentTest extends TestCase
         $this->assertTrue($bajos->contains('nombre', 'Agua'));
         $this->assertGreaterThanOrEqual(2, $productos->todos()->count());
         $this->assertCount(1, $categorias->todas());
+
+        $menu = $productos->paraMenu(FiltroMenuDatos::fromInput('Col', null));
+        $this->assertTrue($menu->contains('nombre', 'Cola'));
+        $this->assertFalse($menu->contains('nombre', 'Agua'));
 
         $resumen = $productos->resumenStock(10);
         $this->assertSame(2, $resumen['productos']);

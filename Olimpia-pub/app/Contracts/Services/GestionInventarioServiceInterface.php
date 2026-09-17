@@ -6,6 +6,7 @@ use App\DTOs\Dashboard\GuardarMovimientoInventarioDatos;
 use App\DTOs\Dashboard\GuardarProductoInventarioDatos;
 use App\DTOs\Dashboard\MovimientoInventarioGestionDatos;
 use App\DTOs\Dashboard\ProductoInventarioDatos;
+use Illuminate\Http\UploadedFile;
 
 interface GestionInventarioServiceInterface
 {
@@ -36,17 +37,28 @@ interface GestionInventarioServiceInterface
     public function buscar(int $id): ?MovimientoInventarioGestionDatos;
 
     /**
-     * Crea un producto en el inventario.
+     * Crea un producto en el inventario, con imagen si se envió.
      */
     public function crearProducto(
         GuardarProductoInventarioDatos $datos,
         int $idUsuario,
+        ?UploadedFile $imagen = null,
     ): ProductoInventarioDatos;
 
     /**
-     * Busca un producto para la vista de detalle.
+     * Busca un producto para la vista de detalle o el formulario de edición.
      */
     public function buscarProducto(int $id): ?ProductoInventarioDatos;
+
+    /**
+     * Actualiza un producto, ajusta la cantidad si cambió y reemplaza la imagen si hay una nueva.
+     */
+    public function actualizarProducto(
+        int $id,
+        GuardarProductoInventarioDatos $datos,
+        int $idUsuario,
+        ?UploadedFile $imagen = null,
+    ): ProductoInventarioDatos;
 
     /**
      * Elimina un producto del inventario si no tiene pedidos.

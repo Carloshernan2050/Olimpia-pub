@@ -17,6 +17,7 @@ use App\Contracts\Services\AutenticacionServiceInterface;
 use App\Contracts\Services\AutorizacionInventarioServiceInterface;
 use App\Contracts\Services\CatalogoEventosServiceInterface;
 use App\Contracts\Services\CatalogoInventarioServiceInterface;
+use App\Contracts\Services\CatalogoMenuServiceInterface;
 use App\Contracts\Services\CatalogoPromocionesServiceInterface;
 use App\Contracts\Services\ContenidoInicioServiceInterface;
 use App\Contracts\Services\DatabaseInstallerInterface;
@@ -35,11 +36,13 @@ use App\Repositories\EloquentPromocionRepository;
 use App\Repositories\EloquentRolRepository;
 use App\Repositories\EloquentUsuarioRepository;
 use App\Services\AlmacenamientoImagenEvento;
+use App\Services\AlmacenamientoImagenProducto;
 use App\Services\AlmacenamientoImagenPromocion;
 use App\Services\AutenticacionService;
 use App\Services\AutorizacionInventarioService;
 use App\Services\CatalogoEventosService;
 use App\Services\CatalogoInventarioService;
+use App\Services\CatalogoMenuService;
 use App\Services\CatalogoPromocionesService;
 use App\Services\ContenidoInicioService;
 use App\Services\DatabaseInstaller;
@@ -73,6 +76,7 @@ class AppServiceProvider extends ServiceProvider
             CatalogoPromocionesServiceInterface::class => CatalogoPromocionesService::class,
             CatalogoEventosServiceInterface::class => CatalogoEventosService::class,
             CatalogoInventarioServiceInterface::class => CatalogoInventarioService::class,
+            CatalogoMenuServiceInterface::class => CatalogoMenuService::class,
             GestionPromocionesServiceInterface::class => GestionPromocionesService::class,
             GestionEventosServiceInterface::class => GestionEventosService::class,
             GestionInventarioServiceInterface::class => GestionInventarioService::class,
@@ -99,6 +103,10 @@ class AppServiceProvider extends ServiceProvider
             ->needs(Filesystem::class)
             ->give(fn () => Storage::disk('public'));
 
+        $this->app->when(AlmacenamientoImagenProducto::class)
+            ->needs(Filesystem::class)
+            ->give(fn () => Storage::disk('public'));
+
         $this->app->when(GestionPromocionesService::class)
             ->needs(AlmacenamientoImagenPublicaInterface::class)
             ->give(AlmacenamientoImagenPromocion::class);
@@ -106,6 +114,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->when(GestionEventosService::class)
             ->needs(AlmacenamientoImagenPublicaInterface::class)
             ->give(AlmacenamientoImagenEvento::class);
+
+        $this->app->when(GestionInventarioService::class)
+            ->needs(AlmacenamientoImagenPublicaInterface::class)
+            ->give(AlmacenamientoImagenProducto::class);
 
         $this->app->bind(StatefulGuard::class, function () {
             return Auth::guard('web');

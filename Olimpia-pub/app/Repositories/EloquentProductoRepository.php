@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\ProductoRepositoryInterface;
 use App\DTOs\Dashboard\FiltroInventarioDatos;
+use App\DTOs\Dashboard\FiltroMenuDatos;
 use App\Enums\EstadoStockInventario;
 use App\Models\Producto;
 use App\Support\Dashboard\UmbralStockInventario;
@@ -82,6 +83,30 @@ class EloquentProductoRepository extends EloquentRepository implements ProductoR
             ->orderBy('nombre')
             ->paginate($porPagina, ['*'], 'page', $filtro->pagina)
             ->withQueryString();
+    }
+
+    /**
+     * Productos activos del inventario para la carta.
+     *
+     * @return Collection<int, Producto>
+     */
+    public function paraMenu(FiltroMenuDatos $filtro): Collection
+    {
+        $consulta = $this->newQuery()
+            ->with('categoria')
+            ->where('estado', 'activo');
+
+        if ($filtro->busqueda !== null) {
+            $consulta->where('nombre', 'like', $this->patronBusqueda($filtro->busqueda));
+        }
+
+        if ($filtro->idCategoria !== null) {
+            $consulta->where('id_categoria', $filtro->idCategoria);
+        }
+
+        return $consulta
+            ->orderBy('nombre')
+            ->get();
     }
 
     /**

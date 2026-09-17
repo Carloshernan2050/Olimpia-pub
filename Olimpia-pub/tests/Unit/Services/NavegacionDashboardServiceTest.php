@@ -30,9 +30,11 @@ class NavegacionDashboardServiceTest extends TestCase
         $this->assertTrue($promociones->estaDisponible());
         $this->assertSame('inventario', $inventario->clave);
         $this->assertSame('inventario', $inventario->ruta);
-        $this->assertSame('portapapeles', $inventario->icono);
+        $this->assertSame('cajas', $inventario->icono);
         $this->assertSame('carta', $items[3]->clave);
-        $this->assertSame('comida', $items[3]->icono);
+        $this->assertSame('portapapeles', $items[3]->icono);
+        $this->assertSame('menu', $items[3]->ruta);
+        $this->assertTrue($items[3]->estaDisponible());
         $this->assertSame('mesa', $items[5]->icono);
         $this->assertTrue($inventario->estaDisponible());
         $this->assertSame('eventos', $items[2]->clave);
@@ -40,7 +42,7 @@ class NavegacionDashboardServiceTest extends TestCase
         $this->assertSame('eventos', $items[2]->ruta);
         $this->assertTrue($items[2]->estaDisponible());
         $this->assertSame('mesas', $items[5]->clave);
-        $this->assertCount(4, array_filter($items, fn ($item) => $item->estaDisponible()));
+        $this->assertCount(5, array_filter($items, fn ($item) => $item->estaDisponible()));
     }
 
     public function test_sin_permiso_el_inventario_queda_inactivo(): void
@@ -51,7 +53,8 @@ class NavegacionDashboardServiceTest extends TestCase
         $this->assertCount(9, $items);
         $this->assertSame('inventario', $inventario->clave);
         $this->assertFalse($inventario->estaDisponible());
-        $this->assertCount(3, array_filter($items, fn ($item) => $item->estaDisponible()));
+        $this->assertTrue($items[3]->estaDisponible());
+        $this->assertCount(4, array_filter($items, fn ($item) => $item->estaDisponible()));
     }
 
     public function test_la_cabecera_incluye_perfil(): void
@@ -83,6 +86,16 @@ class NavegacionDashboardServiceTest extends TestCase
         $request->setRouteResolver(fn () => $ruta);
 
         $this->assertSame('promociones', $this->servicio($request)->seccionActiva());
+    }
+
+    public function test_seccion_activa_es_carta_en_la_ruta_menu(): void
+    {
+        $request = Request::create('/dashboard/menu');
+        $ruta = new Route(['GET'], '/dashboard/menu', fn () => null);
+        $ruta->name('menu');
+        $request->setRouteResolver(fn () => $ruta);
+
+        $this->assertSame('carta', $this->servicio($request)->seccionActiva());
     }
 
     public function test_seccion_activa_es_inventario_en_su_ruta(): void

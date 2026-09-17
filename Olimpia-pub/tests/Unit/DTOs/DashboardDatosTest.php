@@ -34,10 +34,10 @@ class DashboardDatosTest extends TestCase
 
         $this->assertTrue($bloque->tieneContenido());
         $this->assertSame('Portada', $bloque->titulo);
-        $this->assertSame(asset('/media/inicio/portada.mp4'), $bloque->urlMediaPublica());
-        $this->assertSame(asset('/media/inicio/portada.es.vtt'), $bloque->urlSubtitulosPublica());
+        $this->assertSame('/media/inicio/portada.mp4', $bloque->urlMediaPublica());
+        $this->assertSame('/media/inicio/portada.es.vtt', $bloque->urlSubtitulosPublica());
         $this->assertSame(
-            asset('/media/inicio/portada.descripcion.es.vtt'),
+            '/media/inicio/portada.descripcion.es.vtt',
             $bloque->urlDescripcionPublica(),
         );
     }

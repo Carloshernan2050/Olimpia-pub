@@ -17,8 +17,10 @@ final class UrlMediaPublica
             return $ruta;
         }
 
-        $rutaPublica = str_starts_with($ruta, '/') ? $ruta : 'storage/'.$ruta;
+        if (str_starts_with($ruta, '/')) {
+            return $ruta;
+        }
 
-        return asset($rutaPublica);
+        return '/storage/'.$ruta;
     }
 }

@@ -7,7 +7,11 @@
     <td>
         <div class="inventario-fila-producto">
             <div class="inventario-fila-imagen" aria-hidden="true">
-                <x-dashboard.icono nombre="imagen" />
+                @if ($producto->tieneImagen())
+                    <img src="{{ $producto->urlImagenPublica() }}" alt="">
+                @else
+                    <x-dashboard.icono nombre="imagen" />
+                @endif
             </div>
             <span>{{ $producto->nombre }}</span>
         </div>
@@ -37,8 +41,8 @@
             </a>
             <a
                 class="inventario-accion inventario-accion-editar"
-                href="{{ route('inventario', [...$filtro->query(), 'producto' => $producto->id]) }}"
-                aria-label="Registrar movimiento de {{ $producto->nombre }}"
+                href="{{ route('inventario', [...$filtro->query(), 'editar_producto' => $producto->id]) }}"
+                aria-label="Editar {{ $producto->nombre }}"
             >
                 <x-dashboard.icono nombre="lapiz" />
             </a>

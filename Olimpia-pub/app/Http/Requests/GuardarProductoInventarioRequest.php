@@ -4,23 +4,34 @@ namespace App\Http\Requests;
 
 use App\DTOs\Dashboard\GuardarProductoInventarioDatos;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class GuardarProductoInventarioRequest extends FormRequest
 {
     use AutorizaUsuarioAutenticado;
+    use IdentificadorDeConsulta;
+    use ObtieneImagenSubida;
 
     /**
      * @return array<string, mixed>
      */
     public function rules(): array
     {
+        $idProducto = $this->identificadorPositivo($this->route('producto'));
+        $nombreUnico = Rule::unique('producto', 'nombre');
+
+        if ($idProducto !== null) {
+            $nombreUnico = $nombreUnico->ignore($idProducto, 'id_producto');
+        }
+
         return [
-            'nombre' => ['required', 'string', 'max:150', 'unique:producto,nombre'],
+            'nombre' => ['required', 'string', 'max:150', $nombreUnico],
             'descripcion' => ['nullable', 'string', 'max:255'],
             'precio' => ['required', 'numeric', 'min:0'],
             'stock' => ['required', 'integer', 'min:0'],
             'id_categoria' => ['required', 'integer', 'exists:categoria,id_categoria'],
             'estado' => ['nullable', 'in:activo,inactivo'],
+            'imagen' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ];
     }
 
@@ -43,6 +54,9 @@ class GuardarProductoInventarioRequest extends FormRequest
             'id_categoria.required' => 'La categoría es obligatoria.',
             'id_categoria.exists' => 'La categoría seleccionada no existe.',
             'estado.in' => 'El estado no es válido.',
+            'imagen.image' => 'El archivo debe ser una imagen.',
+            'imagen.mimes' => 'La imagen debe ser JPG, PNG o WEBP.',
+            'imagen.max' => 'La imagen no puede superar los 2 MB.',
         ];
     }
 

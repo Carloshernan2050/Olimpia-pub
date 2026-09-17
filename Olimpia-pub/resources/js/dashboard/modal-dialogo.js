@@ -1,3 +1,23 @@
+const PARAMETROS_DE_MODAL = ['nueva', 'editar', 'ver', 'editar_producto', 'producto'];
+
+function quitarParametrosDeModal() {
+    const url = new URL(window.location.href);
+    let huboCambio = false;
+
+    PARAMETROS_DE_MODAL.forEach((parametro) => {
+        if (! url.searchParams.has(parametro)) {
+            return;
+        }
+
+        url.searchParams.delete(parametro);
+        huboCambio = true;
+    });
+
+    if (huboCambio) {
+        window.history.replaceState({}, '', url);
+    }
+}
+
 export function iniciarModalDialogo(raiz, selectorModal, selectorAbrir, selectorCerrar) {
     const modal = raiz.querySelector(selectorModal);
 
@@ -24,6 +44,8 @@ export function iniciarModalDialogo(raiz, selectorModal, selectorAbrir, selector
             modal.close();
         }
     });
+
+    modal.addEventListener('close', quitarParametrosDeModal);
 
     if (modal.hasAttribute('data-abrir') && ! modal.open) {
         modal.showModal();

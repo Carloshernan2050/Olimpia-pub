@@ -15,6 +15,7 @@ class Producto extends OlimpiaModel
     protected $fillable = [
         'nombre',
         'descripcion',
+        'url_imagen',
         'precio',
         'stock',
         'estado',

@@ -48,11 +48,19 @@ class ConsultarInventarioRequest extends FormRequest
     }
 
     /**
-     * Identificador del producto para prellenar el formulario.
+     * Identificador del producto para prellenar el formulario de movimiento.
      */
     public function idProductoPrefill(): ?int
     {
         return $this->identificadorPositivo($this->query('producto'));
+    }
+
+    /**
+     * Identificador del producto a editar, si viene en la consulta.
+     */
+    public function idEdicionProducto(): ?int
+    {
+        return $this->identificadorPositivo($this->query('editar_producto'));
     }
 
     /**
@@ -63,6 +71,7 @@ class ConsultarInventarioRequest extends FormRequest
         return $this->idEdicion() !== null
             || $this->idVer() !== null
             || $this->idProductoPrefill() !== null
+            || $this->idEdicionProducto() !== null
             || $this->boolean('nueva');
     }
 }
