@@ -17,6 +17,17 @@ use App\Exceptions\Inventario\MovimientoInventarioNoEncontradoException;
 use App\Exceptions\Inventario\ProductoConPedidosException;
 use App\Exceptions\Inventario\ProductoInventarioNoEncontradoException;
 use App\Exceptions\Inventario\StockInsuficienteException;
+use App\Exceptions\Mesa\GrupoConVariosPedidosException;
+use App\Exceptions\Mesa\GrupoInsuficienteException;
+use App\Exceptions\Mesa\GrupoNoEncontradoException;
+use App\Exceptions\Mesa\MesaConPedidosException;
+use App\Exceptions\Mesa\MesaEnGrupoException;
+use App\Exceptions\Mesa\MesaNoEncontradaException;
+use App\Exceptions\Mesa\MesaNoUnibleException;
+use App\Exceptions\Mesa\MesaNumeroDuplicadoException;
+use App\Exceptions\Mesa\MesaYaAgrupadaException;
+use App\Exceptions\Mesa\PedidoActivoNoEncontradoException;
+use App\Exceptions\Mesa\PedidoActivoYaExisteException;
 use App\Exceptions\Promocion\PromocionNoEncontradaException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -40,6 +51,17 @@ class ExcepcionesDeDominioTest extends TestCase
         $this->assertSame('No hay stock suficiente para registrar el movimiento.', (new StockInsuficienteException)->getMessage());
         $this->assertSame('No se puede eliminar el producto porque tiene pedidos asociados.', (new ProductoConPedidosException)->getMessage());
         $this->assertSame('No tienes permiso para acceder al inventario.', (new AccesoInventarioDenegadoException)->getMessage());
+        $this->assertSame('La mesa no existe.', (new MesaNoEncontradaException)->getMessage());
+        $this->assertSame('La mesa ya tiene un pedido activo.', (new PedidoActivoYaExisteException)->getMessage());
+        $this->assertSame('La mesa no tiene un pedido activo para terminar.', (new PedidoActivoNoEncontradoException)->getMessage());
+        $this->assertSame('Ya existe una mesa con ese número.', (new MesaNumeroDuplicadoException)->getMessage());
+        $this->assertSame('No se puede eliminar la mesa porque tiene pedidos asociados.', (new MesaConPedidosException)->getMessage());
+        $this->assertSame('El grupo de mesas no existe.', (new GrupoNoEncontradoException)->getMessage());
+        $this->assertSame('Selecciona al menos dos mesas para unirlas.', (new GrupoInsuficienteException)->getMessage());
+        $this->assertSame('Solo se pueden unir mesas. La barra no forma grupos.', (new MesaNoUnibleException)->getMessage());
+        $this->assertSame('Hay una mesa que ya pertenece a otro grupo.', (new MesaYaAgrupadaException)->getMessage());
+        $this->assertSame('El grupo solo puede tener un pedido activo.', (new GrupoConVariosPedidosException)->getMessage());
+        $this->assertSame('Separa el grupo antes de eliminar o cambiar esa mesa.', (new MesaEnGrupoException)->getMessage());
         $this->assertSame(
             'El correo ya está registrado.',
             CorreoYaRegistradoException::mensajePorDefecto()

@@ -110,8 +110,11 @@ class RepositoriosEloquentTest extends TestCase
             'id_qr' => $codigo->id_qr,
         ]);
         $this->assertSame(4, $mesas->findByNumero(4)?->numero_mesa);
+        $this->assertSame(5, $mesas->siguienteNumero());
         $this->assertTrue($mesa->codigoQr()->is($codigo));
         $this->assertTrue($codigo->mesa()->is($mesa));
+        $this->assertSame(4, $mesas->findByCodigoQr('QR-001')?->numero_mesa);
+        $this->assertNull($mesas->findByCodigoQr('QR-INEXISTENTE'));
 
         $agotado = $productos->create([
             'nombre' => 'Agua',

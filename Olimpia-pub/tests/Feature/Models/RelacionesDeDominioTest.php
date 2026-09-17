@@ -122,5 +122,6 @@ class RelacionesDeDominioTest extends TestCase
         $this->assertTrue($detalle->pedido()->is($pedido));
         $this->assertTrue($detalle->producto()->is($producto));
         $this->assertTrue($mesa->pedidos()->whereKey($pedido->id_pedido)->exists());
+        $this->assertTrue($mesa->pedidoActivo()->is($pedido));
     }
 }

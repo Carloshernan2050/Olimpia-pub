@@ -1,6 +1,8 @@
 @props([
     'filtro',
     'categorias',
+    'ruta' => 'menu',
+    'parametros' => [],
 ])
 
 <header class="menu-encabezado">
@@ -8,5 +10,10 @@
         <span>Menú</span>
     </h1>
 
-    <x-dashboard.menu-filtro :filtro="$filtro" :categorias="$categorias" />
+    <x-dashboard.menu-filtro
+        :filtro="$filtro"
+        :categorias="$categorias"
+        :ruta="$ruta"
+        :parametros="$parametros"
+    />
 </header>

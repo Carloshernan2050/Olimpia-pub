@@ -93,6 +93,7 @@ final class CatalogoIconos
         'cerrar' => '<path d="m6 6 12 12M18 6 6 18"/>',
         'lapiz' => '<path d="M4 16.2V20h3.8L19 8.8 15.2 5 4 16.2Z"/><path d="m15.2 5 3.8 3.8"/>',
         'papelera' => '<path d="M5 7h14M10 7V5h4v2M8 7v12h8V7"/>',
+        'check' => '<path d="m5 12.5 4.2 4.2L19 7.2"/>',
         'comida' => '<path d="M2.5 12.4c.2-3.2 2.3-5.1 4.9-5.1s4.7 1.9 4.9 5.1"/>'
             .'<path d="M2.4 12.4h10"/>'
             .'<path d="M2.5 15.4c.3 2.1 2.3 3.3 4.9 3.3s4.6-1.2 4.9-3.3"/>'
@@ -109,6 +110,17 @@ final class CatalogoIconos
             .'<path d="M7.2 14.2c1.2.6 2.8.9 4.8.9s3.6-.3 4.8-.9"/>',
         'puntos' => '<circle cx="6" cy="12" r="1.55"/><circle cx="12" cy="12" r="1.55"/>'
             .'<circle cx="18" cy="12" r="1.55"/>',
+        'taburete' => '<ellipse cx="12" cy="5.4" rx="5.1" ry="1.7"/>'
+            .'<path d="M12 7.1v9.4"/><path d="M8.2 11.2h7.6"/>'
+            .'<ellipse cx="12" cy="18.8" rx="4.4" ry="1.35"/>',
+        'pareja' => '<path d="M4.6 9.4v9.2M4.6 9.4h4.4v3.4H4.6"/>'
+            .'<path d="M3.8 18.6h5.8"/><path d="M6.8 12.8v5.8"/>'
+            .'<path d="M14.8 9.4v9.2M14.8 9.4H19.2v3.4h-4.4"/>'
+            .'<path d="M14 18.6h5.8"/><path d="M17 12.8v5.8"/>',
+        'grupo' => '<rect x="5.2" y="8.6" width="13.6" height="6.6" rx="0.7"/>'
+            .'<path d="M7.4 6.4h3v2.2h-3zM13.6 6.4h3v2.2h-3z"/>'
+            .'<path d="M7.4 15.2h3v2.2h-3zM13.6 15.2h3v2.2h-3z"/>',
+        'lineas' => '<path d="M5 8h14M5 12h14M5 16h14"/>',
     ];
 
     private const SVG_APERTURA = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"';

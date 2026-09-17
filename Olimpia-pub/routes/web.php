@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AutenticacionController;
+use App\Http\Controllers\MesaPedidoController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -39,5 +40,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/cerrar-sesion', [AutenticacionController::class, 'cerrarSesion'])
         ->name('cerrar-sesion');
 });
+
+/**
+ * Carta pública de la mesa, abierta al escanear el QR.
+ */
+Route::get('/mesa/{codigo}', [MesaPedidoController::class, 'mostrar'])
+    ->where('codigo', '[A-Za-z0-9\-]+')
+    ->name('mesa.menu');
+Route::post('/mesa/{codigo}/pedido', [MesaPedidoController::class, 'pedir'])
+    ->where('codigo', '[A-Za-z0-9\-]+')
+    ->middleware('throttle:pedidos-mesa')
+    ->name('mesa.pedir');
 
 require __DIR__.'/dashboard.php'; // NOSONAR Laravel recarga web.php y require_once omitiría las rutas.

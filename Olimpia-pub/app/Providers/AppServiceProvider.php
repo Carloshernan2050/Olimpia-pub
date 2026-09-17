@@ -5,9 +5,13 @@ namespace App\Providers;
 use App\Contracts\Repositories\CategoriaRepositoryInterface;
 use App\Contracts\Repositories\CodigoQrRepositoryInterface;
 use App\Contracts\Repositories\ContenidoInicioRepositoryInterface;
+use App\Contracts\Repositories\DetallePedidoRepositoryInterface;
 use App\Contracts\Repositories\EventoRepositoryInterface;
+use App\Contracts\Repositories\GrupoMesaRepositoryInterface;
+use App\Contracts\Repositories\HistorialRepositoryInterface;
 use App\Contracts\Repositories\MesaRepositoryInterface;
 use App\Contracts\Repositories\MovimientoInventarioRepositoryInterface;
+use App\Contracts\Repositories\PedidoRepositoryInterface;
 use App\Contracts\Repositories\ProductoRepositoryInterface;
 use App\Contracts\Repositories\PromocionRepositoryInterface;
 use App\Contracts\Repositories\RolRepositoryInterface;
@@ -18,19 +22,30 @@ use App\Contracts\Services\AutorizacionInventarioServiceInterface;
 use App\Contracts\Services\CatalogoEventosServiceInterface;
 use App\Contracts\Services\CatalogoInventarioServiceInterface;
 use App\Contracts\Services\CatalogoMenuServiceInterface;
+use App\Contracts\Services\CatalogoMesasServiceInterface;
 use App\Contracts\Services\CatalogoPromocionesServiceInterface;
 use App\Contracts\Services\ContenidoInicioServiceInterface;
 use App\Contracts\Services\DatabaseInstallerInterface;
+use App\Contracts\Services\EnlacePedidoMesaInterface;
+use App\Contracts\Services\GeneradorCodigoQrInterface;
 use App\Contracts\Services\GestionEventosServiceInterface;
+use App\Contracts\Services\GestionGruposMesaServiceInterface;
 use App\Contracts\Services\GestionInventarioServiceInterface;
+use App\Contracts\Services\GestionMesasServiceInterface;
+use App\Contracts\Services\GestionPedidosServiceInterface;
 use App\Contracts\Services\GestionPromocionesServiceInterface;
+use App\Contracts\Services\MenuPedidoMesaServiceInterface;
 use App\Contracts\Services\NavegacionDashboardServiceInterface;
 use App\Repositories\EloquentCategoriaRepository;
 use App\Repositories\EloquentCodigoQrRepository;
 use App\Repositories\EloquentContenidoInicioRepository;
+use App\Repositories\EloquentDetallePedidoRepository;
 use App\Repositories\EloquentEventoRepository;
+use App\Repositories\EloquentGrupoMesaRepository;
+use App\Repositories\EloquentHistorialRepository;
 use App\Repositories\EloquentMesaRepository;
 use App\Repositories\EloquentMovimientoInventarioRepository;
+use App\Repositories\EloquentPedidoRepository;
 use App\Repositories\EloquentProductoRepository;
 use App\Repositories\EloquentPromocionRepository;
 use App\Repositories\EloquentRolRepository;
@@ -43,12 +58,19 @@ use App\Services\AutorizacionInventarioService;
 use App\Services\CatalogoEventosService;
 use App\Services\CatalogoInventarioService;
 use App\Services\CatalogoMenuService;
+use App\Services\CatalogoMesasService;
 use App\Services\CatalogoPromocionesService;
 use App\Services\ContenidoInicioService;
 use App\Services\DatabaseInstaller;
+use App\Services\EnlacePedidoMesa;
+use App\Services\GeneradorCodigoQrSvg;
 use App\Services\GestionEventosService;
+use App\Services\GestionGruposMesaService;
 use App\Services\GestionInventarioService;
+use App\Services\GestionMesasService;
+use App\Services\GestionPedidosService;
 use App\Services\GestionPromocionesService;
+use App\Services\MenuPedidoMesaService;
 use App\Services\NavegacionDashboardService;
 use App\View\Composers\DashboardComposer;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -77,15 +99,26 @@ class AppServiceProvider extends ServiceProvider
             CatalogoEventosServiceInterface::class => CatalogoEventosService::class,
             CatalogoInventarioServiceInterface::class => CatalogoInventarioService::class,
             CatalogoMenuServiceInterface::class => CatalogoMenuService::class,
+            CatalogoMesasServiceInterface::class => CatalogoMesasService::class,
+            EnlacePedidoMesaInterface::class => EnlacePedidoMesa::class,
+            GeneradorCodigoQrInterface::class => GeneradorCodigoQrSvg::class,
             GestionPromocionesServiceInterface::class => GestionPromocionesService::class,
             GestionEventosServiceInterface::class => GestionEventosService::class,
             GestionInventarioServiceInterface::class => GestionInventarioService::class,
+            GestionMesasServiceInterface::class => GestionMesasService::class,
+            GestionGruposMesaServiceInterface::class => GestionGruposMesaService::class,
+            GestionPedidosServiceInterface::class => GestionPedidosService::class,
+            MenuPedidoMesaServiceInterface::class => MenuPedidoMesaService::class,
             NavegacionDashboardServiceInterface::class => NavegacionDashboardService::class,
             RolRepositoryInterface::class => EloquentRolRepository::class,
             UsuarioRepositoryInterface::class => EloquentUsuarioRepository::class,
             CategoriaRepositoryInterface::class => EloquentCategoriaRepository::class,
             CodigoQrRepositoryInterface::class => EloquentCodigoQrRepository::class,
             MesaRepositoryInterface::class => EloquentMesaRepository::class,
+            GrupoMesaRepositoryInterface::class => EloquentGrupoMesaRepository::class,
+            PedidoRepositoryInterface::class => EloquentPedidoRepository::class,
+            HistorialRepositoryInterface::class => EloquentHistorialRepository::class,
+            DetallePedidoRepositoryInterface::class => EloquentDetallePedidoRepository::class,
             ProductoRepositoryInterface::class => EloquentProductoRepository::class,
             PromocionRepositoryInterface::class => EloquentPromocionRepository::class,
             EventoRepositoryInterface::class => EloquentEventoRepository::class,
@@ -139,6 +172,10 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by(
                 $request->ip().'|'.strtolower((string) $request->input('correo'))
             );
+        });
+
+        RateLimiter::for('pedidos-mesa', function (Request $request) {
+            return Limit::perMinute(20)->by($request->ip());
         });
     }
 }

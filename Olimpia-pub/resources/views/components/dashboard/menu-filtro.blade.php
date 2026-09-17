@@ -1,6 +1,8 @@
 @props([
     'filtro',
     'categorias',
+    'ruta' => 'menu',
+    'parametros' => [],
 ])
 
 <details
@@ -12,7 +14,7 @@
         <x-dashboard.icono nombre="filtro" />
     </summary>
 
-    <form class="menu-filtro-panel" method="GET" action="{{ route('menu') }}">
+    <form class="menu-filtro-panel" method="GET" action="{{ route($ruta, $parametros) }}">
         <p class="menu-filtro-titulo">Catálogo</p>
 
         <label class="menu-filtro-campo">
@@ -43,7 +45,7 @@
 
         <div class="menu-filtro-acciones">
             <button class="menu-filtro-aplicar" type="submit">Aplicar</button>
-            <a class="menu-filtro-limpiar" href="{{ route('menu') }}">Limpiar</a>
+            <a class="menu-filtro-limpiar" href="{{ route($ruta, $parametros) }}">Limpiar</a>
         </div>
     </form>
 </details>

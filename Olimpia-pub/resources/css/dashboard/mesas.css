@@ -1,0 +1,614 @@
+.catalogo-mesas {
+    --mesa-barra: #111111;
+    --mesa-mesa: #1e5fea;
+    --mesa-grupo: #e4c15a;
+    --mesa-pedidos: #e07a2f;
+
+    width: min(100%, var(--ancho-maximo));
+    margin-inline: auto;
+    padding: clamp(1.15rem, 3vw, 2.5rem) clamp(1rem, 3vw, 2.4rem) clamp(5.5rem, 10vw, 6.5rem);
+}
+
+.mesas-encabezado {
+    display: grid;
+    place-items: center;
+    gap: 0.85rem;
+    margin-bottom: clamp(1rem, 2.4vw, 1.6rem);
+}
+
+.mesas-titulo {
+    margin: 0;
+    color: var(--blanco);
+    font-size: clamp(1.55rem, 4vw, 2.35rem);
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    line-height: 1.15;
+    text-align: center;
+}
+
+.mesas-titulo span {
+    display: inline-block;
+    padding-bottom: 0.12rem;
+    border-bottom: 2px solid var(--blanco);
+}
+
+.mesas-tipos {
+    margin: 0 0 clamp(1.15rem, 3vw, 1.85rem);
+}
+
+.mesas-tipos-lista {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.85rem, 3vw, 2.4rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.mesas-tipo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.85rem;
+    min-width: 8.6rem;
+    min-height: 2.55rem;
+    padding: 0.35rem 0.7rem;
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: var(--blanco);
+    color: var(--negro);
+    text-decoration: none;
+}
+
+.mesas-tipo-marca {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-width: 0;
+}
+
+.mesas-tipo-nombre {
+    overflow: hidden;
+    font-size: 0.88rem;
+    font-weight: 800;
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mesas-tipo .icono-dashboard {
+    width: 1.45rem;
+    height: 1.45rem;
+    flex-shrink: 0;
+}
+
+.mesas-tipo.is-barra {
+    color: var(--mesa-barra);
+}
+
+.mesas-tipo.is-mesa {
+    color: var(--mesa-mesa);
+}
+
+.mesas-tipo.is-grupo {
+    color: var(--mesa-grupo);
+}
+
+.mesas-tipo.is-pedidos-activos {
+    min-width: 11.2rem;
+    color: var(--mesa-pedidos);
+}
+
+.mesas-tipo.is-activa {
+    color: var(--rojo);
+}
+
+.mesas-tipo:hover,
+.mesas-tipo:focus-visible,
+.mesas-tipo.is-activa {
+    border-color: currentColor;
+}
+
+.mesas-panel {
+    padding: clamp(0.9rem, 2vw, 1.25rem);
+    border-radius: 1.1rem;
+    background: var(--gris-bloque);
+    color: var(--negro);
+}
+
+.mesas-tabla-envoltorio {
+    overflow-x: auto;
+}
+
+.mesas-tabla {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.mesas-tabla th,
+.mesas-tabla td {
+    padding: 0.85rem 0.65rem;
+    text-align: left;
+    vertical-align: middle;
+    font-size: 0.92rem;
+}
+
+.mesas-tabla thead th {
+    color: var(--azul);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.mesas-tabla tbody tr + tr th,
+.mesas-tabla tbody tr + tr td {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.mesas-fila-mesa {
+    display: flex;
+    flex-direction: column;
+    gap: 0.12rem;
+    min-width: 7rem;
+}
+
+.mesas-fila-mesa strong,
+.mesas-fila-mesa span,
+.mesas-pedido-resumen,
+.mesas-pedido-vacio {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mesas-fila-mesa span,
+.mesas-pedido-vacio {
+    color: #6f6f6f;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.mesas-pedido-resumen {
+    display: inline-block;
+    max-width: 16rem;
+    color: var(--negro);
+    font-weight: 700;
+}
+
+.mesas-pedido-resumen:hover,
+.mesas-pedido-resumen:focus-visible {
+    color: var(--azul);
+    text-decoration: underline;
+}
+
+.mesas-fila-cuenta {
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.mesas-fila-acciones {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.35rem;
+}
+
+.mesas-fila-acciones form {
+    margin: 0;
+}
+
+.mesas-accion {
+    display: grid;
+    place-items: center;
+    width: 1.85rem;
+    height: 1.85rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    color: var(--blanco);
+    cursor: pointer;
+}
+
+.mesas-accion .icono-dashboard {
+    width: 0.92rem;
+    height: 0.92rem;
+}
+
+.mesas-accion-ver {
+    background: var(--azul);
+}
+
+.mesas-accion-editar {
+    background: #f5c518;
+    color: var(--negro);
+}
+
+.mesas-accion-eliminar {
+    background: var(--rojo);
+}
+
+.mesas-accion-terminar {
+    background: #1f9d55;
+}
+
+.mesas-terminar-formulario {
+    margin: 0.35rem 0 0;
+}
+
+.mesas-terminar {
+    width: 100%;
+    margin-top: 0.25rem;
+    padding: 0.8rem 1rem;
+    border: 0;
+    background: #1f9d55;
+    color: var(--blanco);
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.mesas-terminar:hover,
+.mesas-terminar:focus-visible {
+    filter: brightness(1.08);
+}
+
+.mesas-vacio {
+    margin: 1.5rem 0;
+    color: #5a5a5a;
+    font-weight: 600;
+    text-align: center;
+}
+
+.mesas-acciones-catalogo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+}
+
+.mesas-unir {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.35rem;
+    padding: 0.35rem 1.1rem;
+    border: 2px solid var(--blanco);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--blanco);
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.mesas-unir:hover,
+.mesas-unir:focus-visible {
+    background: var(--blanco);
+    color: var(--negro);
+}
+
+.mesas-agregar {
+    position: fixed;
+    right: clamp(1rem, 3vw, 2rem);
+    bottom: clamp(1rem, 3vw, 2rem);
+    z-index: 30;
+    display: grid;
+    place-items: center;
+    width: 3.6rem;
+    height: 3.6rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--rojo);
+    color: var(--blanco);
+    box-shadow: 0 8px 22px rgba(225, 6, 0, 0.35);
+    cursor: pointer;
+    line-height: 0;
+    text-decoration: none;
+}
+
+.mesas-agregar .icono-dashboard {
+    width: 1.55rem;
+    height: 1.55rem;
+}
+
+.mesas-agregar:hover,
+.mesas-agregar:focus-visible {
+    filter: brightness(1.08);
+}
+
+.modal-mesas {
+    width: min(32rem, calc(100vw - 1.5rem));
+    max-height: min(90vh, 52rem);
+    margin: auto;
+    padding: 0;
+    border: 1px solid #2a2a2a;
+    background: var(--negro);
+    color: var(--blanco);
+    overflow: auto;
+}
+
+.modal-mesas::backdrop {
+    background: rgba(0, 0, 0, 0.72);
+}
+
+.modal-mesas-caja {
+    display: grid;
+    gap: 1.15rem;
+    padding: 1.15rem 1.2rem 1.4rem;
+}
+
+.modal-mesas-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.modal-mesas-cabecera h2 {
+    margin: 0;
+    font-size: clamp(1.15rem, 3vw, 1.45rem);
+    font-weight: 800;
+}
+
+.modal-mesas-cerrar {
+    display: grid;
+    place-items: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--blanco);
+    cursor: pointer;
+}
+
+.modal-mesas-cerrar:hover,
+.modal-mesas-cerrar:focus-visible {
+    color: var(--rojo);
+}
+
+.formulario-mesas {
+    display: grid;
+    gap: 0.85rem;
+    color-scheme: dark;
+}
+
+.formulario-mesas .campo {
+    gap: 0.35rem;
+}
+
+.formulario-mesas .campo label {
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.formulario-mesas .campo input:not([type="checkbox"]),
+.formulario-mesas .campo select {
+    padding: 0.7rem 0.8rem;
+    border-radius: 0.55rem;
+    font: inherit;
+}
+
+.formulario-mesas .campo select option {
+    color: var(--negro);
+}
+
+.mesas-unir-campo {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.mesas-unir-campo legend {
+    margin-bottom: 0.45rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.mesas-unir-opcion {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 2rem;
+    padding: 0.35rem 0;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.mesas-unir-opcion input[type="checkbox"] {
+    width: 1.15rem;
+    height: 1.15rem;
+    min-width: 1.15rem;
+    min-height: 1.15rem;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+    border: 1.5px solid var(--blanco);
+    background: var(--blanco);
+    appearance: auto;
+    accent-color: var(--rojo);
+}
+
+.mesas-unir-vacio {
+    margin: 0;
+    color: var(--gris-texto);
+    font-size: 0.88rem;
+}
+
+.mesas-detalle-miembros {
+    display: grid;
+    gap: 0.85rem;
+    margin: 0.35rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.mesas-detalle-miembros li {
+    display: grid;
+    gap: 0.2rem;
+}
+
+.mesas-detalle-miembros span {
+    color: var(--gris-texto);
+    font-size: 0.82rem;
+}
+
+.mesas-detalle-miembros span:first-child {
+    color: var(--blanco);
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.formulario-mesas .error {
+    font-size: 0.82rem;
+}
+
+.mesas-guardar {
+    width: 100%;
+    margin-top: 0.25rem;
+    padding: 0.8rem 1rem;
+    border: 0;
+    background: var(--rojo);
+    color: var(--blanco);
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.mesas-guardar:hover,
+.mesas-guardar:focus-visible {
+    filter: brightness(1.08);
+}
+
+.mesas-detalle,
+.mesas-pedido-detalle {
+    display: grid;
+    gap: 0.55rem;
+}
+
+.mesas-detalle p,
+.mesas-pedido-detalle-vacio,
+.mesas-pedido-detalle-total {
+    margin: 0;
+    color: var(--gris-texto);
+}
+
+.mesas-detalle strong,
+.mesas-pedido-detalle-total strong,
+.mesas-pedido-detalle-linea p {
+    color: var(--blanco);
+}
+
+.mesas-detalle-qr {
+    display: grid;
+    justify-items: center;
+    gap: 0.4rem;
+    margin: 0.4rem 0 0;
+}
+
+.mesas-detalle-qr-marca {
+    width: 10rem;
+    height: 10rem;
+    overflow: hidden;
+    border-radius: 0.45rem;
+    background: var(--blanco);
+}
+
+.mesas-detalle-qr-marca svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.mesas-detalle-qr figcaption {
+    color: var(--gris-texto);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.mesas-pedido-detalle-lineas {
+    display: grid;
+    gap: 0.7rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.mesas-pedido-detalle-linea {
+    display: grid;
+    grid-template-columns: 2.6rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.mesas-pedido-detalle-linea p,
+.mesas-pedido-detalle-linea span {
+    margin: 0;
+}
+
+.mesas-pedido-detalle-linea p {
+    font-weight: 800;
+}
+
+.mesas-pedido-detalle-linea span {
+    color: var(--gris-texto);
+    font-size: 0.8rem;
+}
+
+.mesas-pedido-detalle-foto {
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 0.55rem;
+    object-fit: cover;
+    background: #2a2a2a;
+}
+
+.mesas-pedido-detalle-foto.is-vacia {
+    display: grid;
+    place-items: center;
+    color: #8d8d8d;
+}
+
+.mesas-pedido-detalle-foto.is-vacia .icono-dashboard {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.mesas-pedido-detalle-total {
+    margin-top: 0.35rem;
+    font-size: 1rem;
+}
+
+@media (max-width: 639px) {
+    .catalogo-mesas {
+        padding: 1rem 0.9rem 5.5rem;
+    }
+
+    .mesas-tipo {
+        min-width: 7.6rem;
+        gap: 0.55rem;
+        padding-inline: 0.6rem;
+    }
+
+    .mesas-tipo-nombre {
+        font-size: 0.82rem;
+    }
+
+    .mesas-tipo.is-pedidos-activos {
+        min-width: 9.6rem;
+    }
+
+    .mesas-pedido-resumen {
+        max-width: 9rem;
+    }
+}

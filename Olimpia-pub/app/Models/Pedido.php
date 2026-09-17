@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EstadoPedido;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -23,6 +24,7 @@ class Pedido extends OlimpiaModel
         return [
             'fecha' => 'datetime',
             'total' => 'decimal:2',
+            'estado' => EstadoPedido::class,
         ];
     }
 

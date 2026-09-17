@@ -1,4 +1,4 @@
-const PARAMETROS_DE_MODAL = ['nueva', 'editar', 'ver', 'editar_producto', 'producto'];
+const PARAMETROS_DE_MODAL = ['nueva', 'editar', 'ver', 'editar_producto', 'producto', 'pedido', 'unir', 'liberar', 'ver_grupo', 'editar_grupo', 'pedido_grupo'];
 
 function quitarParametrosDeModal() {
     const url = new URL(window.location.href);

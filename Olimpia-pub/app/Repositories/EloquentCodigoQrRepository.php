@@ -22,7 +22,30 @@ class EloquentCodigoQrRepository extends EloquentRepository implements CodigoQrR
     public function findByNumero(int $numeroQr): ?CodigoQr
     {
         /** @var CodigoQr|null */
-        return $this->findFirstBy('numero_qr', $numeroQr);
+        return $this->newQuery()
+            ->with('mesa')
+            ->where('numero_qr', $numeroQr)
+            ->first();
+    }
+
+    /**
+     * Actualiza un código QR existente.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    public function update(CodigoQr $codigoQr, array $data): CodigoQr
+    {
+        $codigoQr->update($data);
+
+        return $codigoQr->fresh() ?? $codigoQr;
+    }
+
+    /**
+     * Elimina un código QR.
+     */
+    public function delete(CodigoQr $codigoQr): void
+    {
+        $codigoQr->delete();
     }
 
     /**

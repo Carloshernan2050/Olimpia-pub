@@ -11,6 +11,8 @@ export default defineConfig({
                 'resources/js/registro/app.js',
                 'resources/css/dashboard/app.css',
                 'resources/js/dashboard/app.js',
+                'resources/css/pedido/app.css',
+                'resources/js/pedido/app.js',
             ],
             refresh: true,
             fonts: [

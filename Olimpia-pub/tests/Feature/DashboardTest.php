@@ -72,6 +72,8 @@ class DashboardTest extends TestCase
             ->assertSee('class="dashboard-acciones"', false)
             ->assertSee('class="dashboard-nav"', false)
             ->assertSee('aria-label="Carrito (próximamente)"', false)
+            ->assertSee('aria-label="Mesas"', false)
+            ->assertSee('href="'.route('mesas').'"', false)
             ->assertSee('aria-label="Perfil"', false);
     }
 

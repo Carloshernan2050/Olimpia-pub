@@ -1,6 +1,8 @@
 @props([
     'categorias',
     'filtro',
+    'ruta' => 'menu',
+    'parametros' => [],
 ])
 
 <nav class="menu-categorias" aria-label="Categorías del menú">
@@ -9,7 +11,7 @@
             <li>
                 <a
                     class="menu-categoria @if ($filtro->idCategoria === $categoria->id) is-activa @endif"
-                    href="{{ route('menu', $filtro->queryConCategoria($categoria->id)) }}"
+                    href="{{ route($ruta, array_merge($parametros, $filtro->queryConCategoria($categoria->id))) }}"
                     aria-label="{{ $categoria->nombre }}"
                     @if ($filtro->idCategoria === $categoria->id) aria-current="true" @endif
                 >
@@ -20,7 +22,7 @@
         <li>
             <a
                 class="menu-categoria @if ($filtro->idCategoria === null) is-activa @endif"
-                href="{{ route('menu', $filtro->queryConCategoria(null)) }}"
+                href="{{ route($ruta, array_merge($parametros, $filtro->queryConCategoria(null))) }}"
                 aria-label="Todas las categorías"
                 @if ($filtro->idCategoria === null) aria-current="true" @endif
             >

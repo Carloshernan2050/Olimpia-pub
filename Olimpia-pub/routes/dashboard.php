@@ -4,6 +4,7 @@ use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\EventoController;
 use App\Http\Controllers\Dashboard\InventarioController;
 use App\Http\Controllers\Dashboard\MenuController;
+use App\Http\Controllers\Dashboard\MesaController;
 use App\Http\Controllers\Dashboard\PromocionController;
 use App\Support\Dashboard\RutasDashboard;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,32 @@ Route::middleware('auth')->group(function () {
         ->name('promociones.eliminar');
     Route::get('/dashboard/menu', [MenuController::class, 'mostrar'])
         ->name('menu');
+    Route::get('/dashboard/mesas', [MesaController::class, 'mostrar'])
+        ->name('mesas');
+    Route::post('/dashboard/mesas', [MesaController::class, 'guardar'])
+        ->name('mesas.guardar');
+    Route::post('/dashboard/mesas/grupos', [MesaController::class, 'guardarGrupo'])
+        ->name('mesas.grupos.guardar');
+    Route::post('/dashboard/mesas/grupos/liberar', [MesaController::class, 'liberarGrupos'])
+        ->name('mesas.grupos.liberar');
+    Route::put(RutasDashboard::grupoMesaPorId(), [MesaController::class, 'actualizarGrupo'])
+        ->whereNumber('grupo')
+        ->name('mesas.grupos.actualizar');
+    Route::delete(RutasDashboard::grupoMesaPorId(), [MesaController::class, 'eliminarGrupo'])
+        ->whereNumber('grupo')
+        ->name('mesas.grupos.eliminar');
+    Route::post(RutasDashboard::mesaPorId().'/pedido/terminar', [MesaController::class, 'terminarPedido'])
+        ->whereNumber('mesa')
+        ->name('mesas.pedido.terminar');
+    Route::post(RutasDashboard::grupoMesaPorId().'/pedido/terminar', [MesaController::class, 'terminarPedidoGrupo'])
+        ->whereNumber('grupo')
+        ->name('mesas.grupos.pedido.terminar');
+    Route::put(RutasDashboard::mesaPorId(), [MesaController::class, 'actualizar'])
+        ->whereNumber('mesa')
+        ->name('mesas.actualizar');
+    Route::delete(RutasDashboard::mesaPorId(), [MesaController::class, 'eliminar'])
+        ->whereNumber('mesa')
+        ->name('mesas.eliminar');
     Route::get('/dashboard/eventos', [EventoController::class, 'mostrar'])
         ->name('eventos');
     Route::post('/dashboard/eventos', [EventoController::class, 'guardar'])

@@ -42,7 +42,9 @@ class NavegacionDashboardServiceTest extends TestCase
         $this->assertSame('eventos', $items[2]->ruta);
         $this->assertTrue($items[2]->estaDisponible());
         $this->assertSame('mesas', $items[5]->clave);
-        $this->assertCount(5, array_filter($items, fn ($item) => $item->estaDisponible()));
+        $this->assertSame('mesas', $items[5]->ruta);
+        $this->assertTrue($items[5]->estaDisponible());
+        $this->assertCount(6, array_filter($items, fn ($item) => $item->estaDisponible()));
     }
 
     public function test_sin_permiso_el_inventario_queda_inactivo(): void
@@ -54,7 +56,8 @@ class NavegacionDashboardServiceTest extends TestCase
         $this->assertSame('inventario', $inventario->clave);
         $this->assertFalse($inventario->estaDisponible());
         $this->assertTrue($items[3]->estaDisponible());
-        $this->assertCount(4, array_filter($items, fn ($item) => $item->estaDisponible()));
+        $this->assertTrue($items[5]->estaDisponible());
+        $this->assertCount(5, array_filter($items, fn ($item) => $item->estaDisponible()));
     }
 
     public function test_la_cabecera_incluye_perfil(): void
@@ -126,6 +129,16 @@ class NavegacionDashboardServiceTest extends TestCase
         $request->setRouteResolver(fn () => $ruta);
 
         $this->assertSame('eventos', $this->servicio($request)->seccionActiva());
+    }
+
+    public function test_seccion_activa_es_mesas_en_su_ruta(): void
+    {
+        $request = Request::create('/dashboard/mesas');
+        $ruta = new Route(['GET'], '/dashboard/mesas', fn () => null);
+        $ruta->name('mesas');
+        $request->setRouteResolver(fn () => $ruta);
+
+        $this->assertSame('mesas', $this->servicio($request)->seccionActiva());
     }
 
     public function test_seccion_activa_queda_vacia_fuera_del_dashboard(): void

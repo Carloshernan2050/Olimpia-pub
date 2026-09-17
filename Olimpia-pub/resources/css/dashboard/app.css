@@ -10,6 +10,7 @@
 @import './menu.css';
 @import './inventario.css';
 @import './eventos.css';
+@import './mesas.css';
 
 @source '../../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../../storage/framework/views/*.php';

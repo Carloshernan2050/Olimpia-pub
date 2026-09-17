@@ -16,7 +16,7 @@ class CatalogoIconosTest extends TestCase
             'inicio', 'etiqueta', 'megafono', 'herramienta', 'surtidor', 'comida', 'estrella', 'taza', 'pan', 'puntos', 'portapapeles',
             'pesa', 'mesa', 'grafica', 'estiramiento', 'historial', 'caja', 'cajas', 'tendencia-baja',
             'carrito-alerta', 'ojo', 'imagen', 'filtro',
-            'mas', 'cerrar', 'lapiz', 'papelera',
+            'mas', 'cerrar', 'lapiz', 'papelera', 'check', 'taburete', 'pareja', 'grupo', 'lineas',
         ];
 
         foreach ($nombres as $nombre) {

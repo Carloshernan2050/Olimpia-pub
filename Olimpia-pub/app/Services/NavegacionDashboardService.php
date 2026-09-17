@@ -21,6 +21,7 @@ class NavegacionDashboardService implements NavegacionDashboardServiceInterface
         'inventario' => 'inventario',
         'eventos' => 'eventos',
         'eventos.detalle' => 'eventos',
+        'mesas' => 'mesas',
     ];
 
     /**
@@ -49,7 +50,7 @@ class NavegacionDashboardService implements NavegacionDashboardServiceInterface
                 'cajas',
                 $this->puedeVerInventario() ? 'inventario' : null,
             ),
-            new ItemNavegacionDatos('mesas', 'Mesas', 'mesa'),
+            new ItemNavegacionDatos('mesas', 'Mesas', 'mesa', 'mesas'),
             new ItemNavegacionDatos('analitica', 'Analítica', 'grafica'),
             new ItemNavegacionDatos('actividades', 'Actividades', 'estiramiento'),
             new ItemNavegacionDatos('historial', 'Historial', 'historial'),
