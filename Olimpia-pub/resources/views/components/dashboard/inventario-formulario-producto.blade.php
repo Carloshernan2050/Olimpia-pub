@@ -1,14 +1,26 @@
 @props([
     'categorias' => [],
+    'productoEditar' => null,
 ])
+
+@php
+    $editando = $productoEditar !== null;
+    $accion = $editando
+        ? route('inventario.producto.actualizar', $productoEditar->id)
+        : route('inventario.producto.guardar');
+@endphp
 
 <form
     class="formulario-inventario"
     method="POST"
-    action="{{ route('inventario.producto.guardar') }}"
+    action="{{ $accion }}"
+    enctype="multipart/form-data"
     novalidate
 >
     @csrf
+    @if ($editando)
+        @method('PUT')
+    @endif
     <input type="hidden" name="formulario" value="producto">
 
     <div class="campo">
@@ -17,7 +29,7 @@
             id="inventario-nombre"
             name="nombre"
             type="text"
-            value="{{ old('nombre') }}"
+            value="{{ old('nombre', $productoEditar?->nombre) }}"
             maxlength="150"
             required
         >
@@ -30,7 +42,7 @@
             id="inventario-descripcion"
             name="descripcion"
             type="text"
-            value="{{ old('descripcion') }}"
+            value="{{ old('descripcion', $productoEditar?->descripcion) }}"
             maxlength="255"
         >
         <x-error-campo nombre="descripcion" />
@@ -45,21 +57,21 @@
                 type="number"
                 min="0"
                 step="0.01"
-                value="{{ old('precio') }}"
+                value="{{ old('precio', $productoEditar?->precio) }}"
                 required
             >
             <x-error-campo nombre="precio" />
         </div>
 
         <div class="campo">
-            <label for="inventario-stock">Stock inicial</label>
+            <label for="inventario-stock">{{ $editando ? 'Cantidad' : 'Stock inicial' }}</label>
             <input
                 id="inventario-stock"
                 name="stock"
                 type="number"
                 min="0"
                 step="1"
-                value="{{ old('stock', 0) }}"
+                value="{{ old('stock', $productoEditar?->existencia->stock ?? 0) }}"
                 required
             >
             <x-error-campo nombre="stock" />
@@ -73,7 +85,7 @@
             @foreach ($categorias as $categoria)
                 <option
                     value="{{ $categoria->id }}"
-                    @selected((string) old('id_categoria') === (string) $categoria->id)
+                    @selected((string) old('id_categoria', $productoEditar?->idCategoria) === (string) $categoria->id)
                 >
                     {{ $categoria->nombre }}
                 </option>
@@ -83,17 +95,43 @@
     </div>
 
     <div class="campo">
+        <label for="inventario-imagen">Imagen</label>
+        @if ($productoEditar?->tieneImagen())
+            <img
+                class="inventario-imagen-actual"
+                src="{{ $productoEditar->urlImagenPublica() }}"
+                alt="Imagen actual de {{ $productoEditar->nombre }}"
+            >
+        @endif
+        <input
+            id="inventario-imagen"
+            name="imagen"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+        >
+        <x-error-campo nombre="imagen" />
+    </div>
+
+    <div class="campo">
         <label for="inventario-estado">Estado</label>
         <select id="inventario-estado" name="estado">
-            <option value="activo" @selected(old('estado', 'activo') === 'activo')>
+            <option
+                value="activo"
+                @selected(old('estado', $productoEditar?->existencia->estado ?? 'activo') === 'activo')
+            >
                 Activo
             </option>
-            <option value="inactivo" @selected(old('estado') === 'inactivo')>
+            <option
+                value="inactivo"
+                @selected(old('estado', $productoEditar?->existencia->estado) === 'inactivo')
+            >
                 Inactivo
             </option>
         </select>
         <x-error-campo nombre="estado" />
     </div>
 
-    <button class="inventario-guardar" type="submit">Agregar</button>
+    <button class="inventario-guardar" type="submit">
+        {{ $editando ? 'Guardar cambios' : 'Agregar' }}
+    </button>
 </form>

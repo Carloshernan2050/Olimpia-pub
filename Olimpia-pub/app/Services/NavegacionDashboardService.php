@@ -32,7 +32,7 @@ class NavegacionDashboardService implements NavegacionDashboardServiceInterface
     ) {}
 
     /**
-     * Ítems de la barra secundaria. La etiqueta abre Promociones; el megáfono, Eventos; el plato, el Menú; el portapapeles, Inventario.
+     * Ítems de la barra secundaria. La etiqueta abre Promociones; el megáfono, Eventos; el portapapeles, el Menú; las cajas, Inventario.
      *
      * @return list<ItemNavegacionDatos>
      */
@@ -42,11 +42,11 @@ class NavegacionDashboardService implements NavegacionDashboardServiceInterface
             new ItemNavegacionDatos('inicio', 'Inicio', 'inicio', 'dashboard'),
             new ItemNavegacionDatos('promociones', 'Promociones', 'etiqueta', 'promociones'),
             new ItemNavegacionDatos('eventos', 'Eventos', 'megafono', 'eventos'),
-            new ItemNavegacionDatos('carta', 'Comida y bebida', 'comida', 'menu'),
+            new ItemNavegacionDatos('carta', 'Comida y bebida', 'portapapeles', 'menu'),
             new ItemNavegacionDatos(
                 'inventario',
                 'Inventario',
-                'portapapeles',
+                'cajas',
                 $this->puedeVerInventario() ? 'inventario' : null,
             ),
             new ItemNavegacionDatos('mesas', 'Mesas', 'mesa'),

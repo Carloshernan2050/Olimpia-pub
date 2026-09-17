@@ -5,7 +5,7 @@ namespace App\DTOs\Dashboard;
 final readonly class GuardarProductoInventarioDatos
 {
     /**
-     * Datos validados para dar de alta un producto.
+     * Datos validados para crear o actualizar un producto.
      */
     public function __construct(
         public string $nombre,
@@ -27,24 +27,36 @@ final readonly class GuardarProductoInventarioDatos
             trim((string) $datos['nombre']),
             $descripcion === '' ? null : $descripcion,
             (string) $datos['precio'],
-            max(0, (int) $datos['stock']),
+            max(0, (int) ($datos['stock'] ?? 0)),
             (int) $datos['id_categoria'],
             ($datos['estado'] ?? 'activo') === 'inactivo' ? 'inactivo' : 'activo',
         );
     }
 
     /**
-     * Atributos para persistir el producto.
+     * Atributos para persistir un producto nuevo.
      *
      * @return array<string, mixed>
      */
     public function paraCrear(): array
     {
         return [
+            ...$this->paraActualizar(),
+            'stock' => $this->stock,
+        ];
+    }
+
+    /**
+     * Atributos para actualizar un producto existente, sin alterar el stock.
+     *
+     * @return array<string, mixed>
+     */
+    public function paraActualizar(): array
+    {
+        return [
             'nombre' => $this->nombre,
             'descripcion' => $this->descripcion,
             'precio' => $this->precio,
-            'stock' => $this->stock,
             'estado' => $this->estado,
             'id_categoria' => $this->idCategoria,
         ];

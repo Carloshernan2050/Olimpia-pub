@@ -7,6 +7,8 @@ use App\Models\MovimientoInventario;
 use App\Models\Producto;
 use Database\Seeders\RolSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class InventarioTest extends TestCase
@@ -40,7 +42,7 @@ class InventarioTest extends TestCase
             ->assertSee('Buscar')
             ->assertSee('data-filtro-inventario', false)
             ->assertSee('aria-label="Agregar producto"', false)
-            ->assertSee('<span>Agregar producto</span>', false)
+            ->assertDontSee('Editar producto')
             ->assertSee('No hay productos en el inventario.')
             ->assertDontSee('inventario-tabla', false)
             ->assertSee('aria-current="page"', false);
@@ -172,10 +174,62 @@ class InventarioTest extends TestCase
             ->assertSee('Producto creado correctamente.');
     }
 
-    public function test_el_lapiz_abre_el_formulario_de_movimiento(): void
+    public function test_guarda_la_imagen_y_la_muestra_en_inventario_y_menu(): void
+    {
+        Storage::fake('public');
+        $this->autenticarConRol('empleado');
+        $categoria = $this->categoria();
+
+        $this->post(route('inventario.producto.guardar'), $this->datosProducto([
+            'id_categoria' => $categoria->id_categoria,
+            'nombre' => 'Limonada con foto',
+            'imagen' => UploadedFile::fake()->image('limonada.jpg', 400, 400),
+        ]))
+            ->assertRedirect(route('inventario'));
+
+        $producto = Producto::query()->where('nombre', 'Limonada con foto')->first();
+        $this->assertNotNull($producto?->url_imagen);
+        Storage::disk('public')->assertExists($producto->url_imagen);
+
+        $this->get(route('inventario'))
+            ->assertOk()
+            ->assertSee('storage/'.$producto->url_imagen, false);
+
+        $this->get(route('inventario', ['ver' => $producto->id_producto]))
+            ->assertOk()
+            ->assertSee('alt="Limonada con foto"', false)
+            ->assertSee('storage/'.$producto->url_imagen, false);
+
+        $this->get(route('menu'))
+            ->assertOk()
+            ->assertSee('storage/'.$producto->url_imagen, false)
+            ->assertSee('alt="Limonada con foto"', false);
+    }
+
+    public function test_el_lapiz_abre_el_formulario_de_edicion_del_producto(): void
     {
         $this->autenticarConRol('empleado');
         $producto = $this->crearProducto(['nombre' => 'Limonada']);
+
+        $this->get(route('inventario', ['editar_producto' => $producto->id_producto]))
+            ->assertOk()
+            ->assertSee('Editar producto')
+            ->assertSee('id="inventario-nombre"', false)
+            ->assertSee('value="Limonada"', false)
+            ->assertSee('Guardar cambios')
+            ->assertSee('id="inventario-stock"', false)
+            ->assertSee('Cantidad')
+            ->assertSee('data-abrir', false);
+    }
+
+    public function test_el_detalle_permite_abrir_el_formulario_de_movimiento(): void
+    {
+        $this->autenticarConRol('empleado');
+        $producto = $this->crearProducto(['nombre' => 'Limonada']);
+
+        $this->get(route('inventario', ['ver' => $producto->id_producto]))
+            ->assertOk()
+            ->assertSee('Registrar movimiento');
 
         $this->get(route('inventario', ['producto' => $producto->id_producto]))
             ->assertOk()
@@ -183,6 +237,60 @@ class InventarioTest extends TestCase
             ->assertSee('Selecciona un producto')
             ->assertDontSee('id="inventario-nombre"', false)
             ->assertSee('data-abrir', false);
+    }
+
+    public function test_actualiza_un_producto_sin_cambiar_el_stock(): void
+    {
+        $this->autenticarConRol('empleado');
+        $producto = $this->crearProducto(['nombre' => 'Limonada', 'stock' => 20, 'precio' => '10.00']);
+        $categoria = $this->categoria();
+
+        $this->put(route('inventario.producto.actualizar', $producto->id_producto), [
+            'formulario' => 'producto',
+            'nombre' => 'Limonada de casa',
+            'descripcion' => 'Con hierbabuena',
+            'precio' => '14.00',
+            'stock' => 20,
+            'id_categoria' => $categoria->id_categoria,
+            'estado' => 'activo',
+        ])
+            ->assertRedirect(route('inventario'))
+            ->assertSessionHas('exito', 'Producto actualizado correctamente.');
+
+        $this->assertDatabaseHas('producto', [
+            'id_producto' => $producto->id_producto,
+            'nombre' => 'Limonada de casa',
+            'precio' => '14.00',
+            'stock' => 20,
+        ]);
+    }
+
+    public function test_actualiza_la_cantidad_del_producto(): void
+    {
+        $this->autenticarConRol('empleado');
+        $producto = $this->crearProducto(['nombre' => 'Limonada', 'stock' => 20]);
+        $categoria = $this->categoria();
+
+        $this->put(route('inventario.producto.actualizar', $producto->id_producto), [
+            'formulario' => 'producto',
+            'nombre' => 'Limonada',
+            'precio' => '10.00',
+            'stock' => 27,
+            'id_categoria' => $categoria->id_categoria,
+            'estado' => 'activo',
+        ])
+            ->assertRedirect(route('inventario'))
+            ->assertSessionHas('exito', 'Producto actualizado correctamente.');
+
+        $this->assertDatabaseHas('producto', [
+            'id_producto' => $producto->id_producto,
+            'stock' => 27,
+        ]);
+        $this->assertDatabaseHas('movimiento_inventario', [
+            'id_producto' => $producto->id_producto,
+            'tipo_movimiento' => 'entrada',
+            'cantidad' => 7,
+        ]);
     }
 
     public function test_validacion_de_producto_reabre_el_alta_sin_guardar(): void
@@ -201,6 +309,7 @@ class InventarioTest extends TestCase
             ->assertOk()
             ->assertSee('El nombre es obligatorio.')
             ->assertSee('id="inventario-nombre"', false)
+            ->assertSee('id="inventario-imagen"', false)
             ->assertSee('data-abrir', false);
 
         $this->assertDatabaseCount('producto', 0);

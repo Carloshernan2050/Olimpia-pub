@@ -86,7 +86,7 @@ class CatalogoMenuServiceTest extends TestCase
         $this->assertSame('Limonada', $tarjeta->nombre);
         $this->assertSame('$ 8,50', $tarjeta->precioFormateado());
         $this->assertSame('Comidas', $catalogo->categorias[0]->nombre);
-        $this->assertSame('comida', $catalogo->categorias[0]->icono);
+        $this->assertSame('estrella', $catalogo->categorias[0]->icono);
         $this->assertSame('Bebidas', $catalogo->categorias[1]->nombre);
         $this->assertSame('taza', $catalogo->categorias[1]->icono);
     }

@@ -13,3 +13,7 @@
     width: 100%;
     background: var(--negro);
 }
+
+.pagina-dashboard dialog:not([open]) {
+    display: none;
+}

@@ -46,6 +46,9 @@ Route::middleware('auth')->group(function () {
             ->name('inventario.guardar');
         Route::post('/dashboard/inventario/producto', [InventarioController::class, 'guardarProducto'])
             ->name('inventario.producto.guardar');
+        Route::put('/dashboard/inventario/producto/{producto}', [InventarioController::class, 'actualizarProducto'])
+            ->whereNumber('producto')
+            ->name('inventario.producto.actualizar');
         Route::put('/dashboard/inventario/{movimiento}', [InventarioController::class, 'actualizar'])
             ->whereNumber('movimiento')
             ->name('inventario.actualizar');

@@ -36,6 +36,7 @@ use App\Repositories\EloquentPromocionRepository;
 use App\Repositories\EloquentRolRepository;
 use App\Repositories\EloquentUsuarioRepository;
 use App\Services\AlmacenamientoImagenEvento;
+use App\Services\AlmacenamientoImagenProducto;
 use App\Services\AlmacenamientoImagenPromocion;
 use App\Services\AutenticacionService;
 use App\Services\AutorizacionInventarioService;
@@ -102,6 +103,10 @@ class AppServiceProvider extends ServiceProvider
             ->needs(Filesystem::class)
             ->give(fn () => Storage::disk('public'));
 
+        $this->app->when(AlmacenamientoImagenProducto::class)
+            ->needs(Filesystem::class)
+            ->give(fn () => Storage::disk('public'));
+
         $this->app->when(GestionPromocionesService::class)
             ->needs(AlmacenamientoImagenPublicaInterface::class)
             ->give(AlmacenamientoImagenPromocion::class);
@@ -109,6 +114,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->when(GestionEventosService::class)
             ->needs(AlmacenamientoImagenPublicaInterface::class)
             ->give(AlmacenamientoImagenEvento::class);
+
+        $this->app->when(GestionInventarioService::class)
+            ->needs(AlmacenamientoImagenPublicaInterface::class)
+            ->give(AlmacenamientoImagenProducto::class);
 
         $this->app->bind(StatefulGuard::class, function () {
             return Auth::guard('web');

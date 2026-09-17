@@ -6,6 +6,8 @@ use App\Models\Producto;
 
 final readonly class ProductoMenuDatos
 {
+    use ConImagenPublica;
+
     /**
      * Tarjeta de consulta del menú, con datos tomados del inventario.
      */
@@ -15,6 +17,7 @@ final readonly class ProductoMenuDatos
         public ?string $descripcion,
         public string $categoria,
         public string $precio,
+        public ?string $urlImagen = null,
     ) {}
 
     /**
@@ -30,6 +33,7 @@ final readonly class ProductoMenuDatos
             $producto->descripcion,
             $categoria?->nombre ?? 'Sin categoría',
             (string) $producto->precio,
+            $producto->url_imagen,
         );
     }
 

@@ -205,12 +205,24 @@
     background: var(--gris-bloque);
 }
 
+.menu-tarjeta-imagen img,
 .menu-tarjeta-imagen-vacia {
     position: absolute;
     inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.menu-tarjeta-imagen-vacia {
     display: grid;
     place-items: center;
     color: #8d8d8d;
+}
+
+.menu-tarjeta-imagen img {
+    display: block;
+    object-fit: cover;
+    object-position: center;
 }
 
 .menu-tarjeta-imagen-vacia .icono-dashboard {

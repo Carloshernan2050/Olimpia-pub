@@ -4,6 +4,7 @@ namespace Tests\Unit\Services;
 
 use App\Contracts\Repositories\MovimientoInventarioRepositoryInterface;
 use App\Contracts\Repositories\ProductoRepositoryInterface;
+use App\Contracts\Services\AlmacenamientoImagenPublicaInterface;
 use App\DTOs\Dashboard\GuardarMovimientoInventarioDatos;
 use App\DTOs\Dashboard\GuardarProductoInventarioDatos;
 use App\DTOs\Dashboard\MovimientoInventarioGestionDatos;
@@ -18,6 +19,7 @@ use App\Models\MovimientoInventario;
 use App\Models\Producto;
 use App\Services\GestionInventarioService;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Http\UploadedFile;
 use Mockery;
 use Mockery\MockInterface;
 use Tests\TestCase;
@@ -28,6 +30,8 @@ class GestionInventarioServiceTest extends TestCase
 
     private MovimientoInventarioRepositoryInterface&MockInterface $movimientos;
 
+    private AlmacenamientoImagenPublicaInterface&MockInterface $imagenes;
+
     private GestionInventarioService $service;
 
     protected function setUp(): void
@@ -36,7 +40,8 @@ class GestionInventarioServiceTest extends TestCase
 
         $this->productos = Mockery::mock(ProductoRepositoryInterface::class);
         $this->movimientos = Mockery::mock(MovimientoInventarioRepositoryInterface::class);
-        $this->service = new GestionInventarioService($this->productos, $this->movimientos);
+        $this->imagenes = Mockery::mock(AlmacenamientoImagenPublicaInterface::class);
+        $this->service = new GestionInventarioService($this->productos, $this->movimientos, $this->imagenes);
     }
 
     public function test_crear_entrada_aumenta_el_stock(): void
@@ -215,6 +220,130 @@ class GestionInventarioServiceTest extends TestCase
         $this->assertSame(0, $creado->existencia->stock);
     }
 
+    public function test_crear_producto_guarda_la_imagen_si_se_envia(): void
+    {
+        $datos = $this->datosProducto();
+        $archivo = UploadedFile::fake()->image('limonada.jpg');
+        $producto = $this->productoConCategoria(['url_imagen' => 'productos/limonada.jpg']);
+
+        $this->productos->shouldReceive('findByNombre')->once()->with('Limonada')->andReturn(null);
+        $this->imagenes->shouldReceive('guardar')->once()->with($archivo)->andReturn('productos/limonada.jpg');
+        $this->productos->shouldReceive('create')
+            ->once()
+            ->with(Mockery::on(fn (array $payload): bool => ($payload['url_imagen'] ?? null) === 'productos/limonada.jpg'))
+            ->andReturn($producto);
+        $this->movimientos->shouldReceive('create')->once()->andReturn($this->movimiento());
+
+        $creado = $this->service->crearProducto($datos, 4, $archivo);
+
+        $this->assertSame('productos/limonada.jpg', $creado->urlImagen);
+        $this->assertTrue($creado->tieneImagen());
+    }
+
+    public function test_actualizar_producto_conserva_el_nombre_y_no_toca_el_stock(): void
+    {
+        $datos = $this->datosProducto(['precio' => '9.00', 'stock' => 10]);
+        $actual = $this->productoConCategoria(['url_imagen' => 'productos/vieja.jpg']);
+        $actualizado = $this->productoConCategoria(['precio' => '9.00', 'stock' => 10]);
+
+        $this->productos->shouldReceive('findById')->once()->with(7)->andReturn($actual);
+        $this->productos->shouldReceive('findByNombre')->once()->with('Limonada')->andReturn($actual);
+        $this->productos->shouldReceive('update')
+            ->once()
+            ->with($actual, Mockery::on(fn (array $payload): bool => $payload['precio'] === '9.00'
+                && $payload['nombre'] === 'Limonada'
+                && ! array_key_exists('stock', $payload)))
+            ->andReturn($actualizado);
+        $this->movimientos->shouldReceive('create')->never();
+
+        $resultado = $this->service->actualizarProducto(7, $datos, 4);
+
+        $this->assertSame('Limonada', $resultado->nombre);
+        $this->assertSame(10, $resultado->existencia->stock);
+    }
+
+    public function test_actualizar_producto_ajusta_la_cantidad_con_un_movimiento(): void
+    {
+        $datos = $this->datosProducto(['stock' => 15]);
+        $actual = $this->productoConCategoria(['stock' => 10]);
+        $actualizado = $this->productoConCategoria(['stock' => 10]);
+        $conStock = $this->productoConCategoria(['stock' => 15]);
+
+        $this->productos->shouldReceive('findById')->once()->with(7)->andReturn($actual);
+        $this->productos->shouldReceive('findByNombre')->once()->with('Limonada')->andReturn($actual);
+        $this->productos->shouldReceive('update')
+            ->once()
+            ->with($actual, Mockery::on(fn (array $payload): bool => ! array_key_exists('stock', $payload)))
+            ->andReturn($actualizado);
+        $this->productos->shouldReceive('update')
+            ->once()
+            ->with($actualizado, ['stock' => 15])
+            ->andReturn($conStock);
+        $this->movimientos->shouldReceive('create')
+            ->once()
+            ->with(Mockery::on(fn (array $payload): bool => $payload['tipo_movimiento'] === 'entrada'
+                && $payload['cantidad'] === 5
+                && $payload['id_producto'] === 7
+                && $payload['id_usuario'] === 4))
+            ->andReturn($this->movimiento());
+
+        $resultado = $this->service->actualizarProducto(7, $datos, 4);
+
+        $this->assertSame(15, $resultado->existencia->stock);
+    }
+
+    public function test_actualizar_producto_reemplaza_la_imagen_anterior(): void
+    {
+        $datos = $this->datosProducto(['stock' => 10]);
+        $archivo = UploadedFile::fake()->image('nueva.jpg');
+        $actual = $this->productoConCategoria(['url_imagen' => 'productos/vieja.jpg']);
+        $actualizado = $this->productoConCategoria(['url_imagen' => 'productos/nueva.jpg']);
+
+        $this->productos->shouldReceive('findById')->once()->with(7)->andReturn($actual);
+        $this->productos->shouldReceive('findByNombre')->once()->with('Limonada')->andReturn($actual);
+        $this->imagenes->shouldReceive('eliminar')->once()->with('productos/vieja.jpg');
+        $this->imagenes->shouldReceive('guardar')->once()->with($archivo)->andReturn('productos/nueva.jpg');
+        $this->productos->shouldReceive('update')
+            ->once()
+            ->with($actual, Mockery::on(fn (array $payload): bool => ($payload['url_imagen'] ?? null) === 'productos/nueva.jpg'))
+            ->andReturn($actualizado);
+        $this->movimientos->shouldReceive('create')->never();
+
+        $resultado = $this->service->actualizarProducto(7, $datos, 4, $archivo);
+
+        $this->assertSame('productos/nueva.jpg', $resultado->urlImagen);
+    }
+
+    public function test_actualizar_producto_falla_si_el_nombre_ya_existe(): void
+    {
+        $duplicado = $this->producto(['nombre' => 'Limonada']);
+        $duplicado->id_producto = 9;
+
+        $this->productos->shouldReceive('findById')->once()->with(7)->andReturn($this->producto());
+        $this->productos->shouldReceive('findByNombre')->once()->with('Limonada')->andReturn($duplicado);
+        $this->productos->shouldReceive('update')->never();
+
+        $this->expectException(ProductoNombreDuplicadoException::class);
+
+        $this->service->actualizarProducto(7, $this->datosProducto(), 4);
+    }
+
+    public function test_eliminar_producto_borra_la_imagen(): void
+    {
+        $detalles = Mockery::mock(HasMany::class);
+        $detalles->shouldReceive('exists')->once()->andReturn(false);
+        $producto = Mockery::mock(Producto::class)->makePartial();
+        $producto->url_imagen = 'productos/limonada.jpg';
+        $producto->shouldReceive('detallesPedido')->once()->andReturn($detalles);
+
+        $this->productos->shouldReceive('findById')->once()->with(7)->andReturn($producto);
+        $this->imagenes->shouldReceive('eliminar')->once()->with('productos/limonada.jpg');
+        $this->movimientos->shouldReceive('eliminarDeProducto')->once()->with(7);
+        $this->productos->shouldReceive('delete')->once()->with($producto);
+
+        $this->service->eliminarProducto(7);
+    }
+
     public function test_crear_producto_falla_si_el_nombre_ya_existe(): void
     {
         $this->productos->shouldReceive('findByNombre')->once()->with('Limonada')->andReturn($this->producto());
@@ -275,6 +404,7 @@ class GestionInventarioServiceTest extends TestCase
             'precio' => '8.50',
             'stock' => 10,
             'estado' => 'activo',
+            'id_categoria' => 2,
             ...$extra,
         ]);
         $producto->id_producto = 7;

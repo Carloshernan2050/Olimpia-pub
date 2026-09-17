@@ -30,9 +30,9 @@ class NavegacionDashboardServiceTest extends TestCase
         $this->assertTrue($promociones->estaDisponible());
         $this->assertSame('inventario', $inventario->clave);
         $this->assertSame('inventario', $inventario->ruta);
-        $this->assertSame('portapapeles', $inventario->icono);
+        $this->assertSame('cajas', $inventario->icono);
         $this->assertSame('carta', $items[3]->clave);
-        $this->assertSame('comida', $items[3]->icono);
+        $this->assertSame('portapapeles', $items[3]->icono);
         $this->assertSame('menu', $items[3]->ruta);
         $this->assertTrue($items[3]->estaDisponible());
         $this->assertSame('mesa', $items[5]->icono);

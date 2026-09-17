@@ -2,9 +2,13 @@
 
 <article class="menu-tarjeta">
     <div class="menu-tarjeta-imagen">
-        <div class="menu-tarjeta-imagen-vacia">
-            <x-dashboard.icono nombre="imagen" />
-        </div>
+        @if ($producto->tieneImagen())
+            <img src="{{ $producto->urlImagenPublica() }}" alt="{{ $producto->nombre }}">
+        @else
+            <div class="menu-tarjeta-imagen-vacia">
+                <x-dashboard.icono nombre="imagen" />
+            </div>
+        @endif
     </div>
 
     <div class="menu-tarjeta-cuerpo">

@@ -6,6 +6,8 @@ use App\Models\Producto;
 
 final readonly class ProductoInventarioDatos
 {
+    use ConImagenPublica;
+
     /**
      * Fila del catálogo de inventario.
      */
@@ -14,8 +16,10 @@ final readonly class ProductoInventarioDatos
         public string $nombre,
         public ?string $descripcion,
         public string $categoria,
+        public int $idCategoria,
         public string $precio,
         public InventarioExistenciaDatos $existencia,
+        public ?string $urlImagen = null,
     ) {}
 
     /**
@@ -30,8 +34,10 @@ final readonly class ProductoInventarioDatos
             $producto->nombre,
             $producto->descripcion,
             $categoria?->nombre ?? 'Sin categoría',
+            (int) $producto->id_categoria,
             (string) $producto->precio,
             InventarioExistenciaDatos::fromModel($producto),
+            $producto->url_imagen,
         );
     }
 

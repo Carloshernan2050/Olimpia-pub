@@ -23,6 +23,17 @@ class MenuDatosTest extends TestCase
         $this->assertSame('Limonada', $tarjeta->nombre);
         $this->assertSame('Bebidas', $tarjeta->categoria);
         $this->assertSame('$ 8,50', $tarjeta->precioFormateado());
+        $this->assertFalse($tarjeta->tieneImagen());
+    }
+
+    public function test_from_model_copia_la_imagen_del_inventario(): void
+    {
+        $tarjeta = ProductoMenuDatos::fromModel($this->producto([
+            'url_imagen' => 'productos/limonada.jpg',
+        ]));
+
+        $this->assertTrue($tarjeta->tieneImagen());
+        $this->assertSame('/storage/productos/limonada.jpg', $tarjeta->urlImagenPublica());
     }
 
     public function test_refleja_el_precio_actualizado_del_inventario(): void

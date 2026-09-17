@@ -43,5 +43,6 @@ class InventarioControllerTest extends TestCase
         $this->assertFalse($vista['formularioMovimiento']);
         $this->assertNull($vista['movimientoEditar']);
         $this->assertNull($vista['productoVer']);
+        $this->assertNull($vista['productoEditar']);
     }
 }

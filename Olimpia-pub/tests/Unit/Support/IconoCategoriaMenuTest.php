@@ -11,7 +11,7 @@ class IconoCategoriaMenuTest extends TestCase
     {
         $iconos = new IconoCategoriaMenu;
 
-        $this->assertSame('comida', $iconos->para('Comidas'));
+        $this->assertSame('estrella', $iconos->para('Comidas'));
         $this->assertSame('taza', $iconos->para('Bebidas'));
         $this->assertSame('pan', $iconos->para('Postres'));
         $this->assertSame('caja', $iconos->para('Snacks'));

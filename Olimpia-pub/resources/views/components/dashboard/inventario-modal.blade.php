@@ -3,6 +3,7 @@
     'movimientoEditar',
     'movimientosGestion',
     'productoVer',
+    'productoEditar' => null,
     'movimientosProducto',
     'opcionesProducto',
     'categorias' => [],
@@ -20,6 +21,8 @@
         $tituloModal = 'Editar movimiento';
     } elseif ($formularioMovimiento) {
         $tituloModal = 'Registrar movimiento';
+    } elseif ($productoEditar) {
+        $tituloModal = 'Editar producto';
     }
 @endphp
 
@@ -39,6 +42,13 @@
 
         @if ($productoVer)
             <section class="inventario-detalle" aria-label="Detalle del producto">
+                @if ($productoVer->tieneImagen())
+                    <img
+                        class="inventario-detalle-imagen"
+                        src="{{ $productoVer->urlImagenPublica() }}"
+                        alt="{{ $productoVer->nombre }}"
+                    >
+                @endif
                 <p><strong>Categoría:</strong> {{ $productoVer->categoria }}</p>
                 <p><strong>Stock:</strong> {{ $productoVer->existencia->stock }}</p>
                 <p><strong>Precio:</strong> {{ $productoVer->precioFormateado() }}</p>
@@ -46,6 +56,12 @@
                 @if (filled($productoVer->descripcion))
                     <p>{{ $productoVer->descripcion }}</p>
                 @endif
+                <a
+                    class="inventario-detalle-movimiento"
+                    href="{{ route('inventario', [...$filtro->query(), 'producto' => $productoVer->id]) }}"
+                >
+                    Registrar movimiento
+                </a>
             </section>
 
             @if (count($movimientosProducto) > 0)
@@ -112,7 +128,10 @@
                 </section>
             @endif
         @else
-            <x-dashboard.inventario-formulario-producto :categorias="$categorias" />
+            <x-dashboard.inventario-formulario-producto
+                :categorias="$categorias"
+                :producto-editar="$productoEditar"
+            />
         @endif
     </div>
 </dialog>

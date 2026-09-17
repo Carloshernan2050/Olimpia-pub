@@ -10,7 +10,7 @@ final class IconoCategoriaMenu
     public function para(string $nombre): string
     {
         return match (mb_strtolower(trim($nombre))) {
-            'comidas' => 'comida',
+            'comidas' => 'estrella',
             'bebidas' => 'taza',
             'postres' => 'pan',
             default => 'caja',

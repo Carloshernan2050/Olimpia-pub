@@ -29,7 +29,7 @@
 
     <x-dashboard.boton-agregar-inventario
         :filtro="$filtro"
-        :edicion="$movimientoEditar !== null || $productoVer !== null"
+        :edicion="$movimientoEditar !== null || $productoVer !== null || $productoEditar !== null"
     />
 
     <x-dashboard.inventario-modal
@@ -37,11 +37,12 @@
         :movimiento-editar="$movimientoEditar"
         :movimientos-gestion="$movimientosGestion"
         :producto-ver="$productoVer"
+        :producto-editar="$productoEditar"
         :movimientos-producto="$movimientosProducto"
         :opciones-producto="$catalogo->opcionesProducto"
         :categorias="$catalogo->categorias"
         :id-producto-prefill="$idProductoPrefill"
         :formulario-movimiento="$formularioMovimiento"
-        :abrir="$abrirModal || $errors->any()"
+        :abrir="$abrirModal || ($errors->any() && old('formulario') !== null)"
     />
 @endsection

@@ -10,7 +10,6 @@
         aria-label="Agregar producto"
     >
         <x-dashboard.icono nombre="mas" />
-        <span>Agregar producto</span>
     </a>
 @else
     <button
@@ -20,6 +19,5 @@
         aria-label="Agregar producto"
     >
         <x-dashboard.icono nombre="mas" />
-        <span>Agregar producto</span>
     </button>
 @endif

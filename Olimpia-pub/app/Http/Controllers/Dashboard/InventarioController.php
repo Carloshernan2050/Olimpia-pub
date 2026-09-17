@@ -29,6 +29,7 @@ class InventarioController extends Controller
         $filtro = $request->filtro();
         $idEdicion = $request->idEdicion();
         $idVer = $request->idVer();
+        $idEdicionProducto = $request->idEdicionProducto();
 
         return view('dashboard.inventario', [
             'catalogo' => $this->catalogoInventario->obtenerCatalogo($filtro),
@@ -36,6 +37,7 @@ class InventarioController extends Controller
             'movimientosGestion' => $this->gestionInventario->listar(),
             'movimientoEditar' => $idEdicion === null ? null : $this->gestionInventario->buscar($idEdicion),
             'productoVer' => $idVer === null ? null : $this->gestionInventario->buscarProducto($idVer),
+            'productoEditar' => $idEdicionProducto === null ? null : $this->gestionInventario->buscarProducto($idEdicionProducto),
             'movimientosProducto' => $idVer === null ? [] : $this->gestionInventario->listarDeProducto($idVer),
             'idProductoPrefill' => $request->idProductoPrefill(),
             'formularioMovimiento' => $this->debeMostrarFormularioMovimiento($request),
@@ -51,9 +53,25 @@ class InventarioController extends Controller
         $this->gestionInventario->crearProducto(
             $request->datos(),
             (int) $request->user()->getAuthIdentifier(),
+            $request->imagenSubida(),
         );
 
         return $this->redirigirAlCatalogo('Producto creado correctamente.');
+    }
+
+    /**
+     * Actualiza un producto del inventario.
+     */
+    public function actualizarProducto(GuardarProductoInventarioRequest $request, int $producto): RedirectResponse
+    {
+        $this->gestionInventario->actualizarProducto(
+            $producto,
+            $request->datos(),
+            (int) $request->user()->getAuthIdentifier(),
+            $request->imagenSubida(),
+        );
+
+        return $this->redirigirAlCatalogo('Producto actualizado correctamente.');
     }
 
     /**

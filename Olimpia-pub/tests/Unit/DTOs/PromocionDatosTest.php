@@ -51,18 +51,18 @@ class PromocionDatosTest extends TestCase
         $this->assertSame('https://olimpia.test/combo.jpg', $tarjeta->urlImagenPublica());
     }
 
-    public function test_url_local_pasa_por_asset(): void
+    public function test_url_local_queda_como_ruta_publica(): void
     {
         $tarjeta = new PromocionTarjetaDatos(1, 'Combo', null, '5', '/media/promos/combo.jpg');
 
-        $this->assertSame(asset('/media/promos/combo.jpg'), $tarjeta->urlImagenPublica());
+        $this->assertSame('/media/promos/combo.jpg', $tarjeta->urlImagenPublica());
     }
 
     public function test_ruta_en_disco_publico_usa_storage(): void
     {
         $tarjeta = new PromocionTarjetaDatos(1, 'Combo', null, '5', 'promociones/combo.jpg');
 
-        $this->assertSame(asset('storage/promociones/combo.jpg'), $tarjeta->urlImagenPublica());
+        $this->assertSame('/storage/promociones/combo.jpg', $tarjeta->urlImagenPublica());
     }
 
     public function test_gestion_copia_periodo_e_imagen_del_modelo(): void
@@ -85,7 +85,7 @@ class PromocionDatosTest extends TestCase
         $this->assertSame('2026-08-31', $gestion->fechaFin);
         $this->assertTrue($gestion->estaActiva());
         $this->assertTrue($gestion->tieneImagen());
-        $this->assertSame(asset('storage/promociones/combo.jpg'), $gestion->urlImagenPublica());
+        $this->assertSame('/storage/promociones/combo.jpg', $gestion->urlImagenPublica());
     }
 
     public function test_catalogo_vacio_no_tiene_promociones(): void
